@@ -14,11 +14,12 @@ The source of truth is [product.md](product.md): two audiences with six exact qu
 
 The final card identities are pending the content owner's manifest. Do not assume the deck is 22 Major Arcana plus ten new cards. Update catalog validation, images, and tests together once agreed.
 
-## Already available in the legacy starter
+## Already available in the current foundation
 
 - `POST /api/readings` with request validation and public error responses.
 - A provisional catalog of 22 cards with separate answer and recommendation meanings; migration to the agreed 32-card deck is required.
-- One- and three-month calculation with month-end clamping; add the twelve-month case and leap-day tests.
+- One-, three-, and twelve-month calculation with month-end clamping and leap-day tests.
+- The twelve target questions, authoritative audience metadata, and fixed-period request validation.
 - Overlap selection for events, including retrogrades already in progress.
 - Injectable provider interfaces and foundation tests.
 - A frontend that preserves card selection when retrying a failed request.

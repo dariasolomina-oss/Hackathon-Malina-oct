@@ -16,7 +16,7 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 
 Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Live AI, verified event data, final artwork, and deployment remain track work.
 
-The updated target scope is documented in [product scope](docs/product.md). Application code has not yet migrated: it still uses four ungrouped questions, two periods, and 22 placeholder cards. The final 32-card manifest is pending. Three target questions have fixed periods, as defined in the product scope.
+The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
 
 ## Run locally
 
@@ -39,12 +39,12 @@ npm start
 
 ## Try the API independently
 
-Legacy starter example (still valid before the revised IDs are implemented), with the development server running:
+With the development server running:
 
 ```bash
 curl http://localhost:3000/api/readings \
   -H 'Content-Type: application/json' \
-  -d '{"questionId":"project","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
+  -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
 ```
 
 The response reports `meta.mode: "mock"` and `meta.calendarStatus: "unavailable"`. This is intentional. The starter makes no external AI or calendar requests.

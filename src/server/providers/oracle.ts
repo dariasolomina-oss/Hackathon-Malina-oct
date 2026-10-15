@@ -3,10 +3,13 @@ import type { OracleProvider } from "./types";
 // Deterministic development placeholder. Never label this as a live AI result.
 export const oracleProvider: OracleProvider = {
   mode: "mock",
-  async generate({ question, answerCard, recommendationCard }) {
+  async generate({ audience, question, answerCard, recommendationCard }) {
+    const context = audience === "employee"
+      ? "Keep the next step practical for your own work and daily routine."
+      : "Frame the next step around company direction, customers, and the team.";
     return {
-      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerCard.answerMeaning} The universe has reviewed the meeting notes. Apparently, someone still owes you an update.`,
-      recommendation: `${recommendationCard.name} suggests: ${recommendationCard.recommendationMeaning} Put it in writing. Even cosmic alignment needs a paper trail.`,
+      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerCard.answerMeaning} ${context}`,
+      recommendation: `${recommendationCard.name} suggests: ${recommendationCard.recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`,
       cosmicNote: null,
     };
   },

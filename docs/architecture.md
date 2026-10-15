@@ -8,7 +8,7 @@ This starter is runnable without credentials. It intentionally uses a determinis
 
 ## Scope update and migration status
 
-The target experience now has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The current code still has four ungrouped questions, two periods, and 22 provisional placeholder cards. This document distinguishes the target contract from that runnable legacy starter.
+The target experience has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The shared contract and backend validation have migrated; audience grouping and period locking remain frontend work. The current 22-card catalog is provisional until the content owner supplies the final manifest.
 
 Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Developer 3 determines the final 32-card composition and artwork; use their manifest when migrating card IDs. No additional audience-specific deck or authentication system is needed.
 
@@ -57,7 +57,7 @@ The dependency direction is `UI -> contracts/domain/content` and `API -> service
 }
 ```
 
-The field structure stays unchanged. The target example uses revised question/period IDs and illustrative existing card IDs; the final card IDs depend on the agreed manifest. It is not accepted by the legacy starter until migration. The README preserves a working legacy curl example during this transition.
+The field structure stays unchanged. This example is accepted by the current backend and uses revised question/period IDs with illustrative existing card IDs. The final card IDs depend on the agreed manifest.
 
 Each question has authoritative audience metadata and allowed period IDs in the shared catalog. The server derives audience from the validated question ID and passes it to the oracle. No separate audience field is needed in the HTTP request. Reject unsupported question-period combinations rather than silently changing the requested period.
 

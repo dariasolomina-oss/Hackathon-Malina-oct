@@ -9,7 +9,7 @@ import { shuffleDeck } from "@/domain/deck";
 import { requestReading } from "./client";
 
 export function ReadingExperience() {
-  const [questionId, setQuestion] = useState<QuestionId>("project");
+  const [questionId, setQuestion] = useState<QuestionId>("employee-project-deadline");
   const [periodId, setPeriod] = useState<PeriodId>("one-month");
   const [deck, setDeck] = useState<CardId[]>([]);
   const [chosen, setChosen] = useState<CardId[]>([]);

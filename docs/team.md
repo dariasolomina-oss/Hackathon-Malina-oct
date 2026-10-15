@@ -25,7 +25,7 @@ Backend owns shared validation, audience derivation, annual calculation, and cal
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.
 
-The starter establishes data types and placeholder paths, but its four questions, two periods, and 22 cards predate the updated scope. Migrate question/period identifiers and the agreed 32-card manifest together; preserve those identifiers after migration. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
+The shared contract now establishes the twelve question identifiers, audience metadata, three periods, and fixed-period rules. Preserve those identifiers while the frontend consumes them. The 22-card catalog still predates the updated scope; migrate it only when the content owner supplies the agreed 32-card manifest. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
 
 ## Working with Codex
 

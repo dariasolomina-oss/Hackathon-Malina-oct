@@ -13,7 +13,7 @@ The user chooses Employee or Leadership, selects a question and its allowed peri
 - A short answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
 
-The stack remains Next.js + TypeScript. The current starter still has four ungrouped questions, two periods, and 22 placeholder cards. These revised requirements are not yet implemented in application code. See [architecture.md](architecture.md) for the migration boundaries.
+The stack remains Next.js + TypeScript. The shared contract and backend now implement the twelve questions, audience metadata, three periods, and fixed-period validation. The interface migration is pending, and the current 22-card catalog remains provisional until the content owner supplies the final manifest. See [architecture.md](architecture.md) for the migration boundaries.
 
 ## Question catalog
 

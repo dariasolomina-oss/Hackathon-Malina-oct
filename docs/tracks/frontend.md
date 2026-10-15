@@ -20,7 +20,7 @@ Use the agreed shared catalog and `requestReading`. The request continues to car
 
 ## Coordinate
 
-This scope update requires a coordinated migration of shared question/period IDs and the 32-card manifest. After that migration, do not independently rename IDs or change request/response fields. The current starter still has four questions, two periods, and 22 placeholders.
+The shared question/period IDs and backend validation are migrated. Consume the shared metadata without independently renaming IDs or changing request/response fields. The current 22-card catalog remains provisional until the content owner supplies the final manifest.
 
 Keep visual changes out of server/domain/API files. Coordinate card image paths with the content owner and contract changes with the backend owner. Final card identities remain pending the content manifest.
 

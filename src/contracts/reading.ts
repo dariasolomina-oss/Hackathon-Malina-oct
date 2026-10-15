@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CARD_IDS, PERIOD_IDS, QUESTION_IDS } from "./catalog";
+import { CARD_IDS, PERIOD_IDS, QUESTION_IDS, isPeriodAllowed } from "./catalog";
 
 export const readingRequestSchema = z.object({
   questionId: z.enum(QUESTION_IDS),
@@ -8,6 +8,8 @@ export const readingRequestSchema = z.object({
   recommendationCardId: z.enum(CARD_IDS),
 }).strict().refine((value) => value.answerCardId !== value.recommendationCardId, {
   message: "Choose two different cards.", path: ["recommendationCardId"],
+}).refine((value) => isPeriodAllowed(value.questionId, value.periodId), {
+  message: "The selected period is not available for this question.", path: ["periodId"],
 });
 
 export type ReadingRequest = z.infer<typeof readingRequestSchema>;
