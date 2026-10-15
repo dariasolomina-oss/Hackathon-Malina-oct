@@ -24,7 +24,9 @@ function event(id: string, start: string, end: string | null): AstroEvent {
 
 test("catalog matches the stable IDs and every artwork path exists", () => {
   assert.deepEqual(cards.map((card) => card.id), [...CARD_IDS]);
-  assert.ok(cards.every((card) => existsSync(`public${card.image}`) && card.answerMeaning && card.recommendationMeaning));
+  assert.ok(cards.every((card) => existsSync(`public${card.image}`)
+    && card.meanings.employee.answer && card.meanings.employee.recommendation
+    && card.meanings.leadership.answer && card.meanings.leadership.recommendation));
 });
 
 test("question catalog has the exact audience, labels, and allowed periods", () => {

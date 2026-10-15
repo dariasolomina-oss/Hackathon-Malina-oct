@@ -26,12 +26,12 @@ export function buildOracleUserPrompt(input: OracleInput): string {
       {
         role: "ANSWER",
         name: input.answerCard.name,
-        meaning: input.answerCard.answerMeaning,
+        meaning: input.answerCard.meanings[input.audience].answer,
       },
       {
         role: "RECOMMENDATION",
         name: input.recommendationCard.name,
-        meaning: input.recommendationCard.recommendationMeaning,
+        meaning: input.recommendationCard.meanings[input.audience].recommendation,
       },
     ],
     events: input.events.map((event) => ({

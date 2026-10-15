@@ -9,7 +9,6 @@ export const CARD_IDS = [
 ] as const;
 
 export type CardId = (typeof CARD_IDS)[number];
-
 export const PERIODS = [
   { id: "one-month", label: "Next month", months: 1 },
   { id: "three-months", label: "Next three months", months: 3 },
@@ -114,10 +113,14 @@ export function isPeriodAllowed(questionId: QuestionId, periodId: PeriodId): boo
   return getQuestion(questionId).allowedPeriodIds.some((allowedId) => allowedId === periodId);
 }
 
+export interface CardMeaning {
+  answer: string;
+  recommendation: string;
+}
+
 export interface Card {
   id: CardId;
   name: string;
   image: string;
-  answerMeaning: string;
-  recommendationMeaning: string;
+  meanings: Record<Audience, CardMeaning>;
 }

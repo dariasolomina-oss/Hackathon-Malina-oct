@@ -85,7 +85,7 @@ The backend validates provider responses and live model output before exposing t
 
 The active deck contains the content owner's 32 unique IDs, with exactly two draws for every audience and period. Preserve those IDs across the contract, content, artwork, and tests. Coordinate future changes with the content owner.
 
-Each entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
+Each entry in `src/content/cards.ts` has a name, image path, and separate answer and recommendation meanings for Employee and Leadership. The server derives audience from the selected question and supplies it with both card meanings to the oracle. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
 
 The final card artwork and shared back are WebP images in `public/cards/` with a 2:3 ratio. Update the catalog image paths when changing assets. Render card titles in the UI. The shared back is `public/cards/back.webp`.
 
