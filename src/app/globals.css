@@ -4,10 +4,7 @@
   color-scheme: dark;
   --midnight: #070A1A;
   --indigo: #1B1F4B;
-  --plum: #5B4163;
-  --berry: #A8445A;
   --coral: #CF6A4E;
-  --apricot: #E0884F;
   --gold: #E0AE55;
   --starlight: #F5F1EA;
   --ink: #2A1E33;
@@ -66,7 +63,7 @@ h1 { max-width: 820px; margin: 0 0 20px; font-size: clamp(3.5rem, 7vw, 5.2rem); 
 .deck-option.selected { color: var(--starlight); border-color: var(--gold); background: rgba(245,241,234,.045); }
 .section-heading { margin-bottom: 16px; }
 .section-heading h2, .draw-heading h2 { font-size: 1.75rem; letter-spacing: -.02em; margin: 0 0 3px; line-height: 1.1; }
-.section-heading p, .draw-heading p { color: var(--muted); font-size: .9rem; margin: 0; }
+.section-heading p { color: var(--muted); font-size: .9rem; margin: 0; }
 .question-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .question-option { position: relative; min-height: 166px; padding: 18px 16px 14px; border: 1px solid rgba(245,241,234,.23); border-radius: 5px; background: rgba(27,31,75,.5); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font-size: .9rem; line-height: 1.45; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
 .question-option:hover { border-color: rgba(224,174,85,.72); background: rgba(27,31,75,.62); }
@@ -109,9 +106,7 @@ h1 { max-width: 820px; margin: 0 0 20px; font-size: clamp(3.5rem, 7vw, 5.2rem); 
 .card-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .card:not(:disabled):hover .card-art { transform: translateY(-4px); border-color: var(--gold); }
 .card-caption { display: flex; flex-direction: column; gap: 4px; padding: 10px 1px; color: rgba(245,241,234,.72); }
-.card-caption strong { font-size: .82rem; font-weight: 500; }
 .deck-revealed { grid-template-columns: repeat(2, minmax(0, 180px)); justify-content: center; gap: 25px; }
-.deck-revealed .card-caption strong { color: var(--starlight); font-size: 1.1rem; font-weight: 400; }
 .card-role { color: var(--gold); font-size: .76rem; }
 .action-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 22px; margin: 25px 0; }
 .consult-button { min-width: 210px; }

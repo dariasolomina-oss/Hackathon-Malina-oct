@@ -19,9 +19,6 @@ export const mockOracleProvider: OracleProvider = {
   },
 };
 
-// Compatibility export for injected tests and frontend development.
-export const oracleProvider = mockOracleProvider;
-
 export async function createConfiguredOracleProvider(
   environment: Record<string, string | undefined> = process.env,
   createLiveOracle: LiveOracleFactory = async (config) => {

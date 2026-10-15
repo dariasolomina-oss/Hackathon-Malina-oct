@@ -4,7 +4,7 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { AstroEvent, DateRange, OracleText } from "@/contracts/reading";
 import { buildOracleUserPrompt, ORACLE_SYSTEM_PROMPT } from "./oracle-prompt";
-import type { OracleInput, OracleProvider } from "./providers/types";
+import type { OracleProvider } from "./providers/types";
 
 const DIRECT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 

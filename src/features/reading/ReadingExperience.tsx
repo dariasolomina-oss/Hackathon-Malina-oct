@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { CelestialSky } from "./CelestialSky";
 import { MagicTrail } from "./MagicTrail";
 import { cards } from "@/content/cards";
-import { audiences, periods, questions } from "@/content/questions";
-import { getQuestion, isPeriodAllowed, type Audience, type CardId, type PeriodId, type QuestionId } from "@/contracts/catalog";
+import { audiences } from "@/content/questions";
+import { PERIODS, QUESTIONS, getQuestion, isPeriodAllowed, type Audience, type CardId, type PeriodId, type QuestionId } from "@/contracts/catalog";
 import type { ReadingResponse } from "@/contracts/reading";
 import { shuffleDeck } from "@/domain/deck";
 import { requestReading } from "./client";
@@ -77,7 +77,7 @@ export function ReadingExperience() {
 
   const step = result ? 4 : chosen.length === 2 ? 3 : deck.length ? 2 : 1;
   const visibleDeck = chosen.length === 2 ? chosen : deck;
-  const visibleQuestions = questions.filter((question) => question.audience === audienceId);
+  const visibleQuestions = QUESTIONS.filter((question) => question.audience === audienceId);
 
   return <main className="page-shell">
     <CelestialSky />
@@ -107,7 +107,7 @@ export function ReadingExperience() {
           <div className="deck-options" role="group" aria-label="Choose a perspective">
             {audiences.map((audience) => <button className={`deck-option ${audienceId === audience.id ? "selected" : ""}`} type="button" key={audience.id} aria-pressed={audienceId === audience.id} onClick={() => {
               setAudience(audience.id);
-              selectQuestion(questions.find((question) => question.audience === audience.id)!.id);
+              selectQuestion(QUESTIONS.find((question) => question.audience === audience.id)!.id);
             }}>{audience.label}</button>)}
           </div>
         </div>
@@ -121,12 +121,12 @@ export function ReadingExperience() {
         <div className="period-section">
           <span className="section-kicker">Choose your moon</span>
           <div className="period-options" role="group" aria-label="Choose a time period">
-            {periods.map((period, index) => <button className={`period-option ${periodId === period.id ? "selected" : ""}`} type="button" key={period.id} aria-pressed={periodId === period.id} disabled={!isPeriodAllowed(questionId, period.id)} onClick={() => setPeriod(period.id)}>
+            {PERIODS.map((period, index) => <button className={`period-option ${periodId === period.id ? "selected" : ""}`} type="button" key={period.id} aria-pressed={periodId === period.id} disabled={!isPeriodAllowed(questionId, period.id)} onClick={() => setPeriod(period.id)}>
               <span className="period-symbol" aria-hidden="true">{["☾", "◒", "☼"][index]}</span><span>{period.label}</span>
             </button>)}
           </div>
         </div>
-        {getQuestion(questionId).allowedPeriodIds.length === 1 && <p className="sample-note">This question uses a fixed period: {periods.find((period) => period.id === periodId)!.label}.</p>}
+        {getQuestion(questionId).allowedPeriodIds.length === 1 && <p className="sample-note">This question uses a fixed period: {PERIODS.find((period) => period.id === periodId)!.label}.</p>}
         <div className={`deck-action ${shuffling ? "is-shuffling" : ""}`}>
           <div className={`deck-stack ${shuffling ? "is-shuffling" : ""}`} aria-hidden="true">
             {Array.from({ length: 32 }, (_, index) => {

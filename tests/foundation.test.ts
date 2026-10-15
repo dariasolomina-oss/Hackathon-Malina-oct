@@ -8,7 +8,7 @@ import { shuffleDeck } from "../src/domain/deck";
 import { selectEvents } from "../src/domain/events";
 import { resolvePeriod } from "../src/domain/period";
 import { createReading } from "../src/server/reading-service";
-import { oracleProvider } from "../src/server/providers/oracle";
+import { mockOracleProvider } from "../src/server/providers/oracle";
 import { createReadingsPost } from "../src/server/readings-handler";
 
 const offlineCalendar = { async getEvents() { return { status: "available" as const, events: [] }; } };
@@ -131,8 +131,8 @@ test("mock readings use the authoritative audience context", async () => {
     ...request, questionId: "leadership-strategic-priority", periodId: "three-months",
   };
   const [employee, leadership] = await Promise.all([
-    createReading(request, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: oracleProvider }),
-    createReading(leadershipRequest, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: oracleProvider }),
+    createReading(request, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: mockOracleProvider }),
+    createReading(leadershipRequest, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: mockOracleProvider }),
   ]);
   assert.match(employee.answer, /your own work and daily routine/);
   assert.match(leadership.answer, /company direction, customers, and the team/);
@@ -140,7 +140,7 @@ test("mock readings use the authoritative audience context", async () => {
 
 test("calendar failure produces an explicitly card-only mock reading", async () => {
   const result = await createReading(request, {
-    calendar: { async getEvents() { throw new Error("Offline"); } }, oracle: oracleProvider,
+    calendar: { async getEvents() { throw new Error("Offline"); } }, oracle: mockOracleProvider,
   });
   assert.equal(result.meta.calendarStatus, "unavailable");
   assert.equal(result.meta.mode, "mock");
@@ -158,7 +158,7 @@ test("oracle failures propagate instead of silently switching to a sample", asyn
 });
 
 test("route accepts a valid reading and rejects malformed, duplicate, or fixed-period requests", async () => {
-  const POST = createReadingsPost((input) => createReading(input, { calendar: offlineCalendar, oracle: oracleProvider }));
+  const POST = createReadingsPost((input) => createReading(input, { calendar: offlineCalendar, oracle: mockOracleProvider }));
   const valid = await POST(new Request("http://localhost/api/readings", { method: "POST", body: JSON.stringify(request) }));
   assert.equal(valid.status, 200);
   assert.equal((await valid.json()).meta.mode, "mock");
