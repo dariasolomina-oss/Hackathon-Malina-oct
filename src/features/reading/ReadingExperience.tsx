@@ -127,7 +127,7 @@ export function ReadingExperience() {
         <p className="disclaimer">For entertainment and reflection. The universe is not your project manager.</p>
       </section>}</div>
 
-      {!deck.length && <p className="sample-note">The oracle is in demo mode. Sample readings are clearly labeled.</p>}
+      {!deck.length && <p className="sample-note">Your cards are ready when you are. Reading mode is shown with your result.</p>}
     </div>
 
     <footer className="site-footer"><span>✳ MALINA ORACLE</span><span>For entertainment, reflection & a better Monday.</span><span>© 2026</span></footer>
