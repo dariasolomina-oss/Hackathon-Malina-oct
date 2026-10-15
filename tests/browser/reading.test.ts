@@ -1,0 +1,130 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { chromium, type Page } from "playwright";
+import type { ReadingRequest, ReadingResponse } from "../../src/contracts/reading";
+import { cards } from "../../src/content/cards";
+
+// Run against a local production server. Responses are controlled fixtures, not live AI.
+const baseURL = process.env.TEST_BASE_URL ?? "http://localhost:3000";
+
+async function assertFits(page: Page) {
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+}
+
+for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000 }]) {
+  test(`reading journey, retry and restart at ${viewport.width}px`, { timeout: 90_000 }, async () => {
+    const browser = await chromium.launch({
+      executablePath: process.env.TEST_BROWSER_PATH || undefined,
+    });
+    try {
+      const page = await browser.newPage({ viewport });
+      const requests: ReadingRequest[] = [];
+      let mode: "mock" | "live" = "mock";
+      let releaseFailure!: () => void;
+      const failureGate = new Promise<void>((resolve) => { releaseFailure = resolve; });
+      await page.route("**/api/readings", async (route) => {
+        const request = route.request().postDataJSON() as ReadingRequest;
+        requests.push(request);
+        if (requests.length === 1) {
+          await failureGate;
+          await route.fulfill({ status: 503, json: { error: { code: "READING_FAILED", message: "Oracle temporarily unavailable." } } });
+          return;
+        }
+        const response: ReadingResponse = {
+          request, answer: "Test answer", recommendation: "Test recommendation", cosmicNote: "Test timing note",
+          period: { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" },
+          events: [{ id: "fixture", name: "Fixture event", kind: "aspect", start: "2026-10-20T00:00:00.000Z", end: null,
+            interpretation: "Test interpretation", source: { name: "Fixture calendar", url: "https://example.com/calendar" } }],
+          meta: { mode, calendarStatus: "available" },
+        };
+        await route.fulfill({ json: response });
+      });
+      await page.goto(baseURL);
+      await assertFits(page);
+
+      // Use keyboard activation, including native select navigation and tab order.
+      const question = page.getByRole("button", { name: /02/ }).first();
+      await question.focus();
+      await page.keyboard.press("Enter");
+      assert.equal(await question.getAttribute("aria-pressed"), "true");
+      await page.getByLabel("LOOKING AHEAD").focus();
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("Tab");
+      assert.equal(await page.getByRole("button", { name: /Shuffle the deck/ }).evaluate((el) => el === document.activeElement), true);
+      await page.keyboard.press("Enter");
+      await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
+      const answer = await page.getByRole("button", { name: /^Answer:/ }).getAttribute("aria-label");
+      await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Space");
+      const recommendation = await page.getByRole("button", { name: /^Recommendation:/ }).getAttribute("aria-label");
+      await assertFits(page);
+      const pending = page.waitForRequest("**/api/readings");
+      await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
+      await pending;
+      assert.equal(await page.getByRole("button", { name: /Consulting the oracle/ }).isDisabled(), true);
+      assert.equal(await page.getByRole("button", { name: "Start over" }).isDisabled(), true);
+      releaseFailure();
+      await page.getByRole("alert").waitFor();
+      assert.equal(await page.getByText("SAMPLE READING", { exact: true }).count(), 0);
+      await page.getByRole("button", { name: "Retry this reading" }).press("Enter");
+      await page.getByText("SAMPLE READING", { exact: true }).waitFor();
+      assert.deepEqual(requests[1], requests[0]);
+      assert.notEqual(requests[0].answerCardId, requests[0].recommendationCardId);
+      assert.equal(answer, `Answer: ${cards.find((card) => card.id === requests[0].answerCardId)!.name}`);
+      assert.equal(recommendation, `Recommendation: ${cards.find((card) => card.id === requests[0].recommendationCardId)!.name}`);
+      assert.equal(await page.getByRole("button", { name: /^Answer:/ }).getAttribute("aria-label"), answer);
+      assert.equal(await page.getByRole("button", { name: /^Recommendation:/ }).getAttribute("aria-label"), recommendation);
+      await page.getByText("For Oct 15, 2026 – Nov 14, 2026", { exact: true }).waitFor();
+      assert.equal(await page.getByRole("link", { name: /Event source: Fixture calendar/ }).getAttribute("href"), "https://example.com/calendar");
+      await assertFits(page);
+
+      await page.getByRole("button", { name: "Start a new reading" }).press("Enter");
+      assert.equal(await page.getByText("SAMPLE READING", { exact: true }).count(), 0);
+      await page.getByRole("button", { name: /Shuffle the deck/ }).press("Enter");
+      assert.equal(await page.getByRole("button", { name: /^Answer:/ }).count(), 0);
+      mode = "live";
+      await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
+      await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Enter");
+      await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
+      await page.getByText("PERSONAL READING", { exact: true }).waitFor();
+      assert.equal(await page.getByText("SAMPLE READING", { exact: true }).count(), 0);
+      await assertFits(page);
+    } finally {
+      await browser.close();
+    }
+  });
+}
+
+test("reading explains unavailable and empty calendars", { timeout: 90_000 }, async () => {
+  const browser = await chromium.launch({
+    executablePath: process.env.TEST_BROWSER_PATH || undefined,
+  });
+  try {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    let calendarStatus: ReadingResponse["meta"]["calendarStatus"] = "unavailable";
+    await page.route("**/api/readings", async (route) => {
+      const request = route.request().postDataJSON() as ReadingRequest;
+      const response: ReadingResponse = {
+        request, answer: "Test answer", recommendation: "Test recommendation", cosmicNote: null,
+        period: { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" },
+        events: [], meta: { mode: "mock", calendarStatus },
+      };
+      await route.fulfill({ json: response });
+    });
+
+    await page.goto(baseURL);
+    for (const [status, expected] of [
+      ["unavailable", "The event calendar is unavailable, so this reading is based on your cards alone."],
+      ["available", "No calendar events overlap this period, so this reading is based on your cards alone."],
+    ] as const) {
+      calendarStatus = status;
+      await page.getByRole("button", { name: /Shuffle the deck/ }).click();
+      await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).click();
+      await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).click();
+      await page.getByRole("button", { name: /Reveal your reading/ }).click();
+      await page.getByText(expected, { exact: true }).waitFor();
+      await page.getByRole("button", { name: "Start a new reading" }).click();
+    }
+  } finally {
+    await browser.close();
+  }
+});

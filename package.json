@@ -8,9 +8,12 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts",
-    "check": "npm run typecheck && npm test"
+    "check": "npm run typecheck && npm test",
+    "test:browser": "node --import tsx --test tests/browser/*.test.ts"
   },
-  "engines": { "node": ">=22.0.0" },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "next": "16.4.1",
     "react": "^19.2.0",
@@ -21,6 +24,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "playwright": "1.63.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0"
   }

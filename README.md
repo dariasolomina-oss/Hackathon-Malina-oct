@@ -35,6 +35,14 @@ npm start
 
 `check` runs TypeScript validation and foundation tests. `start` serves the production build after `build` succeeds.
 
+## Frontend browser checks
+
+Install the test browser once with `npx playwright install chromium`. Run `npm run build` and `npm start`, then run `npm run test:browser` in a second terminal. The browser suite uses the existing Node test runner with Playwright to exercise the rendered journey at 390px and 1440px widths: keyboard activation, card roles, loading, failed requests, retries with the same cards, restart, resolved dates, event attribution, and mock/live labels. API responses are test fixtures; this does not verify a live AI integration.
+
+The server defaults to `http://localhost:3000`; set `TEST_BASE_URL` for another local port. `TEST_BROWSER_PATH` can select an existing Chromium executable. Browser tests require permission to launch Chromium and connect to the local server.
+
+Also inspect the journey visually at phone and desktop sizes and check focus visibility and keyboard navigation manually. On October 15, 2026, the user reported both browser tests passing locally at 390px and 1440px. Manual visual and keyboard acceptance remain pending. Type checking, all 11 existing tests, and the production build also passed.
+
 ## Try the API independently
 
 With the development server running:

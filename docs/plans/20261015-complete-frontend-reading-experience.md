@@ -77,3 +77,10 @@ Finish and integrate the frontend question-to-reading journey. Existing changes 
 
 - Inspect the full journey in a browser at mobile and desktop sizes, including retry and restart behavior.
 - Manually confirm keyboard interaction and presentation against the frontend assignment.
+
+## Review follow-up
+
+- [x] Add rendered-journey browser coverage for card roles, retry, restart, loading/error handling, mock/live labels, dates, and attribution at phone and desktop widths (`tests/browser/reading.test.ts`).
+- [x] Run type checking, all 11 existing tests, and the production build after adding the browser suite.
+- [x] Run `npm run test:browser` with a local server and Chromium outside the restricted Codex session; user-provided output on October 15, 2026 confirms both tests passed at 390px and 1440px.
+- [ ] Complete manual mobile/desktop visual and keyboard acceptance checks. Earlier checked presentation items reflect code review; they do not establish browser acceptance.
