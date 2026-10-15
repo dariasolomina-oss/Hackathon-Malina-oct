@@ -25,6 +25,8 @@ Keep the existing `POST /api/readings` fields and derive audience from the valid
 
 Event dates and names must come from the validated API response fetched for that reading. The public event objects retain raw normalized boundaries. Cosmic timing prose may clip an interval to the reading period, but must not present that reading boundary as an astronomical station date. The checked 2026–2028 JSON is only an offline fixture and refresh utility.
 
+Every source retrograde interval must fit within its declared year coverage. Reject out-of-coverage intervals as unavailable calendar data; valid clipped segments are merged across years after validation.
+
 ## Pending cross-track work
 
 - Developer 3 supplies the final 32-card composition, meanings, and artwork. Do not invent card identities or assume the final deck extends the provisional one. Integrate the manifest across contracts, content, artwork, and tests in one coordinated change.

@@ -6,7 +6,7 @@ const coverageSchema = z.object({ from: isoInstantSchema, to: isoInstantSchema }
   .refine((range) => Date.parse(range.from) < Date.parse(range.to), "Coverage must have a positive duration.");
 
 const sourceMetadataSchema = z.object({
-  schema: z.string(), year: z.number().int(), generatedAt: isoInstantSchema, coverage: coverageSchema,
+  year: z.number().int(), generatedAt: isoInstantSchema, coverage: coverageSchema,
   attribution: z.literal("Data: Zodiacs.org — https://zodiacs.org"), license: z.literal("CC BY 4.0"),
 }).passthrough();
 

@@ -54,7 +54,7 @@ export function selectEvents(events: AstroEvent[], period: DateRange): AstroEven
       const best = candidates
         .filter((event) => {
           const time = Math.max(Date.parse(event.start), start);
-          return time >= bucketStart && (bucket === MAX_SELECTED_EVENTS - 1 ? time <= bucketEnd : time < bucketEnd);
+          return time >= bucketStart && time < bucketEnd;
         })
         .sort(compareCandidates)[0];
       if (best) {

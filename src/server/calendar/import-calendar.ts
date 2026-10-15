@@ -24,6 +24,9 @@ function assertUniqueYears(files: Array<{ year: number }>, kind: string): void {
 function validateRetrogradeFile(file: RetrogradeSource): void {
   for (const event of file.retrogrades) {
     if (Date.parse(event.from) >= Date.parse(event.to)) throw new Error(`Invalid ${event.planet} retrograde interval.`);
+    if (Date.parse(event.from) < Date.parse(file.coverage.from) || Date.parse(event.to) > Date.parse(file.coverage.to)) {
+      throw new Error("A retrograde interval falls outside its source coverage.");
+    }
     if (event.clippedStart) {
       if (event.from !== file.coverage.from || event.stationRetrograde !== null) {
         throw new Error("A clipped retrograde start must be the source coverage boundary without a station date.");
@@ -69,15 +72,11 @@ function mergeRetrogrades(records: RawRetrograde[]): RawRetrograde[] {
   for (const record of sorted) {
     const previous = merged.at(-1);
     if (previous && previous.planet === record.planet
-      && Date.parse(record.from) <= Date.parse(previous.to)
-      && Date.parse(record.to) >= Date.parse(previous.from)) {
-      const startsEarlier = Date.parse(record.from) < Date.parse(previous.from);
+      && Date.parse(record.from) <= Date.parse(previous.to)) {
       const endsLater = Date.parse(record.to) > Date.parse(previous.to);
       merged[merged.length - 1] = {
         ...previous,
-        from: startsEarlier ? record.from : previous.from,
         to: endsLater ? record.to : previous.to,
-        clippedStart: startsEarlier ? record.clippedStart : previous.clippedStart,
         clippedEnd: endsLater ? record.clippedEnd : previous.clippedEnd,
         stationRetrograde: previous.stationRetrograde ?? record.stationRetrograde,
         stationDirect: record.stationDirect ?? previous.stationDirect,

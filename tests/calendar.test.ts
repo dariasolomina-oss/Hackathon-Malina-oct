@@ -99,6 +99,30 @@ test("source importer rejects station fields that contradict interval boundaries
   }), /clipped retrograde end must be the source coverage boundary/);
 });
 
+test("retrogrades outside source coverage are rejected by the importer and runtime provider", async () => {
+  for (const [from, to] of [
+    ["2025-12-20T00:00:00.000Z", "2026-01-20T00:00:00.000Z"],
+    ["2026-12-20T00:00:00.000Z", "2027-01-20T00:00:00.000Z"],
+  ]) {
+    const retrogrades = retrogradeFile(2026, [{
+      planet: "Mercury", from, to,
+      clippedStart: false, clippedEnd: false,
+      stationRetrograde: from, stationDirect: to,
+    }]);
+    assert.throws(() => importCalendarSources({
+      retrogrades: [retrogrades], moonPhases: [moonFile(2026)],
+      retrievedAt: "2026-10-15T00:00:00.000Z",
+    }), /outside its source coverage/);
+
+    const provider = createApiCalendarProvider({
+      fetch: async (url) => sourceResponse(url.includes("retrogrades") ? retrogrades : moonFile(2026)),
+    });
+    assert.deepEqual(await provider.getEvents({
+      start: "2026-01-01T00:00:00.000Z", end: "2027-01-01T00:00:00.000Z",
+    }), { status: "unavailable", events: [] });
+  }
+});
+
 test("source importer joins clipped cross-year segments without presenting the boundary as a station", () => {
   const firstSegment = {
     planet: "Mercury", from: "2026-12-20T00:00:00.000Z", to: "2027-01-01T00:00:00.000Z",
