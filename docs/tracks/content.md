@@ -1,22 +1,28 @@
 # Content and artwork track
 
-Read `AGENTS.md`, `docs/product.md`, and `docs/architecture.md` first.
+Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architecture.md) first. Preserve the twelve exact question labels supplied in the product scope.
 
 ## Own
 
-- `src/content/cards.ts`: card names, image paths, and two meanings per card
-- `src/content/questions.ts`: question wording and period labels, preserving IDs
-- `src/content/oracle-voice.md`: style and example readings
-- `public/cards/`: card artwork and shared back
+- `src/content/cards.ts`: card names, image paths, and meanings
+- `src/content/questions.ts`: audience grouping, exact question labels, and period labels, coordinated with backend contract rules
+- `src/content/oracle-voice.md`: voice and example readings
+- `public/cards/`: artwork and one shared back
+
+## Define the 32-card manifest
+
+There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. Deliver a manifest containing stable ID, display name, image path, answer meaning, and recommendation meaning for all 32 cards. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
+
+The content owner has supplied the 32-card composition, names, meanings, and artwork. The manifest is integrated across the shared catalog, prompts, and UI. Preserve its IDs across artwork, code, and prompts.
 
 ## Build
 
-Start with one face and the shared card back. Agree on the visual direction with the team before producing the other 31 faces. Use a 2:3 ratio, preferably 600 by 900 pixels for the initial assets. Do not embed card titles; the interface renders those consistently.
+Start with one face and one shared back, establish a consistent visual direction, then produce the other 31 faces. Developer 3 determines the imagery and style. Use a 2:3 ratio, preferably 600 by 900 pixels initially. Do not embed titles; the interface renders them. PNG or WebP may replace SVG placeholders by updating catalog image paths. Coordinate changes to the back path with frontend.
 
-Preserve the 32 card IDs in `src/contracts/catalog.ts`. The deck contains all 22 Major Arcana and ten selected Minor Arcana. Replace placeholder images individually. PNG and WebP are welcome: update each card's `image` path when the extension changes. Coordinate a card-back path change with the frontend owner.
+Provide distinct answer and recommendation meanings for each card that work for both audiences. Use audience-specific examples where helpful, without duplicating the deck. Questions and period restrictions come from the product scope: six labels per audience, three available periods, and three fixed-period exceptions.
 
-Refine separate answer and recommendation meanings for each card. Add 3-5 short example readings that sound warm, specific, and funny. Mark examples as samples, and do not invent real planetary dates. The backend owner translates these examples into the production prompt.
+Write 4-6 short oracle examples covering both audiences, all three period lengths, and the fixed-period questions. Employee examples focus on personal work; Leadership examples focus on company strategy, customer segments, growth, or motivation. Do not invent real client names, company facts, or planetary dates. The backend owner incorporates these examples into the production prompt.
 
 ## Done when
 
-All 32 cards and the back have a coherent style, every catalog image loads, meanings are distinct, and example readings cover the four question types. Run `npm test` for catalog integrity, review the app visually, and prepare a short demo story.
+The agreed 32-card manifest, all 32 faces, and one back are consistent; every image loads; each card has both meanings; all twelve question labels are exact. Review tone for both audiences and provide a short demo story. Run catalog checks once the shared code migration is complete and review the app visually.

@@ -6,11 +6,11 @@ The content track owns this editorial reference. The backend track owns the prod
 
 Warm, witty, concise, and grounded in recognizable workplace situations. Treat the cards as prompts for reflection. Avoid threatening certainty, guaranteed promotions, and invented planetary dates.
 
-## Sample reading: project, The Tower + The Magician
+## Sample reading: project, The Challenge + The Spark
 
-Answer: Your project has decided to pursue personal growth. Unfortunately, it has booked the workshop on your calendar. The Tower points to assumptions that may need another look, especially anything described as "final requirements."
+Answer: Your project has developed an appetite for personal growth and booked the workshop on your calendar. The Challenge suggests there is a real blocker, but it can be handled one piece at a time. Start with those "final requirements."
 
-Recommendation: The Magician suggests turning uncertainty into one concrete proposal. Name the decision-maker, show a workable option, and agree on the next step. Your strongest spell is "let's put that in writing."
+Recommendation: The Spark suggests testing one promising idea with a small, visible next step. Name the decision-maker, show a workable option, and agree on what to try first. Your strongest spell is still "let's put that in writing."
 
 Cosmic note: Omitted in this example because no verified event data is supplied.
 

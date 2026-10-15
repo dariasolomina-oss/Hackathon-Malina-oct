@@ -6,15 +6,19 @@ Starting token: `ODYSSEY-2026-UNLEASH-THE-GODS`
 
 ## User journey
 
-1. Choose Employee Arcana or Leadership Arcana, then choose a question and time period.
-2. Draw two different cards: one answers the question, the other suggests what to do.
+1. Choose Employee or Leadership, then one of its six questions and an allowed time period (one month, three months, or one year).
+2. Draw two different cards from one shared 32-card deck: one answers the question, the other suggests what to do.
 3. Read a short AI-generated interpretation with relevant calendar events woven into the story.
 
 The cards establish the story; astrological events add timing and atmosphere. This is an entertainment experience, not a factual prediction.
 
 ## Project status
 
-Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Live AI, verified event data, final artwork, and deployment remain track work.
+Runnable Next.js + TypeScript experience with the integrated 32-card artwork, a clearly labeled mock oracle, request-time Zodiacs.org event data, and an optional server-configured live OpenAI oracle. Deployment and the full live quality review remain outstanding.
+
+The application now includes the twelve target questions, two audience choices, three periods with fixed-period rules, the shared 32-card deck and its artwork, plus the request-time calendar and configurable live oracle integrations.
+
+Backend implementation and integration details are summarized in the [backend handoff](docs/backend-handoff.md). Automated checks cover the live-provider boundary with no-network fakes. Three live smoke readings verified the gateway path; the full twelve-question editorial review and cost evaluation remain pending.
 
 ## Run locally
 
@@ -25,7 +29,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. No API key or environment file is needed for the starter.
+Open http://localhost:3000. No API key or environment file is needed for the default mock oracle.
 
 ```bash
 npm run check
@@ -33,15 +37,11 @@ npm run build
 npm start
 ```
 
-`check` runs TypeScript validation and foundation tests. `start` serves the production build after `build` succeeds.
+`check` runs TypeScript validation and foundation tests. Tests inject offline calendar fixtures and do not call Zodiacs.org. `start` serves the production build after `build` succeeds.
 
-## Frontend browser checks
+## Live oracle
 
-Install the test browser once with `npx playwright install chromium`. Run `npm run build` and `npm start`, then run `npm run test:browser` in a second terminal. The browser suite uses the existing Node test runner with Playwright to exercise the rendered journey at 390px and 1440px widths: keyboard activation, card roles, loading, failed requests, retries with the same cards, restart, resolved dates, event attribution, and mock/live labels. API responses are test fixtures; this does not verify a live AI integration.
-
-The server defaults to `http://localhost:3000`; set `TEST_BASE_URL` for another local port. `TEST_BROWSER_PATH` can select an existing Chromium executable. Browser tests require permission to launch Chromium and connect to the local server.
-
-Also inspect the journey visually at phone and desktop sizes and check focus visibility and keyboard navigation manually. On October 15, 2026, the user reported both browser tests passing locally at 390px and 1440px. Manual visual and keyboard acceptance remain pending. Type checking, all 11 existing tests, and the production build also passed.
+Copy `.env.example` to `.env.local`, set `ORACLE_MODE=live`, and add a server-side `OPENAI_API_KEY`. `OPENAI_MODEL` defaults to `gpt-6-luna`. The direct OpenAI API is the default; set the optional server-only `OPENAI_BASE_URL` for an OpenAI-compatible gateway. Use an exact model ID returned by that gateway's `/models` endpoint. Live mode makes one Responses API call with Structured Outputs, no tools, no SDK retries, and a 20-second timeout. A missing key or failed live request returns `READING_FAILED`; it never falls back to mock text. Gateway usage and billing are governed by the gateway, independently of OpenAI's public model pricing.
 
 ## Try the API independently
 
@@ -50,10 +50,18 @@ With the development server running:
 ```bash
 curl http://localhost:3000/api/readings \
   -H 'Content-Type: application/json' \
-  -d '{"questionId":"employee-project-on-time","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
+  -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-challenge","recommendationCardId":"the-spark"}'
 ```
 
-The response reports `meta.mode: "mock"` and `meta.calendarStatus: "unavailable"`. This is intentional. The starter makes no external AI or calendar requests.
+The response reports `meta.mode: "mock"`. The server still requests calendar data for the resolved period. A source failure, invalid response, incomplete coverage, or five-second calendar deadline returns a card-only reading with `meta.calendarStatus: "unavailable"`.
+
+## Calendar data
+
+Each reading fetches retrograde and moon-phase files for every UTC year touched by its start-inclusive/end-exclusive range. Requests run concurrently with `cache: "no-store"` under one five-second deadline. The importer validates schemas, requested years, full-year coverage, station boundaries, duplicates, and source attribution before events become available. There is no runtime cache or snapshot fallback.
+
+The checked 2026–2028 JSON remains an offline fixture for tests and source review. Refresh that fixture with `npm run calendar:refresh -- 2026 2027 2028`, then review generated changes before committing them.
+
+Calendar data is licensed under CC BY 4.0. Attribution: [Data: Zodiacs.org](https://zodiacs.org).
 
 ## Project documents
 
@@ -62,6 +70,7 @@ The response reports `meta.mode: "mock"` and `meta.calendarStatus: "unavailable"
 - [Architecture and API contract](docs/architecture.md)
 - [Frontend assignment](docs/tracks/frontend.md)
 - [Backend assignment](docs/tracks/backend.md)
+- [Backend integration handoff](docs/backend-handoff.md)
 - [Content and artwork assignment](docs/tracks/content.md)
 - [Codex repository instructions](AGENTS.md)
 

@@ -4,7 +4,7 @@ import { requestReading } from "../src/features/reading/client";
 import type { ReadingRequest, ReadingResponse } from "../src/contracts/reading";
 
 const request: ReadingRequest = {
-  questionId: "employee-project-on-time", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
+  questionId: "employee-project-deadline", periodId: "one-month", answerCardId: "the-challenge", recommendationCardId: "the-spark",
 };
 
 test("reading client posts the selected question, period, and ordered cards", async () => {

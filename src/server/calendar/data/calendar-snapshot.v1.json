@@ -1,0 +1,1292 @@
+{
+  "version": 1,
+  "retrievedAt": "2026-10-15T12:39:35.092Z",
+  "coverage": [
+    {
+      "from": "2026-01-01T00:00:00.000Z",
+      "to": "2029-01-01T00:00:00.000Z"
+    }
+  ],
+  "source": {
+    "name": "Zodiacs.org",
+    "url": "https://zodiacs.org",
+    "attribution": "Data: Zodiacs.org — https://zodiacs.org",
+    "license": "CC BY 4.0"
+  },
+  "sourceFiles": [
+    {
+      "kind": "moon-phases",
+      "year": 2026,
+      "url": "https://zodiacs.org/api/v1/moon-phases/2026.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    },
+    {
+      "kind": "retrogrades",
+      "year": 2026,
+      "url": "https://zodiacs.org/api/v1/retrogrades/2026.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    },
+    {
+      "kind": "moon-phases",
+      "year": 2027,
+      "url": "https://zodiacs.org/api/v1/moon-phases/2027.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    },
+    {
+      "kind": "retrogrades",
+      "year": 2027,
+      "url": "https://zodiacs.org/api/v1/retrogrades/2027.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    },
+    {
+      "kind": "moon-phases",
+      "year": 2028,
+      "url": "https://zodiacs.org/api/v1/moon-phases/2028.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    },
+    {
+      "kind": "retrogrades",
+      "year": 2028,
+      "url": "https://zodiacs.org/api/v1/retrogrades/2028.json",
+      "generatedAt": "2026-09-30T07:54:56.476Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "retrograde-jupiter-2026-01-01T00:00:00.000Z",
+      "name": "Jupiter retrograde (partly clipped by source coverage)",
+      "kind": "retrograde",
+      "start": "2026-01-01T00:00:00.000Z",
+      "end": "2026-03-11T03:29:02.870Z",
+      "interpretation": "Symbolically, review growth plans, confidence, and assumptions about scale. The recorded start is a coverage boundary, not a verified retrograde station.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-uranus-2026-01-01T00:00:00.000Z",
+      "name": "Uranus retrograde (partly clipped by source coverage)",
+      "kind": "retrograde",
+      "start": "2026-01-01T00:00:00.000Z",
+      "end": "2026-02-04T02:32:26.776Z",
+      "interpretation": "Symbolically, revisit experiments, disruption, and proposed change. The recorded start is a coverage boundary, not a verified retrograde station.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-01-03T10:02:55.863Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-01-03T10:02:55.863Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-01-18T19:52:01.736Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-01-18T19:52:01.736Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-02-01T22:09:17.527Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-02-01T22:09:17.527Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-02-17T12:01:12.344Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-02-17T12:01:12.344Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2026-02-26T06:47:25.019Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2026-02-26T06:47:25.019Z",
+      "end": "2026-03-20T19:35:04.540Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-03-03T11:37:57.684Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-03-03T11:37:57.684Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-03-19T01:23:33.883Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-03-19T01:23:33.883Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-04-02T02:12:00.538Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-04-02T02:12:00.538Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-04-17T11:51:52.041Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-04-17T11:51:52.041Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-05-01T17:23:09.934Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-05-01T17:23:09.934Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-pluto-2026-05-06T15:34:24.550Z",
+      "name": "Pluto retrograde",
+      "kind": "retrograde",
+      "start": "2026-05-06T15:34:24.550Z",
+      "end": "2026-10-16T02:39:22.059Z",
+      "interpretation": "Symbolically, examine power, ownership, and slow organizational change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-05-16T20:01:04.323Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-05-16T20:01:04.323Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-05-31T08:45:10.106Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-05-31T08:45:10.106Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-06-15T02:54:11.458Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-06-15T02:54:11.458Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2026-06-29T17:37:11.542Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2026-06-29T17:37:11.542Z",
+      "end": "2026-07-23T22:56:24.667Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-06-29T23:56:39.855Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-06-29T23:56:39.855Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-neptune-2026-07-07T11:01:01.523Z",
+      "name": "Neptune retrograde",
+      "kind": "retrograde",
+      "start": "2026-07-07T11:01:01.523Z",
+      "end": "2026-12-12T22:23:17.899Z",
+      "interpretation": "Symbolically, clarify vague expectations and test appealing assumptions.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-07-14T09:43:36.119Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-07-14T09:43:36.119Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-saturn-2026-07-26T19:53:13.505Z",
+      "name": "Saturn retrograde",
+      "kind": "retrograde",
+      "start": "2026-07-26T19:53:13.505Z",
+      "end": "2026-12-10T23:28:30.790Z",
+      "interpretation": "Symbolically, inspect structure, accountability, and long-term commitments.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-07-29T14:35:42.223Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-07-29T14:35:42.223Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-08-12T17:36:41.548Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-08-12T17:36:41.548Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-08-28T04:18:31.156Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-08-28T04:18:31.156Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-uranus-2026-09-10T18:28:28.593Z",
+      "name": "Uranus retrograde",
+      "kind": "retrograde",
+      "start": "2026-09-10T18:28:28.593Z",
+      "end": "2027-02-08T12:28:27.274Z",
+      "interpretation": "Symbolically, revisit experiments, disruption, and proposed change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-09-11T03:26:56.471Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-09-11T03:26:56.471Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-09-26T16:48:59.556Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-09-26T16:48:59.556Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-venus-2026-10-03T07:10:25.341Z",
+      "name": "Venus retrograde",
+      "kind": "retrograde",
+      "start": "2026-10-03T07:10:25.341Z",
+      "end": "2026-11-14T00:21:21.444Z",
+      "interpretation": "Symbolically, reassess working relationships, values, and budgets.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-10-10T15:50:02.149Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-10-10T15:50:02.149Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2026-10-24T07:14:22.646Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2026-10-24T07:14:22.646Z",
+      "end": "2026-11-13T15:53:06.474Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-10-26T04:11:45.019Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-10-26T04:11:45.019Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-11-09T07:02:05.269Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-11-09T07:02:05.269Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-11-24T14:53:35.120Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-11-24T14:53:35.120Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2026-12-09T00:51:52.151Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2026-12-09T00:51:52.151Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-jupiter-2026-12-13T00:57:26.191Z",
+      "name": "Jupiter retrograde",
+      "kind": "retrograde",
+      "start": "2026-12-13T00:57:26.191Z",
+      "end": "2027-04-13T02:08:29.765Z",
+      "interpretation": "Symbolically, review growth plans, confidence, and assumptions about scale.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2026-12-24T01:28:16.590Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2026-12-24T01:28:16.590Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-01-07T20:24:26.069Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-01-07T20:24:26.069Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mars-2027-01-10T13:00:54.491Z",
+      "name": "Mars retrograde",
+      "kind": "retrograde",
+      "start": "2027-01-10T13:00:54.491Z",
+      "end": "2027-04-01T14:11:19.833Z",
+      "interpretation": "Symbolically, reconsider pace, conflict, and where effort is going.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-01-22T12:17:21.585Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-01-22T12:17:21.585Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-02-06T15:56:08.653Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-02-06T15:56:08.653Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2027-02-09T17:35:41.894Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2027-02-09T17:35:41.894Z",
+      "end": "2027-03-03T12:35:47.606Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-02-20T23:23:37.619Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-02-20T23:23:37.619Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-03-08T09:29:31.050Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-03-08T09:29:31.050Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-03-22T10:43:48.340Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-03-22T10:43:48.340Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-04-06T23:51:12.161Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-04-06T23:51:12.161Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-04-20T22:27:11.909Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-04-20T22:27:11.909Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-05-06T10:58:40.128Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-05-06T10:58:40.128Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-pluto-2027-05-08T12:55:38.085Z",
+      "name": "Pluto retrograde",
+      "kind": "retrograde",
+      "start": "2027-05-08T12:55:38.085Z",
+      "end": "2027-10-18T03:49:21.034Z",
+      "interpretation": "Symbolically, examine power, ownership, and slow organizational change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-05-20T10:59:04.599Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-05-20T10:59:04.599Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-06-04T19:40:22.676Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-06-04T19:40:22.676Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2027-06-10T18:19:04.335Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2027-06-10T18:19:04.335Z",
+      "end": "2027-07-04T19:39:55.898Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-06-19T00:44:24.732Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-06-19T00:44:24.732Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-07-04T03:02:05.654Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-07-04T03:02:05.654Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-neptune-2027-07-09T22:44:01.113Z",
+      "name": "Neptune retrograde",
+      "kind": "retrograde",
+      "start": "2027-07-09T22:44:01.113Z",
+      "end": "2027-12-15T09:13:20.243Z",
+      "interpretation": "Symbolically, clarify vague expectations and test appealing assumptions.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-07-18T15:44:58.351Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-07-18T15:44:58.351Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-08-02T10:05:15.113Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-08-02T10:05:15.113Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-saturn-2027-08-09T18:00:44.823Z",
+      "name": "Saturn retrograde",
+      "kind": "retrograde",
+      "start": "2027-08-09T18:00:44.823Z",
+      "end": "2027-12-24T02:41:54.989Z",
+      "interpretation": "Symbolically, inspect structure, accountability, and long-term commitments.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-08-17T07:28:42.380Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-08-17T07:28:42.380Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-08-31T17:41:13.048Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-08-31T17:41:13.048Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-uranus-2027-09-15T09:10:05.125Z",
+      "name": "Uranus retrograde",
+      "kind": "retrograde",
+      "start": "2027-09-15T09:10:05.125Z",
+      "end": "2028-02-12T23:49:19.276Z",
+      "interpretation": "Symbolically, revisit experiments, disruption, and proposed change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-09-15T23:03:33.051Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-09-15T23:03:33.051Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-09-30T02:36:05.212Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-09-30T02:36:05.212Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2027-10-07T14:39:08.875Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2027-10-07T14:39:08.875Z",
+      "end": "2027-10-28T14:11:14.559Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-10-15T13:46:59.502Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-10-15T13:46:59.502Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-10-29T13:36:32.787Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-10-29T13:36:32.787Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-11-14T03:25:53.355Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-11-14T03:25:53.355Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-11-28T03:24:24.613Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-11-28T03:24:24.613Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2027-12-13T16:08:48.111Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2027-12-13T16:08:48.111Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2027-12-27T20:12:18.829Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2027-12-27T20:12:18.829Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-01-12T04:03:06.410Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-01-12T04:03:06.410Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-jupiter-2028-01-12T08:54:01.406Z",
+      "name": "Jupiter retrograde",
+      "kind": "retrograde",
+      "start": "2028-01-12T08:54:01.406Z",
+      "end": "2028-05-13T20:02:00.849Z",
+      "interpretation": "Symbolically, review growth plans, confidence, and assumptions about scale.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2028-01-24T11:03:29.179Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2028-01-24T11:03:29.179Z",
+      "end": "2028-02-14T12:39:33.046Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-01-26T15:12:30.887Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-01-26T15:12:30.887Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-02-10T15:03:46.014Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-02-10T15:03:46.014Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-02-25T10:37:24.945Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-02-25T10:37:24.945Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-03-11T01:06:03.070Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-03-11T01:06:03.070Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-03-26T04:31:20.913Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-03-26T04:31:20.913Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-04-09T10:26:36.972Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-04-09T10:26:36.972Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-04-24T19:46:56.371Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-04-24T19:46:56.371Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-05-08T19:48:57.413Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-05-08T19:48:57.413Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-pluto-2028-05-09T09:32:46.991Z",
+      "name": "Pluto retrograde",
+      "kind": "retrograde",
+      "start": "2028-05-09T09:32:46.991Z",
+      "end": "2028-10-19T03:41:40.927Z",
+      "interpretation": "Symbolically, examine power, ownership, and slow organizational change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-venus-2028-05-10T23:02:03.485Z",
+      "name": "Venus retrograde",
+      "kind": "retrograde",
+      "start": "2028-05-10T23:02:03.485Z",
+      "end": "2028-06-22T22:13:04.863Z",
+      "interpretation": "Symbolically, reassess working relationships, values, and budgets.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2028-05-21T08:39:52.382Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2028-05-21T08:39:52.382Z",
+      "end": "2028-06-14T06:07:05.829Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-05-24T08:16:19.018Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-05-24T08:16:19.018Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-06-07T06:08:49.814Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-06-07T06:08:49.814Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-06-22T18:27:35.529Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-06-22T18:27:35.529Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-07-06T18:10:50.114Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-07-06T18:10:50.114Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-neptune-2028-07-11T13:05:31.347Z",
+      "name": "Neptune retrograde",
+      "kind": "retrograde",
+      "start": "2028-07-11T13:05:31.347Z",
+      "end": "2028-12-16T20:49:57.509Z",
+      "interpretation": "Symbolically, clarify vague expectations and test appealing assumptions.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-07-22T03:01:44.808Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-07-22T03:01:44.808Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-08-05T08:09:49.030Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-08-05T08:09:49.030Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-08-20T10:43:51.966Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-08-20T10:43:51.966Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-saturn-2028-08-22T22:16:21.297Z",
+      "name": "Saturn retrograde",
+      "kind": "retrograde",
+      "start": "2028-08-22T22:16:21.297Z",
+      "end": "2029-01-05T12:34:24.550Z",
+      "interpretation": "Symbolically, inspect structure, accountability, and long-term commitments.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-09-03T23:47:35.454Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-09-03T23:47:35.454Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-09-18T18:23:45.722Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-09-18T18:23:45.722Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-uranus-2028-09-19T00:01:15.146Z",
+      "name": "Uranus retrograde",
+      "kind": "retrograde",
+      "start": "2028-09-19T00:01:15.146Z",
+      "end": "2029-02-16T10:52:48.456Z",
+      "interpretation": "Symbolically, revisit experiments, disruption, and proposed change.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "retrograde-mercury-2028-09-19T16:30:15.819Z",
+      "name": "Mercury retrograde",
+      "kind": "retrograde",
+      "start": "2028-09-19T16:30:15.819Z",
+      "end": "2028-10-11T10:30:01.318Z",
+      "interpretation": "Symbolically, review communication, contracts, schedules, and handoffs.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-10-03T16:25:01.142Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-10-03T16:25:01.142Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-10-18T02:56:48.672Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-10-18T02:56:48.672Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-11-02T09:17:21.255Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-11-02T09:17:21.255Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-11-16T13:17:59.597Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-11-16T13:17:59.597Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-12-02T01:40:10.975Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-12-02T01:40:10.975Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-new-2028-12-16T02:06:16.774Z",
+      "name": "New Moon",
+      "kind": "lunation",
+      "start": "2028-12-16T02:06:16.774Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for setting intentions or beginning a focused work cycle.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    },
+    {
+      "id": "lunation-full-2028-12-31T16:48:27.585Z",
+      "name": "Full Moon",
+      "kind": "lunation",
+      "start": "2028-12-31T16:48:27.585Z",
+      "end": null,
+      "interpretation": "Symbolically, use this as a checkpoint for review, visibility, and completing work already in motion.",
+      "source": {
+        "name": "Zodiacs.org",
+        "url": "https://zodiacs.org"
+      }
+    }
+  ]
+}

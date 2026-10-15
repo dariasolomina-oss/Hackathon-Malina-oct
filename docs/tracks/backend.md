@@ -1,26 +1,39 @@
 # Backend track
 
-Read `AGENTS.md`, `docs/product.md`, and `docs/architecture.md` first.
+Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architecture.md) first. Current implementation status is in [the backend status](../backend-plan.md), and contributor setup is in [the backend handoff](../backend-handoff.md). Backend work uses `track/backend`.
 
-## Own
+## Owned areas
 
 - `src/server/`
 - `src/domain/`
 - `src/app/api/readings/`
-- `tests/` and shared contract changes coordinated with the frontend owner
+- `tests/` and shared contract changes coordinated with frontend/content owners
 
-## Build
+## Completed
 
-Replace the calendar and oracle providers behind `src/server/providers/types.ts`. Verify an external event source, preserve attribution, and cache verified data. Keep calendar failures distinguishable from a covered period with no events.
+- Twelve question IDs with authoritative audience and `allowedPeriodIds` metadata.
+- Rolling 1-, 3-, and 12-month UTC periods with month-end and leap-day handling.
+- Server rejection of the six invalid fixed-period combinations.
+- Per-reading Zodiacs.org API retrieval with no runtime cache, a five-second total deadline, validated import, full-range coverage checks, cross-year interval joining, and deterministic event selection.
+- Explicit mock/live provider selection and a server-only OpenAI Responses API adapter using Structured Outputs.
+- Fixed answer/recommendation card roles, verified event references, server-formatted dates, bounded timeout, zero SDK retries, and controlled public errors.
+- Complete no-network route/service verification for all 36 question-period combinations, including card roles, audience, offline fixture overlap, unavailable calendar behavior, keyless live mode, and sanitized 503 responses. Provider tests cover uncached repeat calls, year boundaries, malformed and incomplete data, deadlines, cancellation, and no stale fallback.
 
-Connect a live AI provider using server-only credentials. Supply the question, exact card roles and meanings, resolved period, and selected events. Validate generated output, set explicit timeouts, and retain the current response shape. Set oracle mode to `live` only when live generation is actually used. Use editorial examples from `src/content/oracle-voice.md` to shape the prompt.
+## Contract to preserve
 
-Document needed environment-variable names in `.env.example`, with placeholders only. Coordinate new dependencies with the integration owner. Do not silently fall back to the mock oracle after an AI error.
+Keep the existing `POST /api/readings` fields and derive audience from the validated question ID. A reading always uses two distinct cards: the first is the answer, and the second is the recommendation. Report `meta.mode: "live"` only for the live provider. Calendar failure may return a card-only reading with `calendarStatus: "unavailable"`; oracle failure must return `READING_FAILED` and must not switch to mock text.
 
-## Work without the interface
+Event dates and names must come from the validated API response fetched for that reading. The public event objects retain raw normalized boundaries. Cosmic timing prose may clip an interval to the reading period, but must not present that reading boundary as an astronomical station date. The checked 2026–2028 JSON is only an offline fixture and refresh utility.
 
-Run `npm run dev` and call the example request in `docs/architecture.md` using an HTTP client or the curl command in the README. Tests can inject providers and a fixed date directly into `createReading`.
+Every source retrograde interval must fit within its declared year coverage. Reject out-of-coverage intervals as unavailable calendar data; valid clipped segments are merged across years after validation.
 
-## Done when
+## Pending cross-track work
 
-Real responses use the exact two cards and supplied dated events, unavailable calendars produce honest card-only readings, and AI failures produce retryable errors. Add meaningful provider validation tests, run `npm run check` and `npm run build`, and share a real sample with the other tracks.
+- The content owner supplied the 32-card composition, meanings, and artwork. Preserve these card identities across contracts, content, artwork, and tests.
+- Frontend consumes `getQuestion(...).allowedPeriodIds`, locks fixed periods, displays resolved dates and exact attribution, and retries with the same cards.
+- The deployment owner configures server-only environment variables, outbound Zodiacs.org access, a hosting timeout above 25 seconds, and platform-level request/spending controls. An in-memory counter is not a global serverless limit.
+- Three live gateway smoke readings succeeded. Evaluate twelve real live samples before treating latency, cost, and editorial quality as verified.
+
+## Final checks
+
+Run `npm run check` and `npm run build`. After the content manifest arrives, verify exactly 32 unique cards, image paths, meanings, and two-card role consistency. Review valid live readings for all twelve questions across both audiences and all three periods, including a year-crossing annual range.

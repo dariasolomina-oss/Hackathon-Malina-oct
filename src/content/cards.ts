@@ -1,229 +1,37 @@
 import type { Card } from "@/contracts/catalog";
 
-// Editorial starter meanings. The content track owns this catalog.
+// Shared 32-card Corporate Oracle manifest. The illustrations include their names.
 export const cards = [
-  {
-    "id": "the-fool",
-    "name": "The Fool",
-    "image": "/cards/the-fool.svg",
-    "answerMeaning": "A new direction is opening, with room to learn.",
-    "recommendationMeaning": "Try one small experiment before making a big commitment."
-  },
-  {
-    "id": "the-magician",
-    "name": "The Magician",
-    "image": "/cards/the-magician.svg",
-    "answerMeaning": "You have more useful resources than you think.",
-    "recommendationMeaning": "Turn your idea into a concrete proposal and name its owner."
-  },
-  {
-    "id": "the-high-priestess",
-    "name": "The High Priestess",
-    "image": "/cards/the-high-priestess.svg",
-    "answerMeaning": "Some important context may still be missing.",
-    "recommendationMeaning": "Listen carefully and ask the question nobody has asked yet."
-  },
-  {
-    "id": "the-empress",
-    "name": "The Empress",
-    "image": "/cards/the-empress.svg",
-    "answerMeaning": "Your work may grow through care and collaboration.",
-    "recommendationMeaning": "Give a promising idea time, feedback, and practical support."
-  },
-  {
-    "id": "the-emperor",
-    "name": "The Emperor",
-    "image": "/cards/the-emperor.svg",
-    "answerMeaning": "Clear structure will shape the next stage.",
-    "recommendationMeaning": "Define responsibilities and agree on decision-making authority."
-  },
-  {
-    "id": "the-hierophant",
-    "name": "The Hierophant",
-    "image": "/cards/the-hierophant.svg",
-    "answerMeaning": "Established processes and expectations matter here.",
-    "recommendationMeaning": "Find someone who understands the process before changing it."
-  },
-  {
-    "id": "the-lovers",
-    "name": "The Lovers",
-    "image": "/cards/the-lovers.svg",
-    "answerMeaning": "Alignment and a meaningful choice are at the center of this situation.",
-    "recommendationMeaning": "Make your priorities explicit and discuss them with the people involved."
-  },
-  {
-    "id": "the-chariot",
-    "name": "The Chariot",
-    "image": "/cards/the-chariot.svg",
-    "answerMeaning": "Progress depends on choosing a direction and maintaining focus.",
-    "recommendationMeaning": "Pick one priority and protect time to move it forward."
-  },
-  {
-    "id": "strength",
-    "name": "Strength",
-    "image": "/cards/strength.svg",
-    "answerMeaning": "Patience and steady confidence can influence the situation.",
-    "recommendationMeaning": "Address the difficult conversation calmly and directly."
-  },
-  {
-    "id": "the-hermit",
-    "name": "The Hermit",
-    "image": "/cards/the-hermit.svg",
-    "answerMeaning": "A little distance may reveal what the busy calendar hides.",
-    "recommendationMeaning": "Set aside quiet time to review the evidence before responding."
-  },
-  {
-    "id": "wheel-of-fortune",
-    "name": "Wheel of Fortune",
-    "image": "/cards/wheel-of-fortune.svg",
-    "answerMeaning": "Circumstances may shift beyond your immediate control.",
-    "recommendationMeaning": "Keep a backup option and revisit your assumptions."
-  },
-  {
-    "id": "justice",
-    "name": "Justice",
-    "image": "/cards/justice.svg",
-    "answerMeaning": "Evidence, fairness, and accountability are central.",
-    "recommendationMeaning": "Document the facts and agree on transparent evaluation criteria."
-  },
-  {
-    "id": "the-hanged-man",
-    "name": "The Hanged Man",
-    "image": "/cards/the-hanged-man.svg",
-    "answerMeaning": "A pause may change how you see the problem.",
-    "recommendationMeaning": "Try another perspective before pushing the same solution harder."
-  },
-  {
-    "id": "death",
-    "name": "Death",
-    "image": "/cards/death.svg",
-    "answerMeaning": "An old approach may be ready to end, making room for change.",
-    "recommendationMeaning": "Identify what to stop doing and plan a manageable transition."
-  },
-  {
-    "id": "temperance",
-    "name": "Temperance",
-    "image": "/cards/temperance.svg",
-    "answerMeaning": "Steady progress may come from balancing competing needs.",
-    "recommendationMeaning": "Combine what works and choose a sustainable pace."
-  },
-  {
-    "id": "the-devil",
-    "name": "The Devil",
-    "image": "/cards/the-devil.svg",
-    "answerMeaning": "An unhelpful habit or dependency may be limiting your options.",
-    "recommendationMeaning": "Name the constraint and set one practical boundary."
-  },
-  {
-    "id": "the-tower",
-    "name": "The Tower",
-    "image": "/cards/the-tower.svg",
-    "answerMeaning": "Assumptions or plans may need a substantial rethink.",
-    "recommendationMeaning": "Prepare a backup plan and clarify expectations early."
-  },
-  {
-    "id": "the-star",
-    "name": "The Star",
-    "image": "/cards/the-star.svg",
-    "answerMeaning": "There is room to rebuild confidence and see possibilities.",
-    "recommendationMeaning": "Share a realistic vision and choose a small next milestone."
-  },
-  {
-    "id": "the-moon",
-    "name": "The Moon",
-    "image": "/cards/the-moon.svg",
-    "answerMeaning": "Uncertainty may be making the situation look more confusing.",
-    "recommendationMeaning": "Separate what you know from what you are assuming."
-  },
-  {
-    "id": "the-sun",
-    "name": "The Sun",
-    "image": "/cards/the-sun.svg",
-    "answerMeaning": "Clarity and visible progress are the themes of this reading.",
-    "recommendationMeaning": "Show your results and acknowledge the people who helped."
-  },
-  {
-    "id": "judgement",
-    "name": "Judgement",
-    "image": "/cards/judgement.svg",
-    "answerMeaning": "A review or fresh assessment may bring a useful turning point.",
-    "recommendationMeaning": "Reflect on the lessons and make an informed decision."
-  },
-  {
-    "id": "the-world",
-    "name": "The World",
-    "image": "/cards/the-world.svg",
-    "answerMeaning": "Completion and a broader perspective are within the story.",
-    "recommendationMeaning": "Define what done means and close the remaining loose ends."
-  },
-  {
-    "id": "ace-of-pentacles",
-    "name": "Ace of Pentacles",
-    "image": "/cards/ace-of-pentacles.svg",
-    "answerMeaning": "A practical opportunity is taking shape, though it still needs a plan.",
-    "recommendationMeaning": "Turn the promising idea into a first step with an owner and a date."
-  },
-  {
-    "id": "three-of-pentacles",
-    "name": "Three of Pentacles",
-    "image": "/cards/three-of-pentacles.svg",
-    "answerMeaning": "Good work depends on different skills coming together.",
-    "recommendationMeaning": "Ask for specific feedback and agree how the pieces fit."
-  },
-  {
-    "id": "eight-of-pentacles",
-    "name": "Eight of Pentacles",
-    "image": "/cards/eight-of-pentacles.svg",
-    "answerMeaning": "Steady practice is building quality, even if progress feels incremental.",
-    "recommendationMeaning": "Protect focused time and make the next improvement measurable."
-  },
-  {
-    "id": "two-of-wands",
-    "name": "Two of Wands",
-    "image": "/cards/two-of-wands.svg",
-    "answerMeaning": "A choice between a familiar route and a larger ambition is emerging.",
-    "recommendationMeaning": "Compare the options against one clear priority before committing."
-  },
-  {
-    "id": "three-of-wands",
-    "name": "Three of Wands",
-    "image": "/cards/three-of-wands.svg",
-    "answerMeaning": "Early plans are reaching beyond the immediate team or task.",
-    "recommendationMeaning": "Check who needs to be involved next and what they need from you."
-  },
-  {
-    "id": "eight-of-wands",
-    "name": "Eight of Wands",
-    "image": "/cards/eight-of-wands.svg",
-    "answerMeaning": "Several messages or decisions may arrive in quick succession.",
-    "recommendationMeaning": "Respond to the essential next step and keep the rest in a clear queue."
-  },
-  {
-    "id": "six-of-swords",
-    "name": "Six of Swords",
-    "image": "/cards/six-of-swords.svg",
-    "answerMeaning": "A difficult stretch is giving way to a more workable approach.",
-    "recommendationMeaning": "Carry forward the useful lessons and leave the unhelpful process behind."
-  },
-  {
-    "id": "page-of-swords",
-    "name": "Page of Swords",
-    "image": "/cards/page-of-swords.svg",
-    "answerMeaning": "Curiosity and fresh questions can uncover an important detail.",
-    "recommendationMeaning": "Check the source, ask directly, and share what you learn clearly."
-  },
-  {
-    "id": "queen-of-swords",
-    "name": "Queen of Swords",
-    "image": "/cards/queen-of-swords.svg",
-    "answerMeaning": "Clear judgment and honest communication matter more than pleasing everyone.",
-    "recommendationMeaning": "State the constraint plainly and make your recommendation with evidence."
-  },
-  {
-    "id": "ten-of-wands",
-    "name": "Ten of Wands",
-    "image": "/cards/ten-of-wands.svg",
-    "answerMeaning": "Too many responsibilities may have accumulated around one person.",
-    "recommendationMeaning": "Name what can be delegated, delayed, or dropped before taking on more."
-  }
+  { id: "the-spark", name: "The Spark", image: "/cards/the-spark.webp", answerMeaning: "A promising idea or source of motivation is beginning to take shape.", recommendationMeaning: "Test the idea with one small, visible next step." },
+  { id: "the-crossroads", name: "The Crossroads", image: "/cards/the-crossroads.webp", answerMeaning: "A meaningful choice is approaching, with more than one workable path.", recommendationMeaning: "Compare the trade-offs and choose the path that best fits your priorities." },
+  { id: "the-momentum", name: "The Momentum", image: "/cards/the-momentum.webp", answerMeaning: "Steady progress is building and can carry the work forward.", recommendationMeaning: "Keep attention on the next milestone instead of reopening settled decisions." },
+  { id: "the-pause", name: "The Pause", image: "/cards/the-pause.webp", answerMeaning: "A brief slowdown may create room to see what the rush has obscured.", recommendationMeaning: "Use the pause to review what is known before committing to a new step." },
+  { id: "the-shift", name: "The Shift", image: "/cards/the-shift.webp", answerMeaning: "Conditions or expectations are changing around this situation.", recommendationMeaning: "Adjust the plan while keeping its most important goal in view." },
+  { id: "the-spotlight", name: "The Spotlight", image: "/cards/the-spotlight.webp", answerMeaning: "Your contribution or decision is becoming more visible.", recommendationMeaning: "Present the result clearly and give credit to the people who helped." },
+  { id: "the-fog", name: "The Fog", image: "/cards/the-fog.webp", answerMeaning: "Uncertainty is making the situation harder to read.", recommendationMeaning: "Separate confirmed facts from assumptions and ask about the gaps." },
+  { id: "the-bridge", name: "The Bridge", image: "/cards/the-bridge.webp", answerMeaning: "Progress depends on connecting people or perspectives that are apart.", recommendationMeaning: "Start a direct conversation and agree on a shared next step." },
+  { id: "the-challenge", name: "The Challenge", image: "/cards/the-challenge.webp", answerMeaning: "A real obstacle needs attention, but it can be handled in parts.", recommendationMeaning: "Name the blocker, identify its owner, and tackle the first manageable piece." },
+  { id: "the-opening", name: "The Opening", image: "/cards/the-opening.webp", answerMeaning: "A useful opportunity may be available if you are ready to notice it.", recommendationMeaning: "Follow up promptly and make your interest or proposal specific." },
+  { id: "the-turning-point", name: "The Turning Point", image: "/cards/the-turning-point.webp", answerMeaning: "New circumstances may change the direction of the story.", recommendationMeaning: "Revisit the plan using current evidence and make the next decision explicit." },
+  { id: "the-balance", name: "The Balance", image: "/cards/the-balance.webp", answerMeaning: "Several competing needs are shaping the outcome.", recommendationMeaning: "Set a realistic limit and make the trade-offs visible to everyone involved." },
+  { id: "the-revelation", name: "The Revelation", image: "/cards/the-revelation.webp", answerMeaning: "A missing detail or fresh piece of information may clarify the situation.", recommendationMeaning: "Ask what the new information changes before reacting to it." },
+  { id: "the-growth", name: "The Growth", image: "/cards/the-growth.webp", answerMeaning: "The situation has room to develop through sustained effort.", recommendationMeaning: "Invest in one capability or relationship that can support the next stage." },
+  { id: "the-alignment", name: "The Alignment", image: "/cards/the-alignment.webp", answerMeaning: "Shared expectations and goals are central to what happens next.", recommendationMeaning: "Confirm the goal, decision owner, and definition of success together." },
+  { id: "the-harvest", name: "The Harvest", image: "/cards/the-harvest.webp", answerMeaning: "Earlier work may now produce visible results or useful recognition.", recommendationMeaning: "Document what was accomplished and make the outcome easy to see." },
+  { id: "the-focus", name: "The Focus", image: "/cards/the-focus.webp", answerMeaning: "A clear priority can cut through competing demands.", recommendationMeaning: "Protect time for the most important task and defer lower-priority work." },
+  { id: "the-courage", name: "The Courage", image: "/cards/the-courage.webp", answerMeaning: "A candid conversation or considered risk may be needed.", recommendationMeaning: "State what you need directly, with evidence and a practical proposal." },
+  { id: "the-patience", name: "The Patience", image: "/cards/the-patience.webp", answerMeaning: "Progress may be slower than hoped, but it can still be moving.", recommendationMeaning: "Set a reasonable check-in point and keep making measured progress." },
+  { id: "the-clarity", name: "The Clarity", image: "/cards/the-clarity.webp", answerMeaning: "A direct answer or decision is within reach.", recommendationMeaning: "Summarize the decision, owner, and date in one clear message." },
+  { id: "the-connection", name: "The Connection", image: "/cards/the-connection.webp", answerMeaning: "Relationships and collaboration will influence the outcome.", recommendationMeaning: "Reach out to the person whose perspective or support is missing." },
+  { id: "the-curiosity", name: "The Curiosity", image: "/cards/the-curiosity.webp", answerMeaning: "There is more to learn before the situation can be understood fully.", recommendationMeaning: "Ask an open question before settling on an explanation." },
+  { id: "the-adaptability", name: "The Adaptability", image: "/cards/the-adaptability.webp", answerMeaning: "Flexibility will help you respond to changing conditions.", recommendationMeaning: "Keep the goal steady while preparing an alternate route." },
+  { id: "the-preparation", name: "The Preparation", image: "/cards/the-preparation.webp", answerMeaning: "Readiness and careful preparation can shape the next opportunity.", recommendationMeaning: "Make a short checklist and handle the highest-impact item first." },
+  { id: "the-voice", name: "The Voice", image: "/cards/the-voice.webp", answerMeaning: "What is said, and what remains unsaid, matters here.", recommendationMeaning: "Explain your point plainly and invite a response." },
+  { id: "the-reflection", name: "The Reflection", image: "/cards/the-reflection.webp", answerMeaning: "Looking back can reveal a useful pattern in the present situation.", recommendationMeaning: "Review what worked, what did not, and what you would change next time." },
+  { id: "the-simplicity", name: "The Simplicity", image: "/cards/the-simplicity.webp", answerMeaning: "Unnecessary complexity may be slowing down a workable solution.", recommendationMeaning: "Remove one step, dependency, or meeting that does not help the outcome." },
+  { id: "the-trust", name: "The Trust", image: "/cards/the-trust.webp", answerMeaning: "Reliability and mutual confidence are important to this situation.", recommendationMeaning: "Agree on clear expectations, then give people room to meet them." },
+  { id: "the-perspective", name: "The Perspective", image: "/cards/the-perspective.webp", answerMeaning: "A wider view may change how the immediate problem looks.", recommendationMeaning: "Step back, consider who else is affected, and reassess the priorities." },
+  { id: "the-harmony", name: "The Harmony", image: "/cards/the-harmony.webp", answerMeaning: "Cooperation can help resolve tension between different needs.", recommendationMeaning: "Name the shared interest and negotiate a practical compromise." },
+  { id: "the-experiment", name: "The Experiment", image: "/cards/the-experiment.webp", answerMeaning: "A small trial can answer questions that discussion alone cannot.", recommendationMeaning: "Run a reversible pilot, define what to observe, and review the result." },
+  { id: "the-consistency", name: "The Consistency", image: "/cards/the-consistency.webp", answerMeaning: "Repeatable effort and dependable routines are building the foundation.", recommendationMeaning: "Choose a simple cadence and keep it manageable enough to sustain." },
 ] satisfies Card[];

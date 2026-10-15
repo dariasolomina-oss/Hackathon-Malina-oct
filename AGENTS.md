@@ -6,7 +6,9 @@
 - Keep explanations short and precise. Explain behavior and algorithms for an analyst; avoid unnecessary implementation details.
 - Optimize for a working two-day hackathon demo. Prefer small changes and reuse the existing stack once it is established.
 - Keep work within the assigned area. Preserve other contributors' changes and coordinate changes to shared formats and project configuration.
+- Follow `docs/product.md` for the revised two-audience, twelve-question, three-period scope and fixed-period rules. The question and period contract, interface migration, and 32-card manifest are integrated. Preserve their shared IDs and fixed-period behavior.
 - Use the same card IDs and meanings across artwork, selection logic, and oracle prompts. A reading contains exactly two distinct cards with fixed roles: answer and recommendation.
+- Developer 3 (Content) determines the 32-card composition, meanings, and artwork. Other tracks coordinate technical IDs and paths and consume that manifest; they do not approve or independently redefine the creative content.
 - Pass verified, dated event data to the AI. Never ask it to invent planetary events or favorable date ranges. Separate astronomical facts from playful interpretations.
 - Keep API credentials on the server and out of version control. Track placeholder configuration only.
 - Run `npm run check` for logic or contract changes and `npm run build` for application changes. Check UI changes in a browser. Report what was actually verified.

@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { CelestialSky } from "./CelestialSky";
 import { MagicTrail } from "./MagicTrail";
 import { cards } from "@/content/cards";
-import { audiences, periods, questions } from "@/content/questions";
-import type { AudienceId, CardId, PeriodId, QuestionId } from "@/contracts/catalog";
+import { periods, questions } from "@/content/questions";
+import { AUDIENCE_IDS, getQuestion, type Audience, type CardId, type PeriodId, type QuestionId } from "@/contracts/catalog";
 import type { ReadingResponse } from "@/contracts/reading";
 import { shuffleDeck } from "@/domain/deck";
 import { requestReading } from "./client";
@@ -15,8 +15,8 @@ function formatDate(date: string) {
 }
 
 export function ReadingExperience() {
-  const [audienceId, setAudience] = useState<AudienceId>("employee");
-  const [questionId, setQuestion] = useState<QuestionId>("employee-project-on-time");
+  const [audienceId, setAudience] = useState<Audience>("employee");
+  const [questionId, setQuestion] = useState<QuestionId>("employee-project-deadline");
   const [periodId, setPeriod] = useState<PeriodId>("one-month");
   const [deck, setDeck] = useState<CardId[]>([]);
   const [chosen, setChosen] = useState<CardId[]>([]);
@@ -72,7 +72,15 @@ export function ReadingExperience() {
 
   const step = result ? 4 : chosen.length === 2 ? 3 : deck.length ? 2 : 1;
   const visibleDeck = chosen.length === 2 ? chosen : deck;
-  const visibleQuestions = questions.filter((question) => question.audienceId === audienceId);
+  const visibleQuestions = questions.filter((question) => question.audience === audienceId);
+  const selectedQuestion = getQuestion(questionId);
+
+  function chooseQuestion(nextQuestionId: QuestionId) {
+    const nextQuestion = getQuestion(nextQuestionId);
+    const allowedPeriods: readonly PeriodId[] = nextQuestion.allowedPeriodIds;
+    setQuestion(nextQuestionId);
+    if (!allowedPeriods.includes(periodId)) setPeriod(allowedPeriods[0]);
+  }
 
   return <main className="page-shell">
     <CelestialSky />
@@ -100,15 +108,15 @@ export function ReadingExperience() {
         <div className="deck-select">
           <span className="section-kicker">Choose your deck</span>
           <div className="deck-options" role="group" aria-label="Choose a deck">
-            {audiences.map((audience) => <button className={`deck-option ${audienceId === audience.id ? "selected" : ""}`} type="button" key={audience.id} aria-pressed={audienceId === audience.id} onClick={() => {
-              setAudience(audience.id);
-              setQuestion(questions.find((question) => question.audienceId === audience.id)!.id);
-            }}>{audience.label}</button>)}
+            {AUDIENCE_IDS.map((id) => <button className={`deck-option ${audienceId === id ? "selected" : ""}`} type="button" key={id} aria-pressed={audienceId === id} onClick={() => {
+              setAudience(id);
+              chooseQuestion(questions.find((question) => question.audience === id)!.id);
+            }}>{id === "employee" ? "Employee Arcana" : "Leadership Arcana"}</button>)}
           </div>
         </div>
         <div className="section-heading"><h2 id="question-title">What’s on your mind</h2><p>Pick the question you want the cards to answer.</p></div>
         <div className="question-grid" role="group" aria-label="Choose a workplace question">
-          {visibleQuestions.map((question, index) => <button className={`question-option ${questionId === question.id ? "selected" : ""}`} type="button" key={question.id} aria-pressed={questionId === question.id} onClick={() => setQuestion(question.id)}>
+          {visibleQuestions.map((question, index) => <button className={`question-option ${questionId === question.id ? "selected" : ""}`} type="button" key={question.id} aria-pressed={questionId === question.id} onClick={() => chooseQuestion(question.id)}>
             <span className="question-topline"><span className="question-index">{String(index + 1).padStart(2, "0")}</span><span className="option-check" aria-hidden="true">{questionId === question.id ? "✓" : ""}</span></span>
             <span className="question-label">{question.label}</span>
           </button>)}
@@ -116,9 +124,12 @@ export function ReadingExperience() {
         <div className="period-section">
           <span className="section-kicker">Choose your moon</span>
           <div className="period-options" role="group" aria-label="Choose a time period">
-            {periods.map((period, index) => <button className={`period-option ${periodId === period.id ? "selected" : ""}`} type="button" key={period.id} aria-pressed={periodId === period.id} onClick={() => setPeriod(period.id)}>
+            {periods.map((period, index) => {
+              const allowedPeriods: readonly PeriodId[] = selectedQuestion.allowedPeriodIds;
+              return <button className={`period-option ${periodId === period.id ? "selected" : ""}`} type="button" key={period.id} disabled={!allowedPeriods.includes(period.id)} aria-pressed={periodId === period.id} onClick={() => setPeriod(period.id)}>
               <span className="period-symbol" aria-hidden="true">{["☾", "◒", "☼"][index]}</span><span>{period.label}</span>
-            </button>)}
+            </button>;
+            })}
           </div>
         </div>
         <div className={`deck-action ${shuffling ? "is-shuffling" : ""}`}>
@@ -156,7 +167,7 @@ export function ReadingExperience() {
             return <button className={`card ${position >= 0 ? "card-chosen" : ""}`} type="button" key={id} disabled={position >= 0 || chosen.length === 2 || busy}
               aria-label={position >= 0 ? `${role}: ${card.name}` : `Draw a face-down card, position ${index + 1}`}
               onClick={() => setChosen((previous) => previous.length < 2 && !previous.includes(id) ? [...previous, id] : previous)}>
-              <span className="card-art"><img src={position >= 0 ? card.image : "/cards/back.svg"} alt={position >= 0 ? card.name : ""} width="600" height="900" /></span>
+              <span className="card-art"><img src={position >= 0 ? card.image : "/cards/back.webp"} alt={position >= 0 ? card.name : ""} width="600" height="900" /></span>
               {position >= 0 && <span className="card-caption"><span className="card-role">{role}</span><strong>{card.name}</strong></span>}
             </button>;
           })}
