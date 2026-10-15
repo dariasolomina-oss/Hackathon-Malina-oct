@@ -3,8 +3,11 @@ import OpenAI, { type ClientOptions } from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { AstroEvent, DateRange, OracleText } from "@/contracts/reading";
+import { formatEventTiming } from "./event-timing";
 import { buildOracleUserPrompt, ORACLE_SYSTEM_PROMPT } from "./oracle-prompt";
 import type { OracleProvider } from "./providers/types";
+
+export { formatEventTiming } from "./event-timing";
 
 const DIRECT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 
@@ -177,7 +180,7 @@ export function validateAndRenderOutput(
     return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
   }
   if (references === null) {
-    return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
+    throw new OracleGenerationError("The oracle omitted the supplied event context.");
   }
   if (references.length < 1 || references.length > 2) {
     throw new OracleGenerationError("The oracle returned an invalid number of event references.");
@@ -195,40 +198,10 @@ export function validateAndRenderOutput(
     return `${formatEventTiming(event, period)} ${advice.data}`;
   });
 
-  return { answer: answer.data, recommendation: recommendation.data, cosmicNote: notes.join(" ") };
-}
-
-export function formatEventTiming(event: AstroEvent, period: DateRange): string {
-  if (event.end === null) {
-    return `${event.name} occurs on ${formatUtcDate(event.start)}.`;
-  }
-
-  const activeStart = new Date(Math.max(Date.parse(event.start), Date.parse(period.start)));
-  const exclusiveEnd = Math.min(Date.parse(event.end), Date.parse(period.end));
-  const activeLastInstant = new Date(exclusiveEnd - 1);
-  const startLabel = formatUtcDate(activeStart.toISOString());
-  const endLabel = formatUtcDate(activeLastInstant.toISOString());
-  const activeRange = startLabel === endLabel
-    ? startLabel
-    : activeStart.getUTCFullYear() === activeLastInstant.getUTCFullYear()
-      ? `${formatUtcMonthDay(activeStart.toISOString())}–${endLabel}`
-      : `${startLabel}–${endLabel}`;
-  return `${event.name} is active during ${activeRange}.`;
-}
-
-function formatUtcMonthDay(isoDate: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(isoDate));
-}
-
-function formatUtcDate(isoDate: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(isoDate));
+  const cosmicNote = notes.join(" ");
+  return {
+    answer: answer.data,
+    recommendation: `${recommendation.data} ${cosmicNote}`,
+    cosmicNote,
+  };
 }

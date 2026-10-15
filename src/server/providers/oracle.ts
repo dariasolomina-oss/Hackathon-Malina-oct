@@ -1,5 +1,6 @@
 import type { OracleProvider } from "./types";
 import { getOracleConfig, type OracleConfig } from "../oracle-config";
+import { formatEventTiming } from "../event-timing";
 
 type LiveOracleConfig = Extract<OracleConfig, { mode: "live" }>;
 type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> | OracleProvider;
@@ -7,14 +8,19 @@ type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> |
 // Deterministic development placeholder. Never label this as a live AI result.
 export const mockOracleProvider: OracleProvider = {
   mode: "mock",
-  async generate({ audience, question, answerCard, recommendationCard }) {
+  async generate({ audience, question, period, answerCard, recommendationCard, events }) {
     const context = audience === "employee"
       ? "Keep the next step practical for your own work and daily routine."
       : "Frame the next step around company direction, customers, and the team.";
+    const event = events[0];
+    const cosmicNote = event
+      ? `${formatEventTiming(event, period)} ${event.interpretation} Before the plan moves forward, confirm the T1A owner, approvals, and next written step.`
+      : null;
+    const recommendation = `${recommendationCard.name} suggests: ${recommendationCard.recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`;
     return {
       answer: `You asked: "${question}" ${answerCard.name} replies: ${answerCard.answerMeaning} ${context}`,
-      recommendation: `${recommendationCard.name} suggests: ${recommendationCard.recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`,
-      cosmicNote: null,
+      recommendation: cosmicNote ? `${recommendation} ${cosmicNote}` : recommendation,
+      cosmicNote,
     };
   },
 };

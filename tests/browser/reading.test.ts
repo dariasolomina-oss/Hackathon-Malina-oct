@@ -64,7 +64,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
           return;
         }
         const response: ReadingResponse = {
-          request, answer: "Test answer", recommendation: "Test recommendation", cosmicNote: "Test timing note",
+          request, answer: "Test answer", recommendation: "Test recommendation. Fixture event timing shapes this action.", cosmicNote: "Fixture event timing shapes this action.",
           period: { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" },
           events: [{ id: "fixture", name: "Fixture event", kind: "aspect", start: "2026-10-20T00:00:00.000Z", end: null,
             interpretation: "Test interpretation", source: { name: "Fixture calendar", url: "https://example.com/calendar" } }],
@@ -103,7 +103,12 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       assert.equal(recommendation, `What to do: ${cards.find((card) => card.id === requests[0].recommendationCardId)!.name}`);
       assert.equal(await page.getByRole("button", { name: /^What happens:/ }).getAttribute("aria-label"), answer);
       assert.equal(await page.getByRole("button", { name: /^What to do:/ }).getAttribute("aria-label"), recommendation);
-      await page.getByText("For Oct 15, 2026 – Nov 14, 2026", { exact: true }).waitFor();
+      const readingContext = page.locator(".reading-context");
+      assert.deepEqual(await readingContext.locator("dt").allTextContents(), ["Question", "Period"]);
+      assert.equal(await readingContext.locator("dd").nth(0).textContent(), "Will my hard work be recognized?");
+      assert.equal(await readingContext.locator("dd").nth(1).locator("strong").textContent(), "Next three months");
+      assert.equal(await readingContext.locator("dd").nth(1).locator("span").textContent(), "Oct 15, 2026 – Nov 14, 2026");
+      await page.getByText("Fixture event timing shapes this action.", { exact: false }).waitFor();
       assert.equal(await page.getByRole("link", { name: /Event source: Fixture calendar/ }).getAttribute("href"), "https://example.com/calendar");
       await assertFits(page);
 

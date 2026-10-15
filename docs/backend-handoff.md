@@ -54,7 +54,7 @@ Display mock results as samples. `meta.mode: "live"` is returned only by the con
 
 `Data: Zodiacs.org — https://zodiacs.org`
 
-The `events` array contains raw normalized event dates. A retrograde may start before or end after the resolved reading period. The server-generated `cosmicNote` clips the displayed active range to the reading dates. Use `period` as the authoritative range shown to the user.
+The `events` array contains raw normalized event dates. A retrograde may start before or end after the resolved reading period. For live readings with events, the server validates the model's event IDs, adds authoritative names and clipped dates, and appends the resulting timing advice to the main recommendation. Sample readings deterministically integrate the first selected event with the same date renderer. The same timing text remains in `cosmicNote` for contract compatibility. With no events, the answer and recommendation remain card-only and `cosmicNote` is null. Use `period` as the authoritative range shown to the user.
 
 HTTP 400 with `INVALID_REQUEST` means the selection is invalid. HTTP 503 with `READING_FAILED` is retryable with the same cards. Do not replace a failed live response with sample text.
 

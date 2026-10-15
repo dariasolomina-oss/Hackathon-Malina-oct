@@ -78,6 +78,8 @@ export function ReadingExperience() {
   const step = result ? 4 : chosen.length === 2 ? 3 : deck.length ? 2 : 1;
   const visibleDeck = chosen.length === 2 ? chosen : deck;
   const visibleQuestions = QUESTIONS.filter((question) => question.audience === audienceId);
+  const resultQuestion = result ? getQuestion(result.request.questionId) : null;
+  const resultPeriod = result ? PERIODS.find((period) => period.id === result.request.periodId) : null;
 
   return <main className="page-shell">
     <CelestialSky />
@@ -182,10 +184,12 @@ export function ReadingExperience() {
       <div aria-live="polite" aria-atomic="true">{result && <section className="reading panel" aria-labelledby="reading-title">
         <div className="reading-topline"><span className="section-kicker">Your reading</span><span className={`mode-label ${result.meta.mode}`}>{result.meta.mode === "mock" ? "Sample reading" : "Personal reading"}</span></div>
         <h2 id="reading-title">Your tarot reading</h2>
-        <p className="reading-period">For {formatDate(result.period.start)} – {formatDate(new Date(Date.parse(result.period.end) - 1).toISOString())}</p>
+        <dl className="reading-context">
+          <div><dt>Question</dt><dd>{resultQuestion?.label}</dd></div>
+          <div><dt>Period</dt><dd><strong>{resultPeriod?.label}</strong><span>{formatDate(result.period.start)} – {formatDate(new Date(Date.parse(result.period.end) - 1).toISOString())}</span></dd></div>
+        </dl>
         <div className="reading-cards">{chosen.map((id, index) => { const card = cards.find((item) => item.id === id)!; return <div className="reading-card" key={id}><img src={card.image} alt="" /><div><span>{index === 0 ? "What happens" : "What to do"}</span><strong>{card.name}</strong></div></div>; })}</div>
         <div className="reading-copy"><div><span className="reading-number">I</span><h3>What happens</h3><p>{result.answer}</p></div><div><span className="reading-number">II</span><h3>What to do</h3><p>{result.recommendation}</p></div></div>
-        {result.cosmicNote && <aside className="cosmic-note"><span className="section-kicker">A note on timing</span><p>{result.cosmicNote}</p></aside>}
         {result.meta.calendarStatus === "unavailable" && <p className="calendar-status">The event calendar is unavailable, so this reading is based on your cards alone.</p>}
         {result.meta.calendarStatus === "available" && result.events.length === 0 && <p className="calendar-status">No calendar events overlap this period, so this reading is based on your cards alone.</p>}
         {!!result.events.length && <div className="events"><span className="section-kicker">In the cosmic calendar</span><ul>{result.events.map((event) => <li key={event.id}><span><strong>{event.name}</strong><small>{formatDate(event.start)}</small></span><a href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`Event source: ${event.source.name} (opens in a new tab)`}>Source: {event.source.name} ↗</a></li>)}</ul></div>}

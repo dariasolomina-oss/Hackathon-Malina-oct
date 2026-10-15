@@ -6,13 +6,13 @@ Updated October 15, 2026. `main` combines `track/backend`, `Mashenka_Solnyshko`,
 
 - The twilight interface uses the authoritative Employee/Leadership questions and fixed-period rules. Question IDs follow the shared backend catalog.
 - All 32 card names, meanings, IDs, and WebP images are preserved from the content owner's branch. Display names match filenames, for example The Spark and `the-spark.webp`. The shared back is connected, and `public/cards/` contains only the active deck assets.
-- Two cards retain their answer/recommendation order. Loading, retry with the same pair, restart, resolved dates, calendar source attribution, and explicit sample/live labels are connected.
-- The live oracle supports the corporate gateway, structured output, T1A-only prompt rules, and controlled errors. Each reading fetches real calendar data without a runtime snapshot fallback.
+- Two cards retain their answer/recommendation order. Loading, retry with the same pair, restart, exact question and period context in the result, resolved dates, calendar source attribution, and explicit sample/live labels are connected.
+- The live oracle supports the corporate gateway, structured output, T1A-only prompt rules, and controlled errors. Live and sample readings weave supplied event timing into the main recommendation; no-event readings remain card-only. Each reading fetches real calendar data without a runtime snapshot fallback.
 - Source retrogrades may span a year boundary with verified station dates. Validation accepts those full intervals, checks clipped segments separately, and rejects intervals wholly outside the declared source year.
 
 ## Verification
 
-- `npm run check`: 52 passing tests, including catalog/file-name consistency, all question-period combinations, API failure paths, and cross-year calendar intervals.
+- `npm run check`: 55 passing tests, including catalog/file-name consistency, all question-period combinations, API failure paths, live and sample event/no-event oracle behavior, and cross-year calendar intervals.
 - `npm run build`: production build passed.
 - Browser tests: four passing scenarios covering both audiences and all question period controls, 32 loaded card images, keyboard interaction, retry, restart, empty/unavailable calendars, and 390px/1440px layouts.
 - The local production HTTP route returned 200 with `calendarStatus: available` and three selected events for both one-month Employee and one-year Leadership requests. These checks used the real calendar and the mock oracle, with no paid AI calls.
