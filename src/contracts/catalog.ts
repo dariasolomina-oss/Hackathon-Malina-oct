@@ -49,7 +49,7 @@ export const QUESTIONS = [
   },
   {
     id: "employee-jira-hours",
-    label: "Will I finally manage to log my hours in Jira on time next year?",
+    label: "Will I finally manage to log my hours in Jira on time?",
     audience: "employee",
     allowedPeriodIds: ["one-year"],
   },

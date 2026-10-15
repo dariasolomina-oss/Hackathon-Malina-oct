@@ -27,7 +27,7 @@ The labels are the user's supplied wording. The IDs below are the shared impleme
 | `employee-recognition` | Will my hard work be recognized? | All three |
 | `employee-performance-review` | How will my performance review go? | All three |
 | `employee-new-project` | Will an exciting new project come my way soon? | All three |
-| `employee-jira-hours` | Will I finally manage to log my hours in Jira on time next year? | Fixed: `one-year` |
+| `employee-jira-hours` | Will I finally manage to log my hours in Jira on time? | Fixed: `one-year` |
 | `employee-surprise-meetings` | Will I ever have a week without surprise meetings? | All three |
 
 ### Leadership
@@ -49,7 +49,7 @@ The labels are the user's supplied wording. The IDs below are the shared impleme
 | `three-months` | Next three months | Three calendar months from the request date |
 | `one-year` | Next year | Twelve calendar months from the request date |
 
-The user confirmed that questions explicitly referring to next year or a quarter use a fixed year or quarter. Selecting one of the three fixed-period questions automatically sets its allowed period and prevents choosing another. Display the fixed period clearly. The backend rejects an incompatible question-period pair with `INVALID_REQUEST`; it must not silently substitute another range.
+The Jira-hours and company-outlook questions require a one-year period; changing priorities requires three months. Selecting one of the three fixed-period questions automatically sets its allowed period and prevents choosing another. Display the fixed period clearly. The backend rejects an incompatible question-period pair with `INVALID_REQUEST`; it must not silently substitute another range.
 
 Use rolling periods from the request date, not the next calendar year or quarter. Keep the existing UTC start-inclusive/end-exclusive convention and clamp month ends, including February 29. Display the resolved date range. The mention of a meeting-free week describes a desired outcome within the selected period; it does not introduce a fourth, weekly period.
 
