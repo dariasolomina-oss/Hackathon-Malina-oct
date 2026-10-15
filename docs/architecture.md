@@ -83,7 +83,7 @@ The backend validates provider responses and live model output before exposing t
 
 The shared deck has exactly 32 unique IDs, with two draws for every audience and period. `src/contracts/catalog.ts` defines IDs; `src/content/cards.ts` contains the content owner's names, meanings, and image paths. Preserve those values. Names match filenames, such as The Spark and `the-spark.webp`.
 
-The 32 WebP faces are 1024 by 1536 (2:3). They contain approved printed titles, so the selected-card caption shows its role without repeating the title. The shared back is `public/cards/back.webp`; `public/cards/box-cover.webp` is optional artwork. Legacy SVGs are unused by the active catalog.
+The 32 WebP faces are 1024 by 1536 (2:3). They contain approved printed titles, so the selected-card caption shows its role without repeating the title. The shared back is `public/cards/back.webp`. These 33 files are the complete artwork set in `public/cards/`.
 
 ## Integration status
 

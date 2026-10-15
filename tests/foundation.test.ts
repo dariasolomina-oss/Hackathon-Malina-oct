@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import test from "node:test";
 import { cards } from "../src/content/cards";
 import { CARD_IDS, PERIOD_IDS, QUESTIONS } from "../src/contracts/catalog";
@@ -31,6 +31,10 @@ test("catalog matches the stable IDs and every artwork path exists", () => {
   }
   assert.ok(existsSync("public/cards/back.webp"));
   assert.ok(cards.every((card) => existsSync(`public${card.image}`) && card.answerMeaning && card.recommendationMeaning));
+  assert.deepEqual(
+    readdirSync("public/cards").sort(),
+    [...cards.map((card) => `${card.id}.webp`), "back.webp"].sort(),
+  );
 });
 
 test("question catalog has the exact audience, labels, and allowed periods", () => {
