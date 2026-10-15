@@ -60,10 +60,10 @@ Finish and integrate the frontend question-to-reading journey. Existing changes 
 - Modify frontend-owned files identified in Tasks 1–2 if verification finds a defect
 - Modify or create: relevant tests under `tests/`
 
-- [ ] Confirm browser code imports no modules from `src/server/`.
-- [ ] Confirm the frontend works with the shared mock response and supports live responses using the existing contract.
-- [ ] Update README instructions if frontend setup or demo behavior changed.
-- [ ] Run `npm run check` and `npm run build`.
+- [x] Confirm browser code imports no modules from `src/server/`.
+- [x] Confirm the frontend works with the shared mock response and supports live responses using the existing contract.
+- [x] Update README instructions if frontend setup or demo behavior changed (no update needed; current instructions match the demo).
+- [x] Run `npm run check` and `npm run build`.
 
 ### Task 4: Update documentation
 
