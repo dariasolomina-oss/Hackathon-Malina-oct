@@ -79,7 +79,7 @@ Calendar providers must normalize dates to ISO UTC, retain source URLs, and indi
 
 Event selection includes intervals already in progress at the start date and excludes events beginning at the end boundary. A null event end represents an instant. Selection returns at most three events. Short ranges rank workplace-relevant events deterministically. Ranges longer than 180 days divide the requested period into thirds and choose the strongest candidate in each populated third, then fill empty slots by relevance. Cross-year intervals are merged during import, and the provider claims availability only when the snapshot covers every instant in the requested range.
 
-The backend track should validate provider responses and live model output before exposing them through this contract. Each cosmic claim must be grounded in the supplied events. The starter's tests validate plumbing, not the factual quality of a future external provider.
+The backend validates provider responses and live model output before exposing them through this contract. Model event references must match supplied event IDs; the server adds authoritative event names and dates. Automated tests cover this boundary with injected fakes, but factual tone and editorial quality still require live review with a project key.
 
 ## Content contract
 
@@ -89,12 +89,10 @@ Each entry in `src/content/cards.ts` has a name, an image path, an answer meanin
 
 Placeholder images are 600 by 900 SVGs (2:3). Final artwork may be PNG or WebP with the same ratio. Update the image path in the catalog when changing the extension. Render titles in the UI. The shared back is `public/cards/back.svg`; coordinate with the frontend owner if its path changes.
 
-## Implementation sequence
+## Integration status
 
-1. Coordinate the revised question/period catalog and the final 32-card manifest, then migrate shared contracts, UI defaults, content, and tests together. All contributors start from that integrated revision.
-2. Frontend refines the experience against the mock provider.
-3. Backend implements verified calendar and live oracle adapters behind the existing interfaces.
-4. Content replaces placeholder art and refines meanings and voice examples.
-5. Integrate working slices on day 1, then refine and rehearse on day 2.
+The question and period contract, fixed-period validation, calendar snapshot, event selection, explicit oracle modes, grounded Structured Outputs adapter, controlled timeouts, and public error mapping are implemented. The backend path is covered across all 36 question-period combinations with an injected fake live oracle.
+
+Remaining work is cross-track: frontend audience grouping and fixed-period controls, the content owner's final 32-card manifest and artwork, shared deployment, and live quality/latency verification with a project key. See [backend-handoff.md](backend-handoff.md) for the integration contract.
 
 Deploy as one Node-capable Next.js service (for example, Vercel). Static-only hosting cannot run the reading route. Deployment itself is not configured in this starter.

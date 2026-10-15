@@ -18,6 +18,8 @@ Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. 
 
 The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
 
+Backend implementation and integration details are summarized in the [backend handoff](docs/backend-handoff.md). Automated checks cover the live-provider boundary with no-network fakes; live latency, token use, cost, and editorial quality remain unverified until a project key is available.
+
 ## Run locally
 
 Use Node.js 22 or later. If you use nvm, run `nvm use` first.
@@ -66,6 +68,7 @@ Calendar data is licensed under CC BY 4.0. Attribution: [Data: Zodiacs.org](http
 - [Architecture and API contract](docs/architecture.md)
 - [Frontend assignment](docs/tracks/frontend.md)
 - [Backend assignment](docs/tracks/backend.md)
+- [Backend integration handoff](docs/backend-handoff.md)
 - [Content and artwork assignment](docs/tracks/content.md)
 - [Codex repository instructions](AGENTS.md)
 

@@ -1,130 +1,82 @@
-# Backend development plan
+# Backend implementation status
 
 Branch: `track/backend`, based on the shared `main` foundation.
 
-This is an implementation plan. The current application still uses a mock oracle. The calendar step is implemented as a versioned, runtime-only snapshot covering 2026–2028; live AI settings and modules remain pending.
+This document records completed backend work and the remaining integration dependencies as of October 15, 2026. The source of truth for product behavior remains [product.md](product.md), and setup details for other contributors are in [backend-handoff.md](backend-handoff.md).
 
-## Outcome
+## Implemented
 
-First coordinate the revised question/period IDs and the shared 32-card manifest, then replace the two providers while preserving the HTTP field structure. A valid request should produce a concise English reading based on the exact answer card, the exact recommendation card, and verified events overlapping the selected period.
+- The shared catalog contains twelve questions, authoritative audience metadata, three rolling periods, and the three fixed-period rules.
+- Request validation accepts 30 question-period combinations and rejects the six incompatible combinations with HTTP 400 and `INVALID_REQUEST`.
+- Period calculation uses UTC start-inclusive/end-exclusive ranges for 1, 3, or 12 calendar months, including month-end and leap-day clamping.
+- The runtime calendar uses a checked Zodiacs.org snapshot with 103 normalized retrograde and new/full-moon events covering 2026–2028. It makes no runtime calendar network calls.
+- Calendar import validates schemas, full-year coverage, station boundaries, duplicates, and attribution. It joins clipped cross-year retrograde segments before runtime use.
+- Event selection includes intervals already in progress, excludes the end boundary, and spreads annual selections across the full range.
+- Explicit `mock` and `live` oracle modes are available. Live mode uses the official OpenAI SDK, the Responses API, Structured Outputs, no tools, zero SDK retries, and a 20-second request budget.
+- The live prompt receives the derived audience, exact question, resolved dates, fixed card roles and meanings, and only selected verified events.
+- Model event references are checked against supplied IDs. The server formats event names and dates, and invalid, incomplete, refused, or timed-out output fails safely.
+- Calendar failure produces an explicitly marked card-only reading. Live configuration or provider failure returns HTTP 503 and `READING_FAILED`; it never switches to mock output or exposes provider details.
 
-## Updated requirements
+Automated no-network coverage exercises the complete route and service path for all 36 question-period combinations with an injected fake live oracle. It also covers calendar gaps, keyless live configuration, provider failures, prompt grounding, output validation, timeout behavior, cross-year event import, and annual selection.
 
-The source of truth is [product.md](product.md): two audiences with six exact questions each, periods of 1/3/12 months, and one shared 32-card deck. The Jira-hours and company-outlook questions are fixed to a year; changing priorities is fixed to three months. The other nine questions allow all periods. Derive audience from the question catalog and validate allowed periods on the server.
+Verification on October 15, 2026: all 33 automated tests and the production build passed. A running production server in explicit mock mode returned HTTP 200 for all 30 valid combinations, HTTP 400 for all six incompatible combinations, and HTTP 400 for malformed JSON and duplicate cards. The page returned HTTP 200. No paid API requests were made.
 
-The final card identities are pending the content owner's manifest. Do not assume the deck is 22 Major Arcana plus ten new cards. Update catalog validation, images, and tests together once agreed.
+## Configuration
 
-## Already available in the current foundation
-
-- `POST /api/readings` with request validation and public error responses.
-- A provisional catalog of 22 cards with separate answer and recommendation meanings; migration to the agreed 32-card deck is required.
-- One-, three-, and twelve-month calculation with month-end clamping and leap-day tests.
-- The twelve target questions, authoritative audience metadata, and fixed-period request validation.
-- Overlap selection for events, including retrogrades already in progress.
-- Injectable provider interfaces and foundation tests.
-- A frontend that preserves card selection when retrying a failed request.
-
-We do not need a new backend service, database, login flow, vector store, or agent framework for this MVP.
-
-## Preparation
-
-| Item | Action | Needed for |
-| --- | --- | --- |
-| Local tools | Use Node 22, run `npm ci`, then `npm run check` | All development |
-| AI account | Use an OpenAI API project with available API quota and a project API key | First live reading |
-| Local secrets | Store the key in ignored `.env.local`; never commit it or paste it into chat | Server-side authentication |
-| Model | Choose an available text model supporting structured output; record its exact ID in configuration after a small quality/latency check | Consistent live behavior |
-| Calendar | Start with one verified source, normalize its data, and retain attribution | Dated cosmic notes |
-| Deployment | The frontend/integration owner configures the same server-only environment variables on the hosting platform | Shared demo |
-| Editorial input | Use existing card meanings and voice examples now; incorporate content-track revisions later | Prompt quality |
-
-Proposed configuration, to be added to `.env.example` when the implementation actually reads it:
+Mock mode is the default and needs no credentials:
 
 ```dotenv
 ORACLE_MODE=mock
-OPENAI_API_KEY=
-OPENAI_MODEL=
 ```
 
-`ORACLE_MODE=live` will require a valid key and model. Missing credentials in live mode should produce a configuration failure, not silently return sample text. No `NEXT_PUBLIC_` prefix belongs on any secret.
+Live mode requires server-only variables:
 
-We will add the official `openai` SDK when implementing the provider and coordinate the dependency/lockfile change with the integration owner. Keep one model call per reading; do not enable browsing or other tools in the oracle request.
+```dotenv
+ORACLE_MODE=live
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-6-luna
+```
 
-## Calendar feasibility check: October 15, 2026
+Do not use a `NEXT_PUBLIC_` prefix for the key. A missing key in live mode is a controlled configuration failure. The deployment request timeout must exceed the oracle's 20-second budget so the route can return its own controlled error.
 
-Direct requests from the development machine returned HTTP 200 and JSON for:
+## Calendar data
 
-- [Zodiacs.org retrogrades for 2026](https://zodiacs.org/api/v1/retrogrades/2026.json): 11 records, declared coverage from January 1, 2026 to January 1, 2027, CC BY 4.0, attribution required.
-- [CosmyDay upcoming events](https://api.cosmyday.com/events/upcoming?days=90&min_importance=60): response contains coverage, timezone, count, and event fields.
+The checked snapshot is sourced from Zodiacs.org and licensed under CC BY 4.0. Display this exact attribution whenever calendar data is shown:
 
-This verifies endpoint accessibility and basic structure, not independent astronomical accuracy or all event types. Use Zodiacs.org as the first integration candidate. Keep CosmyDay as an alternative rather than implementing two providers at once.
+`Data: Zodiacs.org — https://zodiacs.org`
 
-The 2026 retrograde file clips some intervals at year boundaries and marks them with `clippedStart`/`clippedEnd`. Those boundaries must not be described as actual retrograde station dates. A rolling twelve-month reading can span two calendar years. Verify all necessary yearly files, preserve real station boundaries, and deduplicate overlapping segments before marking the full period covered.
+Refresh the snapshot offline with:
 
-## Development sequence
+```bash
+npm run calendar:refresh -- 2026 2027 2028
+```
 
-| Step | Work | Completion evidence |
-| --- | --- | --- |
-| 0. Shared scope migration | Add the twelve question IDs, audience/allowed-period metadata, and annual date calculation; reject fixed-period mismatches; synchronize the agreed 32-card manifest with frontend/content owners | All valid question-period combinations work, invalid ones fail, and the deck matches the agreed manifest |
-| 1. Configuration and live card-only reading | Add explicit mock/live selection, a server-only AI client, a basic prompt, and structured response parsing | A real request returns the expected three text fields with `meta.mode: live` |
-| 2. Verified calendar snapshot | Validate source data, normalize dates, preserve sources/coverage, and save a small reusable snapshot covering supported demo dates | Known dates and cross-year ranges return the correct overlapping events |
-| 3. Combined oracle | Supply audience, card roles, meanings, exact question, dates, and up to three selected events; incorporate the editorial voice | One coherent reading uses both cards and references only supplied events |
-| 4. Reliability | Add bounded timeouts, malformed-output handling, provider error mapping, and metadata-only diagnostics | Failures are controlled and retryable; a failed AI call never turns into a sample |
-| 5. Integration and handoff | Verify both audiences, all twelve questions, all three periods and fixed-period rules, and the shared deployed endpoint with the frontend owner | The full live journey works from the shared URL |
+Review generated changes before committing them. The public `events` array retains raw source event boundaries. For a retrograde that begins before or ends after a reading, the server-rendered `cosmicNote` clips its displayed active range to the reading period without presenting that clipped boundary as a planetary station date.
 
-Target: shared question/period migration and steps 1-3 on day 1; steps 4-5 and prompt refinement on day 2. The content owner can prepare the 32-card manifest in parallel; use clearly provisional existing cards for provider development until it is agreed. Get the first real card-only reading working before spending time on advanced event selection.
+## Remaining dependencies
 
-## Calendar implementation approach
+- The content owner must deliver the final 32-card manifest and artwork. The current 22-card catalog is provisional. Card IDs, meanings, images, contract validation, and deck tests must migrate together; backend contributors must not invent the missing cards.
+- The frontend owner must finish audience grouping, fixed-period controls, resolved-date and attribution display, retry with the same two cards, final integration, and deployment.
+- A project key is still required for live verification. No real sample, latency, token use, cost, or editorial quality result has been measured yet. Review at least one valid period per question after a key is available.
+- The deployment owner must configure request and spending controls appropriate to the hosting platform. An in-memory request counter would not be a reliable global limit on serverless or multi-instance hosting.
+- The shared hosting timeout must be longer than 20 seconds, and available OpenAI quota must be checked before the demo.
 
-Implemented October 15, 2026: `calendar-snapshot.v1.json` contains source-validated retrogrades and new/full moons for 2026–2028. `npm run calendar:refresh -- 2026 2027 2028` validates and atomically replaces it. The server performs no runtime calendar network calls. Data is CC BY 4.0: `Data: Zodiacs.org — https://zodiacs.org`.
+## Validation checklist
 
-Use a checked snapshot as the initial runtime source, with an explicit refresh/import script. This avoids calling a calendar service on every reading and works with read-only deployment filesystems. Store retrieval time, source attribution, coverage, and normalized events. Never claim coverage beyond what was verified.
+Before final handoff, run:
 
-Start with retrogrades and new/full moons. Add a small selection of relevant Venus/Jupiter aspects if their source data can be verified within the schedule; these support positive timing suggestions. A missing retrograde alone does not establish a favorable period. A larger aspect catalog and sophisticated ranking are optional.
+```bash
+npm run check
+npm run build
+```
 
-For each request: confirm coverage of the full range (up to twelve months), select overlapping events, deduplicate them across files, rank a small set by workplace relevance, and attach curated symbolic meanings. Annual selection must consider the full range instead of merely taking the first three chronological events. No events in a covered period is different from unavailable coverage.
-
-## Oracle implementation approach
-
-Use the Responses API with a structured output schema for `answer`, `recommendation`, and nullable `cosmicNote`. Validate the result with Zod and handle refusal, incomplete responses, and empty/invalid fields. Structured formatting does not guarantee factual correctness.
-
-The prompt must keep the first card as the answer and the second as advice, use English office humor, avoid guaranteed outcomes, and use only supplied event facts. Pass authoritative audience metadata: Employee means personal work and daily routines; Leadership means company-level strategy, customers, growth, and motivation. Do not invent real customers or internal company facts. Do not let the model choose new cards, calculate planets, invent dates, or reinterpret API metadata as instructions.
-
-For traceability, consider internal event references selected from the supplied event IDs; validate those references before constructing the unchanged public response. Exact event names and dates should be formatted from source data. Manually evaluate the meaning of the generated prose as well: an ID or schema check cannot prove that a claim is supported.
-
-Use a maximum server request budget below the browser's existing 30-second timeout. Start with an AI timeout around 20 seconds and explicitly bounded SDK retries. Tune against observed latency rather than assuming a model will always be fast.
-
-## Files to change
-
-- `src/server/providers/oracle.ts`: provider selection; keep the mock available for frontend development.
-- New modules under `src/server/` for configuration, the live AI adapter, response validation, and the oracle prompt.
-- `src/server/providers/calendar.ts` and a server-owned snapshot directory: validated calendar implementation.
-- `scripts/refresh-calendar.ts`: proposed offline import/refresh entry point.
-- `src/domain/period.ts`: explicit 1/3/12-month resolution and leap-day behavior.
-- `src/domain/events.ts`: annual-range selection, relevance ranking, and deduplication.
-- `src/contracts/catalog.ts`, request validation, and `src/content/questions.ts`: coordinated ID/metadata migration.
-- `src/content/cards.ts` and artwork: content-owner changes coordinated with shared 32-card validation.
-- `src/server/reading-service.ts` and `src/app/api/readings/route.ts`: controlled integration and errors.
-- `tests/`: provider validation, failure, and grounding checks.
-- `.env.example`, `package.json`, and the lockfile: coordinated setup changes only.
-
-The new scope explicitly requires a coordinated question/period/card ID migration in `src/contracts`. Preserve the HTTP field structure and synchronize frontend defaults, content, fixtures, and examples; after that migration keep the agreed identifiers stable. Content contributors own artwork and editorial catalogs; consume those files rather than duplicating them in the backend.
-
-## Validation and readiness
-
-Keep the existing nine tests and add cases for invalid source payloads, missing coverage, clipped/year-crossing intervals, duplicate events, missing live configuration, timeouts, refusal/incomplete model output, invalid event references, and no-event readings. Automated tests should use injected fakes and fixtures, not paid live calls.
-
-Test all 36 question-period combinations without paid calls: 30 valid and six invalid because of fixed-period restrictions. Validate exactly 32 unique catalog entries once the manifest is agreed. Manually review at least twelve live examples, one per question, distributing the flexible questions across all three periods and obeying fixed-period rules. Include an annual range spanning two calendar years and verify audience-specific tone. Check card roles, relevance, English tone, length, supplied dates, and absence of unsupported predictions. Record observed latency and usage. Run `npm run check` and `npm run build` before handoff.
-
-For the shared demo, verify available API quota, server-only configuration, request limits appropriate to the deployment, and hosting timeout settings. A local memory counter is not a reliable global spending limit on serverless hosting. Keep logs to request IDs, status, duration, and usage rather than credentials or full prompt bodies.
-
-## First implementation task
-
-First migrate the question catalog, audience metadata, fixed-period validation, and annual date calculation with the frontend owner. Then add provider configuration and one live card-only reading behind the existing endpoint. Confirm and integrate the full 32-card manifest with the content owner when available. The user needs to prepare an API project/key; calendar normalization and tests can proceed independently while that is being configured.
+After the final manifest arrives, verify 32 unique card IDs, artwork paths, meanings, two-card uniqueness, and role consistency. After a project key is configured, manually verify twelve live readings across both audiences and all three periods, including a rolling annual range that crosses a year boundary. Record latency and token usage without logging credentials or full prompts.
 
 ## References
 
+- [Backend handoff](backend-handoff.md)
+- [Architecture and HTTP contract](architecture.md)
+- [Backend track](tracks/backend.md)
 - [OpenAI API quickstart](https://developers.openai.com/api/docs/quickstart)
 - [Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 - [Zodiacs.org developer documentation](https://zodiacs.org/developers/)
-- [CosmyDay API documentation](https://cosmyday.com/api-docs)

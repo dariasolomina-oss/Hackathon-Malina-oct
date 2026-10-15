@@ -1,37 +1,37 @@
 # Backend track
 
-Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architecture.md) first. The implementation sequence and setup checklist are in [the backend development plan](../backend-plan.md). Backend work uses `track/backend`.
+Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architecture.md) first. Current implementation status is in [the backend status](../backend-plan.md), and contributor setup is in [the backend handoff](../backend-handoff.md). Backend work uses `track/backend`.
 
-## Own
+## Owned areas
 
 - `src/server/`
 - `src/domain/`
 - `src/app/api/readings/`
 - `tests/` and shared contract changes coordinated with frontend/content owners
 
-## Migrate the shared foundation
+## Completed
 
-- Replace the four starter question IDs with the twelve target IDs in the product scope. Store an audience and an allowed-period rule for every question in a shared catalog.
-- Keep the HTTP request field structure unchanged. Derive Employee/Leadership from the validated question ID; do not trust a separate free-form role or question label from the client.
-- Add `one-year` as twelve calendar months using existing UTC/month-end conventions. The current two-way month calculation must become explicit for all three options.
-- Enforce fixed periods: `employee-jira-hours` and `leadership-company-outlook` require `one-year`; `leadership-changing-priorities` requires `three-months`. Return HTTP 400/`INVALID_REQUEST` for mismatches.
-- Replace provisional card validation with the agreed 32-card manifest, preserving distinct answer and recommendation roles. Do not invent the missing card identities.
-- Coordinate the ID migration with frontend defaults, content, tests, and API examples in one integrated change.
+- Twelve question IDs with authoritative audience and `allowedPeriodIds` metadata.
+- Rolling 1-, 3-, and 12-month UTC periods with month-end and leap-day handling.
+- Server rejection of the six invalid fixed-period combinations.
+- Checked 2026–2028 Zodiacs.org snapshot, validated offline import, full-range coverage checks, cross-year interval joining, and deterministic event selection.
+- Explicit mock/live provider selection and a server-only OpenAI Responses API adapter using Structured Outputs.
+- Fixed answer/recommendation card roles, verified event references, server-formatted dates, bounded timeout, zero SDK retries, and controlled public errors.
+- Complete no-network route/service verification for all 36 question-period combinations, including card roles, audience, real snapshot overlap, unavailable calendar behavior, keyless live mode, and sanitized 503 responses.
 
-## Connect providers
+## Contract to preserve
 
-Replace the calendar and oracle providers behind `src/server/providers/types.ts`. Verify and cache event data covering the entire chosen range, including every year touched by a rolling annual period. Validate source schemas, deduplicate cross-year events, preserve attribution, and distinguish unavailable coverage from an available empty calendar. Do not treat a clipped source boundary as a real station date.
+Keep the existing `POST /api/readings` fields and derive audience from the validated question ID. A reading always uses two distinct cards: the first is the answer, and the second is the recommendation. Report `meta.mode: "live"` only for the live provider. Calendar failure may return a card-only reading with `calendarStatus: "unavailable"`; oracle failure must return `READING_FAILED` and must not switch to mock text.
 
-For annual readings, select a small relevant set across the full range instead of only the first three events. Keep the response concise and the draw at two cards for every period.
+Event dates and names must come from the checked snapshot. The public event objects retain raw normalized boundaries. Cosmic timing prose may clip an interval to the reading period, but must not present that reading boundary as an astronomical station date.
 
-Supply audience, exact question, dates, card roles/meanings, and selected events to the AI. Employee prompts focus on personal work; Leadership prompts focus on company-level choices. No real customer or company data is available: do not invent company-specific facts or actual customer identities. Use editorial examples from `src/content/oracle-voice.md`.
+## Pending cross-track work
 
-Validate generated output, keep credentials server-only, set bounded timeouts, and retain the public response shape. Report live mode only for genuine live generation. Never silently replace a failed live call with sample text.
+- Developer 3 supplies the final 32-card composition, meanings, and artwork. Do not invent card identities or assume the final deck extends the provisional one. Integrate the manifest across contracts, content, artwork, and tests in one coordinated change.
+- Frontend consumes `getQuestion(...).allowedPeriodIds`, locks fixed periods, displays resolved dates and exact attribution, and retries with the same cards.
+- The deployment owner configures server-only environment variables, a hosting timeout above 20 seconds, and platform-level request/spending controls. An in-memory counter is not a global serverless limit.
+- A project key is required before evaluating twelve real live samples. No live latency, token use, cost, or editorial quality result is verified yet.
 
-## Work without the interface
+## Final checks
 
-Use the target request example in the architecture document once the ID migration is implemented. Until then, the README's legacy example still runs against the current starter. Tests can inject providers and dates directly into `createReading`.
-
-## Done when
-
-Validate all 36 question-period combinations: 30 are accepted, and six violate fixed-period rules and must be rejected. Verify the 32-card catalog, two-card uniqueness, leap-day annual ranges, multi-year coverage, audience-specific prompting, provider failures, and exact card-role preservation. Run `npm run check` and `npm run build`, then share real samples for both audiences and all three periods with the team.
+Run `npm run check` and `npm run build`. After the content manifest arrives, verify exactly 32 unique cards, image paths, meanings, and two-card role consistency. After a project key is available, review valid readings for all twelve questions across both audiences and all three periods, including a year-crossing annual range.

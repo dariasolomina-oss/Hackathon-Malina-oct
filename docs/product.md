@@ -71,11 +71,13 @@ If no relevant events are available, produce a card-only reading without inventi
 
 ## Event data
 
-Candidate sources are [Zodiacs.org](https://zodiacs.org/developers/) and [CosmyDay](https://cosmyday.com/api-docs). Both returned JSON in a direct feasibility check on October 15, 2026; see [the backend plan](backend-plan.md). Required event types and full-year coverage still need validation.
+The implemented runtime source is a checked [Zodiacs.org](https://zodiacs.org/developers/) snapshot containing 103 validated retrograde and new/full-moon events for 2026–2028. Runtime reading requests do not call an external calendar service. The importer validates schemas, complete-year coverage, station boundaries, duplicates, and required attribution before replacing the snapshot.
 
-Cache verified events covering the entire selected range, including all years touched by a twelve-month reading. Preserve attribution and normalize timestamps consistently. Distinguish unavailable coverage from a covered period with no events. For annual readings, consider relevant events across the whole period rather than automatically taking only the earliest three.
+The provider verifies coverage for the complete selected range, including all years touched by a twelve-month reading. It distinguishes unavailable coverage from a covered period with no selected events. Annual selection considers the full period. Public event metadata retains normalized source dates; generated timing text clips an interval to the reading range without describing the clipped boundary as a planetary station date. Display `Data: Zodiacs.org — https://zodiacs.org` when calendar data is shown.
 
 Event dates are data; their workplace significance is entertainment. Positive timing suggestions must also refer to supplied events and curated symbolic meanings.
+
+The live OpenAI oracle is implemented behind explicit server configuration and verified with no-network fakes. Real latency, token use, cost, and editorial quality have not been measured because no project key was available.
 
 ## Voice
 

@@ -27,6 +27,10 @@ Backend owns shared validation, audience derivation, annual calculation, and cal
 
 The shared contract now establishes the twelve question identifiers, audience metadata, three periods, and fixed-period rules. Preserve those identifiers while the frontend consumes them. The 22-card catalog still predates the updated scope; migrate it only when the content owner supplies the agreed 32-card manifest. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
 
+## Current handoff status
+
+The backend contract, 2026–2028 Zodiacs.org snapshot, live OpenAI adapter, validation, and failure handling are implemented and covered with no-network fakes. Frontend and content contributors should use [backend-handoff.md](backend-handoff.md) for fixed-period metadata, request/response fields, attribution, and retry behavior. The final 32-card manifest, frontend migration, deployment, and real live-output review remain open; no live latency or quality result has been recorded without a project key.
+
 ## Working with Codex
 
 Give each contributor's Codex chat the same product scope, its assigned area, and a concrete completion criterion. Use separate branches and local checkouts; use separate worktrees when multiple chats share one computer.
