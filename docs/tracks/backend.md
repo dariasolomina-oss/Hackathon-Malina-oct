@@ -2,6 +2,8 @@
 
 Read `AGENTS.md`, `docs/product.md`, and `docs/architecture.md` first.
 
+The implementation sequence, setup checklist, and provider evaluation are in [the backend development plan](../backend-plan.md). Backend work uses the `track/backend` branch.
+
 ## Own
 
 - `src/server/`
