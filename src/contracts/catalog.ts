@@ -1,4 +1,4 @@
-// Shared identifiers. Coordinate changes with all three tracks.
+// Shared identifiers for the 32-card Corporate Oracle deck.
 export const CARD_IDS = [
   "the-spark", "the-crossroads", "the-momentum", "the-pause", "the-shift", "the-spotlight",
   "the-fog", "the-bridge", "the-challenge", "the-opening", "the-turning-point", "the-balance",
