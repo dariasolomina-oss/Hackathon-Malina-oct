@@ -14,11 +14,11 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 
 ## Project status
 
-Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Every reading fetches source-validated calendar events from Zodiacs.org, including mock-oracle readings. The live OpenAI oracle is implemented and fake-tested but has not been exercised with a project key. Final artwork and deployment remain track work.
+Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Every reading fetches source-validated calendar events from Zodiacs.org, including mock-oracle readings. The live OpenAI oracle is implemented, fake-tested, and has passed three limited gateway smoke tests. Final artwork and deployment remain track work.
 
 The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
 
-Backend implementation and integration details are summarized in the [backend handoff](docs/backend-handoff.md). Automated checks cover the live-provider boundary with no-network fakes; live latency, token use, cost, and editorial quality remain unverified until a project key is available.
+Backend implementation and integration details are summarized in the [backend handoff](docs/backend-handoff.md). Automated checks cover the live-provider boundary with no-network fakes. Three live smoke readings verified the gateway path; the full twelve-question editorial review and cost evaluation remain pending.
 
 ## Run locally
 
@@ -41,7 +41,7 @@ npm start
 
 ## Live oracle
 
-Copy `.env.example` to `.env.local`, set `ORACLE_MODE=live`, and add a server-side `OPENAI_API_KEY`. `OPENAI_MODEL` defaults to `gpt-6-luna`. Live mode makes one OpenAI Responses API call with Structured Outputs, no tools, no SDK retries, and a 20-second timeout. A missing key or failed live request returns `READING_FAILED`; it never falls back to mock text. The integration is covered with no-network fakes; a real live response still needs verification with an available project key.
+Copy `.env.example` to `.env.local`, set `ORACLE_MODE=live`, and add a server-side `OPENAI_API_KEY`. `OPENAI_MODEL` defaults to `gpt-6-luna`. The direct OpenAI API is the default; set the optional server-only `OPENAI_BASE_URL` for an OpenAI-compatible gateway. Use an exact model ID returned by that gateway's `/models` endpoint. Live mode makes one Responses API call with Structured Outputs, no tools, no SDK retries, and a 20-second timeout. A missing key or failed live request returns `READING_FAILED`; it never falls back to mock text. Gateway usage and billing are governed by the gateway, independently of OpenAI's public model pricing.
 
 ## Try the API independently
 

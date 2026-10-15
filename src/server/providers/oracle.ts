@@ -1,5 +1,8 @@
 import type { OracleProvider } from "./types";
-import { getOracleConfig } from "../oracle-config";
+import { getOracleConfig, type OracleConfig } from "../oracle-config";
+
+type LiveOracleConfig = Extract<OracleConfig, { mode: "live" }>;
+type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> | OracleProvider;
 
 // Deterministic development placeholder. Never label this as a live AI result.
 export const mockOracleProvider: OracleProvider = {
@@ -21,11 +24,14 @@ export const oracleProvider = mockOracleProvider;
 
 export async function createConfiguredOracleProvider(
   environment: Record<string, string | undefined> = process.env,
+  createLiveOracle: LiveOracleFactory = async (config) => {
+    const { createOpenAIOracleProvider } = await import("../openai-oracle");
+    return createOpenAIOracleProvider(config);
+  },
 ): Promise<OracleProvider> {
   const config = getOracleConfig(environment);
   if (config.mode === "mock") return mockOracleProvider;
 
   // The SDK and credentials stay behind the server-only live-mode boundary.
-  const { createOpenAIOracleProvider } = await import("../openai-oracle");
-  return createOpenAIOracleProvider({ apiKey: config.apiKey, model: config.model });
+  return createLiveOracle(config);
 }

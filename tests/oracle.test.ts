@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type OpenAI from "openai";
+import type { ClientOptions } from "openai";
 import { cards } from "../src/content/cards";
 import type { AstroEvent } from "../src/contracts/reading";
 import { getOracleConfig, OracleConfigurationError } from "../src/server/oracle-config";
@@ -66,8 +67,54 @@ test("oracle configuration defaults to mock and validates live settings at reque
   assert.deepEqual(getOracleConfig({ ORACLE_MODE: "live", OPENAI_API_KEY: " secret " }), {
     mode: "live", apiKey: "secret", model: "gpt-6-luna",
   });
+  assert.deepEqual(getOracleConfig({
+    ORACLE_MODE: "live",
+    OPENAI_API_KEY: "secret",
+    OPENAI_BASE_URL: " https://gateway.example/api/v1/ ",
+  }), {
+    mode: "live",
+    apiKey: "secret",
+    model: "gpt-6-luna",
+    baseURL: "https://gateway.example/api/v1",
+  });
   assert.throws(() => getOracleConfig({ ORACLE_MODE: "invalid" }), OracleConfigurationError);
   assert.throws(() => getOracleConfig({ ORACLE_MODE: "live" }), /OPENAI_API_KEY/);
+  for (const baseURL of [
+    "gateway.example/v1",
+    "http://gateway.example/v1",
+    "https://user:secret@gateway.example/v1",
+    "https://gateway.example/v1?team=oracle",
+    "https://gateway.example/v1?",
+    "https://gateway.example/v1#responses",
+    "https://gateway.example/v1#",
+  ]) {
+    assert.throws(
+      () => getOracleConfig({ ORACLE_MODE: "live", OPENAI_API_KEY: "secret", OPENAI_BASE_URL: baseURL }),
+      OracleConfigurationError,
+    );
+  }
+});
+
+test("configured provider passes a custom environment to the live provider factory", async () => {
+  let receivedConfig: unknown;
+  const fakeLiveProvider = { mode: "live" as const, async generate() { throw new Error("unused"); } };
+  const provider = await createConfiguredOracleProvider({
+    ORACLE_MODE: "live",
+    OPENAI_API_KEY: "gateway-key",
+    OPENAI_MODEL: "gateway-model-id",
+    OPENAI_BASE_URL: "https://gateway.example/api/v1",
+  }, (config) => {
+    receivedConfig = config;
+    return fakeLiveProvider;
+  });
+
+  assert.equal(provider, fakeLiveProvider);
+  assert.deepEqual(receivedConfig, {
+    mode: "live",
+    apiKey: "gateway-key",
+    model: "gateway-model-id",
+    baseURL: "https://gateway.example/api/v1",
+  });
 });
 
 test("prompt includes authoritative audience, question, period, card roles, and supplied events", () => {
@@ -113,6 +160,35 @@ test("OpenAI transport sends one strict Responses request with bounded, private 
   assert.equal(requestOptions?.maxRetries, 0);
   assert.equal(requestOptions?.timeout, 321);
   assert.deepEqual(response.usage, { inputTokens: 10, outputTokens: 5, totalTokens: 15 });
+});
+
+test("OpenAI transport configures the SDK with the explicit gateway base URL", () => {
+  const fakeClient = { responses: { parse() { throw new Error("unused"); } } } as unknown as OpenAI;
+  let clientOptions: ClientOptions | undefined;
+
+  createOpenAITransport("gateway-key", 456, undefined, "https://gateway.example/api/v1", (options) => {
+    clientOptions = options;
+    return fakeClient;
+  });
+
+  assert.deepEqual(clientOptions, {
+    apiKey: "gateway-key",
+    baseURL: "https://gateway.example/api/v1",
+    maxRetries: 0,
+    timeout: 456,
+  });
+});
+
+test("OpenAI transport uses direct OpenAI when no gateway is configured", () => {
+  const fakeClient = { responses: { parse() { throw new Error("unused"); } } } as unknown as OpenAI;
+  let clientOptions: ClientOptions | undefined;
+
+  createOpenAITransport("direct-key", 456, undefined, undefined, (options) => {
+    clientOptions = options;
+    return fakeClient;
+  });
+
+  assert.equal(clientOptions?.baseURL, "https://api.openai.com/v1");
 });
 
 test("live provider validates event IDs and server-renders facts inside the reading range", async () => {

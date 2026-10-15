@@ -1,6 +1,6 @@
 # Backend handoff
 
-The backend contract, request-time calendar provider, and configurable oracle are ready for frontend, content, and deployment integration. Every reading calls Zodiacs.org, including readings using the mock oracle. Automated tests inject offline fixtures and make no external or paid API calls. Real live OpenAI output has not been verified because no project key was available.
+The backend contract, request-time calendar provider, and configurable oracle are ready for frontend, content, and deployment integration. Every reading calls Zodiacs.org, including readings using the mock oracle. Automated tests inject offline fixtures and make no external or paid API calls. Three limited live gateway smoke tests have also succeeded; the full editorial review remains pending.
 
 ## Frontend integration
 
@@ -64,8 +64,18 @@ The final 32-card manifest is still pending. The current 22 cards are provisiona
 
 ## Deployment setup
 
-Mock mode needs no environment file. Live mode requires server-only `ORACLE_MODE=live`, `OPENAI_API_KEY`, and optionally `OPENAI_MODEL` (default `gpt-6-luna`). Keep the key out of browser variables, version control, logs, and chat.
+Mock mode needs no environment file. Live mode requires server-only `ORACLE_MODE=live`, `OPENAI_API_KEY`, and optionally `OPENAI_MODEL` (default `gpt-6-luna`). It uses the direct OpenAI API by default. For an OpenAI-compatible gateway, also set `OPENAI_BASE_URL`; the application accepts only HTTPS URLs without embedded credentials, queries, or fragments. Keep all credentials out of browser variables, version control, logs, and chat.
+
+For example, use `OPENAI_BASE_URL=https://gateway.example/api/v1`. Set `OPENAI_MODEL` to an exact ID returned by the gateway's authenticated `/models` endpoint; `gpt-6-luna` was present in the corporate gateway response verified on October 15, 2026. Gateway availability, quotas, and billing are separate from OpenAI's public model list and pricing.
 
 Allow outbound HTTPS access to Zodiacs.org. Each reading makes concurrent uncached calendar requests under one five-second deadline; failures produce an explicitly card-only result and never use the checked fixture as a fallback. Set the hosting request timeout above 25 seconds so the calendar and subsequent 20-second oracle budgets can expire cleanly. Configure platform-level request and spending controls before enabling a public live demo; an in-memory counter is not global across serverless instances. Confirm project quota and use a Node-capable deployment because a static host cannot run `POST /api/readings`.
 
-One direct calendar-provider smoke check succeeded for a year-crossing range in 228 ms; this is not a latency guarantee. No live OpenAI sample, token usage, cost, or quality result is verified yet. Once a key is available, review twelve valid live readings, covering both audiences and all three periods, before presenting live mode as demo-ready.
+Live verification on October 15, 2026 used `gpt-6-luna` through the configured gateway and real calendar API data:
+
+| Question | Period | End-to-end latency | Input / output tokens |
+| --- | --- | --- | --- |
+| Employee project deadline | One month | 4.230 s | 936 / 202 |
+| Leadership changing priorities | Three months | 3.690 s | 949 / 168 |
+| Leadership company outlook | One year | 3.140 s | 948 / 175 |
+
+The Employee sample exercised the reading service; both Leadership samples exercised the running production HTTP endpoint. All returned live mode and an available calendar. Manual review confirmed card-role meanings, audience context, English office humor, supplied event references, and timing clipped to the reading period. These three observations do not establish a latency or quality guarantee. The gateway reported 3,378 total tokens but no pricing; the exact charge must be checked in its usage/billing dashboard. The full twelve-question editorial review remains pending.

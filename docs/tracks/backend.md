@@ -30,8 +30,8 @@ Event dates and names must come from the validated API response fetched for that
 - Developer 3 supplies the final 32-card composition, meanings, and artwork. Do not invent card identities or assume the final deck extends the provisional one. Integrate the manifest across contracts, content, artwork, and tests in one coordinated change.
 - Frontend consumes `getQuestion(...).allowedPeriodIds`, locks fixed periods, displays resolved dates and exact attribution, and retries with the same cards.
 - The deployment owner configures server-only environment variables, outbound Zodiacs.org access, a hosting timeout above 25 seconds, and platform-level request/spending controls. An in-memory counter is not a global serverless limit.
-- A project key is required before evaluating twelve real live samples. No live latency, token use, cost, or editorial quality result is verified yet.
+- Three live gateway smoke readings succeeded. Evaluate twelve real live samples before treating latency, cost, and editorial quality as verified.
 
 ## Final checks
 
-Run `npm run check` and `npm run build`. After the content manifest arrives, verify exactly 32 unique cards, image paths, meanings, and two-card role consistency. After a project key is available, review valid readings for all twelve questions across both audiences and all three periods, including a year-crossing annual range.
+Run `npm run check` and `npm run build`. After the content manifest arrives, verify exactly 32 unique cards, image paths, meanings, and two-card role consistency. Review valid live readings for all twelve questions across both audiences and all three periods, including a year-crossing annual range.

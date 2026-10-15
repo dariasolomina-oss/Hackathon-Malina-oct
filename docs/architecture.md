@@ -4,7 +4,7 @@
 
 Use one Next.js application with React and TypeScript. The browser displays the experience; a server route builds readings. There is no database, account system, or separate backend deployment in the MVP. Card content lives in versioned files. External credentials must stay in server environment variables.
 
-This application is runnable without credentials. It defaults to a deterministic mock oracle, while every reading fetches source-validated Zodiacs.org calendar data at request time. A server-only live OpenAI oracle is available through explicit environment configuration; it is fake-tested but awaits verification with a project key.
+This application is runnable without credentials. It defaults to a deterministic mock oracle, while every reading fetches source-validated Zodiacs.org calendar data at request time. A server-only live OpenAI oracle is available through explicit environment configuration; it is fake-tested and has passed three limited gateway smoke tests.
 
 ## Scope update and migration status
 
@@ -79,7 +79,7 @@ The runtime calendar provider fetches both Zodiacs.org source families for every
 
 Event selection includes intervals already in progress at the start date and excludes events beginning at the end boundary. A January 1 end boundary does not require that next UTC year's source file. A null event end represents an instant. Selection returns at most three events. Short ranges rank workplace-relevant events deterministically. Ranges longer than 180 days divide the requested period into thirds and choose the strongest candidate in each populated third, then fill empty slots by relevance. Cross-year intervals are merged during import, and the provider claims availability only when fetched sources cover every instant in the requested range.
 
-The backend validates provider responses and live model output before exposing them through this contract. Model event references must match supplied event IDs; the server adds authoritative event names and dates. Automated tests cover this boundary with injected fakes, but factual tone and editorial quality still require live review with a project key.
+The backend validates provider responses and live model output before exposing them through this contract. Model event references must match supplied event IDs; the server adds authoritative event names and dates. Automated tests cover this boundary with injected fakes. Three live gateway readings preserved those constraints, but factual tone and editorial quality still require the full live review.
 
 ## Content contract
 
@@ -93,6 +93,6 @@ Placeholder images are 600 by 900 SVGs (2:3). Final artwork may be PNG or WebP w
 
 The question and period contract, fixed-period validation, request-time calendar provider, event selection, explicit oracle modes, grounded Structured Outputs adapter, controlled timeouts, and public error mapping are implemented. The checked calendar JSON is an offline fixture rather than a runtime fallback. The backend path is covered across all 36 question-period combinations with injected offline dependencies.
 
-Remaining work is cross-track: frontend audience grouping and fixed-period controls, the content owner's final 32-card manifest and artwork, shared deployment, and live quality/latency verification with a project key. See [backend-handoff.md](backend-handoff.md) for the integration contract.
+Remaining work is cross-track: frontend audience grouping and fixed-period controls, the content owner's final 32-card manifest and artwork, shared deployment, and the full live quality review. See [backend-handoff.md](backend-handoff.md) for the integration contract.
 
 Deploy as one Node-capable Next.js service (for example, Vercel). Static-only hosting cannot run the reading route. Set the host request timeout above 25 seconds so the five-second calendar budget and subsequent 20-second oracle budget can finish with controlled responses. Deployment itself is not configured in this starter.

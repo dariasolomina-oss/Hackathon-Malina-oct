@@ -77,7 +77,7 @@ The provider verifies coverage for the complete selected range, including all ye
 
 Event dates are data; their workplace significance is entertainment. Positive timing suggestions must also refer to supplied events and curated symbolic meanings.
 
-The live OpenAI oracle is implemented behind explicit server configuration and verified with no-network fakes. Real latency, token use, cost, and editorial quality have not been measured because no project key was available.
+The live OpenAI oracle is implemented behind explicit server configuration and verified with no-network fakes. Three limited live gateway readings succeeded with grounded output; the full editorial and cost review remains pending.
 
 ## Voice
 

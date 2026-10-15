@@ -19,7 +19,7 @@ This document records completed backend work and the remaining integration depen
 
 Automated no-network coverage exercises the complete route and service path for all 36 question-period combinations with injected calendar and oracle dependencies. Calendar provider tests cover repeated uncached calls, end-exclusive year calculation, normalization, cross-year joining, HTTP and malformed responses, wrong years, incomplete coverage, total deadlines, sibling cancellation, stale-data avoidance, and bounded fan-out. Oracle tests cover keyless live configuration, provider failures, prompt grounding, output validation, and timeout behavior.
 
-Verification on October 15, 2026: automated checks and the production build passed with no paid API requests. One direct provider smoke check fetched a year-crossing 2026–2027 range from Zodiacs.org successfully in 228 ms and found three overlapping Mercury intervals; this is an observed check, not a latency guarantee. A real OpenAI response remains unverified.
+Verification on October 15, 2026: automated checks and the production build passed without making external or paid API requests. Separately, one direct provider smoke check fetched a year-crossing 2026–2027 range from Zodiacs.org successfully in 228 ms and found three overlapping Mercury intervals. Three live gateway readings completed in 3.140–4.230 seconds total each with grounded output, using 2,833 input and 545 output tokens in aggregate. These are observed checks, not latency or quality guarantees.
 
 ## Configuration
 
@@ -57,7 +57,7 @@ Review generated changes before committing them. The public `events` array retai
 
 - The content owner must deliver the final 32-card manifest and artwork. The current 22-card catalog is provisional. Card IDs, meanings, images, contract validation, and deck tests must migrate together; backend contributors must not invent the missing cards.
 - The frontend owner must finish audience grouping, fixed-period controls, resolved-date and attribution display, retry with the same two cards, final integration, and deployment.
-- A project key is still required for live verification. No real sample, latency, token use, cost, or editorial quality result has been measured yet. Review at least one valid period per question after a key is available.
+- Three live gateway samples have been measured. Cost and broad editorial quality remain unverified; review at least one valid period per question.
 - The deployment owner must configure request and spending controls appropriate to the hosting platform. An in-memory request counter would not be a reliable global limit on serverless or multi-instance hosting.
 - The shared hosting timeout must be longer than 25 seconds, outbound access to Zodiacs.org must be available, and OpenAI quota must be checked before the demo.
 
@@ -70,7 +70,7 @@ npm run check
 npm run build
 ```
 
-After the final manifest arrives, verify 32 unique card IDs, artwork paths, meanings, two-card uniqueness, and role consistency. After a project key is configured, manually verify twelve live readings across both audiences and all three periods, including a rolling annual range that crosses a year boundary. Record latency and token usage without logging credentials or full prompts.
+After the final manifest arrives, verify 32 unique card IDs, artwork paths, meanings, two-card uniqueness, and role consistency. Manually verify twelve live readings across both audiences and all three periods, including a rolling annual range that crosses a year boundary. Record latency and token usage without logging credentials or full prompts.
 
 ## References
 

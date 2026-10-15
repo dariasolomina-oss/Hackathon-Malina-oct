@@ -1,10 +1,12 @@
 import "server-only";
-import OpenAI from "openai";
+import OpenAI, { type ClientOptions } from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { AstroEvent, DateRange, OracleText } from "@/contracts/reading";
 import { buildOracleUserPrompt, ORACLE_SYSTEM_PROMPT } from "./oracle-prompt";
 import type { OracleInput, OracleProvider } from "./providers/types";
+
+const DIRECT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 
 const oracleStructuredOutputSchema = z.object({
   answer: z.string(),
@@ -54,11 +56,19 @@ export class OracleGenerationError extends Error {
 export function createOpenAITransport(
   apiKey: string,
   timeoutMs = 20_000,
-  client = new OpenAI({ apiKey, maxRetries: 0, timeout: timeoutMs }),
+  client?: OpenAI,
+  baseURL?: string,
+  createClient: (options: ClientOptions) => OpenAI = (options) => new OpenAI(options),
 ): OracleTransport {
+  const openAIClient = client ?? createClient({
+    apiKey,
+    baseURL: baseURL ?? DIRECT_OPENAI_BASE_URL,
+    maxRetries: 0,
+    timeout: timeoutMs,
+  });
   return {
     async generate(request) {
-      const response = await client.responses.parse({
+      const response = await openAIClient.responses.parse({
         model: request.model,
         input: [
           { role: "system", content: request.systemPrompt },
@@ -89,13 +99,14 @@ export function createOpenAITransport(
 export function createOpenAIOracleProvider(options: {
   apiKey?: string;
   model: string;
+  baseURL?: string;
   timeoutMs?: number;
   transport?: OracleTransport;
   log?: (metadata: OracleLog) => void;
 }): OracleProvider {
   const timeoutMs = options.timeoutMs ?? 20_000;
   const transport = options.transport
-    ?? createOpenAITransport(options.apiKey ?? "", timeoutMs);
+    ?? createOpenAITransport(options.apiKey ?? "", timeoutMs, undefined, options.baseURL);
   const log = options.log ?? ((metadata: OracleLog) => console.info("oracle_request", metadata));
 
   return {

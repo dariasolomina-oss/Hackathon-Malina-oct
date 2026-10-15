@@ -29,7 +29,7 @@ The shared contract now establishes the twelve question identifiers, audience me
 
 ## Current handoff status
 
-The backend contract, per-reading Zodiacs.org API provider, live OpenAI adapter, validation, and failure handling are implemented and covered with no-network fakes. The checked calendar JSON remains only an offline fixture. Frontend and content contributors should use [backend-handoff.md](backend-handoff.md) for fixed-period metadata, request/response fields, attribution, and retry behavior. Deployment must allow the five-second calendar budget plus the 20-second oracle budget. The final 32-card manifest, frontend migration, deployment, and real live-output review remain open.
+The backend contract, per-reading Zodiacs.org API provider, live OpenAI adapter, validation, and failure handling are implemented and covered with no-network fakes. Three limited live gateway readings also succeeded. The checked calendar JSON remains only an offline fixture. Frontend and content contributors should use [backend-handoff.md](backend-handoff.md) for fixed-period metadata, request/response fields, attribution, and retry behavior. Deployment must allow the five-second calendar budget plus the 20-second oracle budget. The final 32-card manifest, frontend migration, deployment, and full live-output review remain open.
 
 ## Working with Codex
 
