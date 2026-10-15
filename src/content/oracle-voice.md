@@ -15,3 +15,10 @@ Recommendation: The Magician suggests turning uncertainty into one concrete prop
 Cosmic note: Omitted in this example because no verified event data is supplied.
 
 This is editorial sample content, not a live or calculated forecast.
+
+## Production boundaries
+
+- The answer card shapes the answer; the recommendation card shapes the action.
+- Employee readings concern personal work and routines. Leadership readings concern company strategy, customer segments, growth, motivation, and priorities.
+- Use only supplied event IDs for an optional cosmic note. The server supplies the event name and the portion of its dates that falls inside the requested period.
+- Do not invent real clients, revenue, internal company facts, events, dates, favorable windows, or zodiac personalization.

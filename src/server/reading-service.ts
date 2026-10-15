@@ -4,31 +4,37 @@ import { readingRequestSchema, type ReadingRequest, type ReadingResponse } from 
 import { resolvePeriod } from "@/domain/period";
 import { selectEvents } from "@/domain/events";
 import { calendarProvider } from "./providers/calendar";
-import { oracleProvider } from "./providers/oracle";
+import { createConfiguredOracleProvider } from "./providers/oracle";
 import type { CalendarProvider, OracleProvider } from "./providers/types";
+
+interface ReadingDependencies {
+  calendar?: CalendarProvider;
+  oracle?: OracleProvider;
+  now?: Date;
+}
 
 export async function createReading(
   input: ReadingRequest,
-  dependencies: { calendar: CalendarProvider; oracle: OracleProvider; now?: Date } = {
-    calendar: calendarProvider, oracle: oracleProvider,
-  },
+  dependencies: ReadingDependencies = {},
 ): Promise<ReadingResponse> {
   const request = readingRequestSchema.parse(input);
+  const calendarDependency = dependencies.calendar ?? calendarProvider;
+  const oracleDependency = dependencies.oracle ?? await createConfiguredOracleProvider();
   const answerCard = cards.find((card) => card.id === request.answerCardId);
   const recommendationCard = cards.find((card) => card.id === request.recommendationCardId);
   const question = getQuestion(request.questionId);
   if (!answerCard || !recommendationCard) throw new Error("Incomplete content catalog.");
   const period = resolvePeriod(request.periodId, dependencies.now);
-  const calendar = await dependencies.calendar.getEvents(period).catch(() => ({
+  const calendar = await calendarDependency.getEvents(period).catch(() => ({
     status: "unavailable" as const, events: [],
   }));
   const events = calendar.status === "available" ? selectEvents(calendar.events, period) : [];
-  const text = await dependencies.oracle.generate({
+  const text = await oracleDependency.generate({
     audience: question.audience, question: question.label, period, answerCard, recommendationCard, events,
   });
   return {
     ...text, cosmicNote: events.length ? text.cosmicNote : null,
     request, period, events,
-    meta: { mode: dependencies.oracle.mode, calendarStatus: calendar.status },
+    meta: { mode: oracleDependency.mode, calendarStatus: calendar.status },
   };
 }

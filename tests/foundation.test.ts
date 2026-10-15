@@ -9,7 +9,7 @@ import { selectEvents } from "../src/domain/events";
 import { resolvePeriod } from "../src/domain/period";
 import { createReading } from "../src/server/reading-service";
 import { oracleProvider } from "../src/server/providers/oracle";
-import { POST } from "../src/app/api/readings/route";
+import { createReadingsPost } from "../src/server/readings-handler";
 
 const request: ReadingRequest = {
   questionId: "employee-project-deadline", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
@@ -150,6 +150,7 @@ test("oracle failures propagate instead of silently switching to a sample", asyn
 });
 
 test("route accepts a valid reading and rejects malformed, duplicate, or fixed-period requests", async () => {
+  const POST = createReadingsPost((input) => createReading(input, { oracle: oracleProvider }));
   const valid = await POST(new Request("http://localhost/api/readings", { method: "POST", body: JSON.stringify(request) }));
   assert.equal(valid.status, 200);
   assert.equal((await valid.json()).meta.mode, "mock");
@@ -164,4 +165,15 @@ test("route accepts a valid reading and rejects malformed, duplicate, or fixed-p
     assert.equal(result.status, 400);
     assert.equal((await result.json()).error.code, "INVALID_REQUEST");
   }
+});
+
+test("route maps configuration and provider failures to the existing retryable error", async () => {
+  const POST = createReadingsPost(async () => { throw new Error("Missing live configuration"); });
+  const result = await POST(new Request("http://localhost/api/readings", {
+    method: "POST", body: JSON.stringify(request),
+  }));
+  assert.equal(result.status, 503);
+  assert.deepEqual(await result.json(), {
+    error: { code: "READING_FAILED", message: "The oracle is unavailable. Please try again with the same cards." },
+  });
 });

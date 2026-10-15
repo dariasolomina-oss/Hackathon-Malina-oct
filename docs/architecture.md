@@ -4,7 +4,7 @@
 
 Use one Next.js application with React and TypeScript. The browser displays the experience; a server route builds readings. There is no database, account system, or separate backend deployment in the MVP. Card content lives in versioned files. External credentials must stay in server environment variables.
 
-This starter is runnable without credentials. It intentionally uses a deterministic mock oracle and an unavailable calendar provider. It does not contain a live AI integration or verified astrological data.
+This application is runnable without credentials. It defaults to a deterministic mock oracle and uses a checked calendar snapshot with source-validated Zodiacs.org data for 2026–2028. A server-only live OpenAI oracle is available through explicit environment configuration; it is fake-tested but awaits verification with a project key.
 
 ## Scope update and migration status
 
@@ -61,7 +61,7 @@ The field structure stays unchanged. This example is accepted by the current bac
 
 Each question has authoritative audience metadata and allowed period IDs in the shared catalog. The server derives audience from the validated question ID and passes it to the oracle. No separate audience field is needed in the HTTP request. Reject unsupported question-period combinations rather than silently changing the requested period.
 
-The response contains `answer`, `recommendation`, nullable `cosmicNote`, the original `request`, the resolved `period`, the selected `events`, and `meta` with oracle mode and calendar status. The exact types live in `src/contracts/reading.ts`; use them rather than creating a second schema.
+The response contains `answer`, `recommendation`, nullable `cosmicNote`, the original `request`, the resolved `period`, the selected `events`, and `meta` with oracle mode and calendar status. The exact types live in `src/contracts/reading.ts`; use them rather than creating a second schema. Event sources identify Zodiacs.org; the interface should display `Data: Zodiacs.org — https://zodiacs.org` for CC BY 4.0 attribution when calendar data is shown.
 
 - `200`: reading generated; `meta.mode` is `mock` or `live`.
 - `400`: `{ "error": { "code": "INVALID_REQUEST", "message": "..." } }`.
@@ -77,7 +77,7 @@ The Jira-hours and company-outlook questions require `one-year`; the changing-pr
 
 Calendar providers must normalize dates to ISO UTC, retain source URLs, and indicate incomplete or unavailable coverage. An available empty result means the provider actually covers the period and found no events. The initial unavailable provider makes no such claim.
 
-Event selection includes intervals already in progress at the start date and excludes events beginning at the end boundary. A null event end represents an instant. The starter takes the first three overlapping events chronologically. The revised annual behavior must consider relevant events across the full range, not just its first weeks. Keep the final set small, deduplicate cross-year intervals, and include all needed yearly source files before claiming coverage.
+Event selection includes intervals already in progress at the start date and excludes events beginning at the end boundary. A null event end represents an instant. Selection returns at most three events. Short ranges rank workplace-relevant events deterministically. Ranges longer than 180 days divide the requested period into thirds and choose the strongest candidate in each populated third, then fill empty slots by relevance. Cross-year intervals are merged during import, and the provider claims availability only when the snapshot covers every instant in the requested range.
 
 The backend track should validate provider responses and live model output before exposing them through this contract. Each cosmic claim must be grounded in the supplied events. The starter's tests validate plumbing, not the factual quality of a future external provider.
 

@@ -1,7 +1,8 @@
 import type { OracleProvider } from "./types";
+import { getOracleConfig } from "../oracle-config";
 
 // Deterministic development placeholder. Never label this as a live AI result.
-export const oracleProvider: OracleProvider = {
+export const mockOracleProvider: OracleProvider = {
   mode: "mock",
   async generate({ audience, question, answerCard, recommendationCard }) {
     const context = audience === "employee"
@@ -14,3 +15,17 @@ export const oracleProvider: OracleProvider = {
     };
   },
 };
+
+// Compatibility export for injected tests and frontend development.
+export const oracleProvider = mockOracleProvider;
+
+export async function createConfiguredOracleProvider(
+  environment: Record<string, string | undefined> = process.env,
+): Promise<OracleProvider> {
+  const config = getOracleConfig(environment);
+  if (config.mode === "mock") return mockOracleProvider;
+
+  // The SDK and credentials stay behind the server-only live-mode boundary.
+  const { createOpenAIOracleProvider } = await import("../openai-oracle");
+  return createOpenAIOracleProvider({ apiKey: config.apiKey, model: config.model });
+}

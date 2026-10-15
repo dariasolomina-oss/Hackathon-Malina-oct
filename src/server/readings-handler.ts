@@ -1,0 +1,23 @@
+import { NextResponse } from "next/server";
+import { readingRequestSchema, type ApiError } from "@/contracts/reading";
+import { createReading } from "./reading-service";
+
+export function createReadingsPost(
+  readingFactory: typeof createReading = createReading,
+) {
+  return async function post(request: Request) {
+    const parsed = readingRequestSchema.safeParse(await request.json().catch(() => null));
+    if (!parsed.success) {
+      return NextResponse.json<ApiError>({
+        error: { code: "INVALID_REQUEST", message: "Select a valid question, period, and two different cards." },
+      }, { status: 400 });
+    }
+    try {
+      return NextResponse.json(await readingFactory(parsed.data));
+    } catch {
+      return NextResponse.json<ApiError>({
+        error: { code: "READING_FAILED", message: "The oracle is unavailable. Please try again with the same cards." },
+      }, { status: 503 });
+    }
+  };
+}
