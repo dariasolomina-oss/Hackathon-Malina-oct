@@ -24,6 +24,12 @@ function event(id: string, start: string, end: string | null): AstroEvent {
 
 test("catalog matches the stable IDs and every artwork path exists", () => {
   assert.deepEqual(cards.map((card) => card.id), [...CARD_IDS]);
+  assert.equal(cards.length, 32);
+  for (const card of cards) {
+    assert.equal(card.id, card.name.toLowerCase().replace(/ /g, "-"));
+    assert.equal(card.image, `/cards/${card.id}.webp`);
+  }
+  assert.ok(existsSync("public/cards/back.webp"));
   assert.ok(cards.every((card) => existsSync(`public${card.image}`) && card.answerMeaning && card.recommendationMeaning));
 });
 

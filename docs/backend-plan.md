@@ -1,6 +1,6 @@
 # Backend implementation status
 
-Branch: `track/backend`, based on the shared `main` foundation.
+Backend work from `track/backend` is integrated into `main`.
 
 This document records completed backend work and the remaining integration dependencies as of October 15, 2026. The source of truth for product behavior remains [product.md](product.md), and setup details for other contributors are in [backend-handoff.md](backend-handoff.md).
 
@@ -55,8 +55,8 @@ Review generated changes before committing them. The public `events` array retai
 
 ## Remaining dependencies
 
-- The content owner must deliver the final 32-card manifest and artwork. The current 22-card catalog is provisional. Card IDs, meanings, images, contract validation, and deck tests must migrate together; backend contributors must not invent the missing cards.
-- The frontend owner must finish audience grouping, fixed-period controls, resolved-date and attribution display, retry with the same two cards, final integration, and deployment.
+- The content owner should review the integrated draft meanings and supply the remaining oracle examples and demo story. The 32-card manifest and artwork are integrated.
+- The integrated frontend implements audience grouping, fixed-period controls, resolved dates, attribution, and retry. Shared deployment remains open.
 - Three live gateway samples have been measured. Cost and broad editorial quality remain unverified; review at least one valid period per question.
 - The deployment owner must configure request and spending controls appropriate to the hosting platform. An in-memory request counter would not be a reliable global limit on serverless or multi-instance hosting.
 - The shared hosting timeout must be longer than 25 seconds, outbound access to Zodiacs.org must be available, and OpenAI quota must be checked before the demo.
@@ -70,7 +70,7 @@ npm run check
 npm run build
 ```
 
-After the final manifest arrives, verify 32 unique card IDs, artwork paths, meanings, two-card uniqueness, and role consistency. Manually verify twelve live readings across both audiences and all three periods, including a rolling annual range that crosses a year boundary. Record latency and token usage without logging credentials or full prompts.
+The integrated catalog checks cover 32 unique card IDs, matching names and artwork paths, meanings, two-card uniqueness, and role consistency. Manually verify twelve live readings across both audiences and all three periods, including a rolling annual range that crosses a year boundary. Record latency and token usage without logging credentials or full prompts.
 
 ## References
 

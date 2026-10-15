@@ -14,11 +14,11 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 
 ## Project status
 
-Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Every reading fetches source-validated calendar events from Zodiacs.org, including mock-oracle readings. The live OpenAI oracle is implemented, fake-tested, and has passed three limited gateway smoke tests. Final artwork and deployment remain track work.
+The integrated `main` combines the backend, the twilight interface from `ds-1`, and the content owner's 32-card deck from `Mashenka_Solnyshko`. Both audiences use the authoritative twelve questions, three rolling periods, and fixed-period controls. Card names, IDs, meanings, and WebP artwork come from the content manifest without renaming.
 
-The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
+The complete journey supports two ordered draws, retry with the same cards, restart, date ranges, calendar attribution, and explicit mock/live results. Every reading requests calendar data; the configured live oracle supports an OpenAI-compatible gateway. Earlier live checks used the provisional deck, so the final deck and T1A-only prompt still need a full live editorial review.
 
-Backend implementation and integration details are summarized in the [backend handoff](docs/backend-handoff.md). Automated checks cover the live-provider boundary with no-network fakes. Three live smoke readings verified the gateway path; the full twelve-question editorial review and cost evaluation remain pending.
+See [integration status and remaining work](docs/integration-status.md) and the [backend handoff](docs/backend-handoff.md).
 
 ## Run locally
 

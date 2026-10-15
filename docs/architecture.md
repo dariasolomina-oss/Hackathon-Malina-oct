@@ -8,9 +8,7 @@ This application is runnable without credentials. It defaults to a deterministic
 
 ## Scope update and migration status
 
-The target experience has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The shared contract and backend validation have migrated; audience grouping and period locking remain frontend work. The current 22-card catalog is provisional until the content owner supplies the final manifest.
-
-Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Developer 3 determines the final 32-card composition and artwork; use their manifest when migrating card IDs. No additional audience-specific deck or authentication system is needed.
+The integrated experience has Employee and Leadership audiences with six questions each, three rolling periods, and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The frontend consumes the backend's shared metadata, while card IDs, names, meanings, and images preserve the content owner's manifest.
 
 ## Flow
 
@@ -57,7 +55,7 @@ The dependency direction is `UI -> contracts/domain/content` and `API -> service
 }
 ```
 
-The field structure stays unchanged. This example is accepted by the current backend and uses revised question/period IDs with illustrative existing card IDs. The final card IDs depend on the agreed manifest.
+The field structure stays unchanged. This example is accepted by the current backend and uses revised question/period IDs with illustrative existing card IDs. Card IDs match the integrated content manifest.
 
 Each question has authoritative audience metadata and allowed period IDs in the shared catalog. The server derives audience from the validated question ID and passes it to the oracle. No separate audience field is needed in the HTTP request. Reject unsupported question-period combinations rather than silently changing the requested period.
 
@@ -83,16 +81,14 @@ The backend validates provider responses and live model output before exposing t
 
 ## Content contract
 
-The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The current 22 IDs in `src/contracts/catalog.ts` are provisional. Developer 3 (Content) decides the card composition and artwork and supplies the manifest. Frontend/backend coordinate its technical integration, then update contracts, content, images, and tests together. Preserve the integrated IDs. Do not impose creative approval gates on Developer 3.
+The shared deck has exactly 32 unique IDs, with two draws for every audience and period. `src/contracts/catalog.ts` defines IDs; `src/content/cards.ts` contains the content owner's names, meanings, and image paths. Preserve those values. Names match filenames, such as The Spark and `the-spark.webp`.
 
-Each entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
-
-Placeholder images are 600 by 900 SVGs (2:3). Final artwork may be PNG or WebP with the same ratio. Update the image path in the catalog when changing the extension. Render titles in the UI. The shared back is `public/cards/back.svg`; coordinate with the frontend owner if its path changes.
+The 32 WebP faces are 1024 by 1536 (2:3). They contain approved printed titles, so the selected-card caption shows its role without repeating the title. The shared back is `public/cards/back.webp`; `public/cards/box-cover.webp` is optional artwork. Legacy SVGs are unused by the active catalog.
 
 ## Integration status
 
 The question and period contract, fixed-period validation, request-time calendar provider, event selection, explicit oracle modes, grounded Structured Outputs adapter, controlled timeouts, and public error mapping are implemented. The checked calendar JSON is an offline fixture rather than a runtime fallback. The backend path is covered across all 36 question-period combinations with injected offline dependencies.
 
-Remaining work is cross-track: frontend audience grouping and fixed-period controls, the content owner's final 32-card manifest and artwork, shared deployment, and the full live quality review. See [backend-handoff.md](backend-handoff.md) for the integration contract.
+The frontend and content are integrated. Remaining work is shared deployment, editorial review of the supplied meanings and live readings, and demo preparation. See [backend-handoff.md](backend-handoff.md) for the integration contract.
 
 Deploy as one Node-capable Next.js service (for example, Vercel). Static-only hosting cannot run the reading route. Set the host request timeout above 25 seconds so the five-second calendar budget and subsequent 20-second oracle budget can finish with controlled responses. Deployment itself is not configured in this starter.

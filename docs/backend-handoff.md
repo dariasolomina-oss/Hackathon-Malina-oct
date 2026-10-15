@@ -60,7 +60,7 @@ HTTP 400 with `INVALID_REQUEST` means the selection is invalid. HTTP 503 with `R
 
 ## Content integration
 
-The final 32-card manifest is still pending. The current 22 cards are provisional. Deliver stable IDs, names, image paths, answer meanings, and recommendation meanings together. Coordinate one migration across `src/contracts/catalog.ts`, `src/content/cards.ts`, artwork files, and tests. Preserve exactly two distinct roles: answer first, recommendation second.
+The content owner's 32-card manifest and artwork are integrated. Preserve stable IDs, names, image paths, answer meanings, and recommendation meanings from `src/content/cards.ts`; names match the supplied filenames. The approved images already contain card titles. Preserve exactly two distinct roles: answer first, recommendation second. The earlier live checks below used provisional cards and precede the final T1A-only prompt.
 
 ## Deployment setup
 

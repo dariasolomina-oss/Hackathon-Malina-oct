@@ -13,7 +13,7 @@ The user chooses Employee or Leadership, selects a question and its allowed peri
 - A short answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
 
-The stack remains Next.js + TypeScript. The shared contract and backend now implement the twelve questions, audience metadata, three periods, and fixed-period validation. The interface migration is pending, and the current 22-card catalog remains provisional until the content owner supplies the final manifest. See [architecture.md](architecture.md) for the migration boundaries.
+The integrated Next.js + TypeScript application implements the audience/question flow, backend validation, fixed periods, and the content owner's 32-card deck. See [integration status](integration-status.md) for verification and remaining demo work.
 
 ## Question catalog
 
@@ -57,7 +57,7 @@ Use rolling periods from the request date, not the next calendar year or quarter
 
 There is one deck with exactly 32 unique cards and one shared back. Audience and period do not change the deck or the number of draws. A yearly reading still uses two cards, not one per quarter.
 
-Developer 3 (Content) determines the final composition, names, meanings, and artwork of the 32-card deck and delivers its manifest. Frontend and backend owners coordinate only technical integration: stable IDs, image paths, and data fields. Content decisions do not require their approval. Other tracks must not invent additions to the provisional 22-card catalog. Once Developer 3 supplies the manifest, synchronize ID validation, images, meanings, and tests.
+Developer 3 (Content) owns the composition, names, meanings, and artwork. Their 32-card manifest is integrated in `src/contracts/catalog.ts` and `src/content/cards.ts`. Each display name maps to its supplied filename (for example, The Spark uses `the-spark.webp`). The approved artwork contains printed titles; preserve them. The shared back is `public/cards/back.webp`, and `box-cover.webp` is available as an optional illustration. Legacy SVG files are not in the active deck.
 
 ## Reading algorithm
 

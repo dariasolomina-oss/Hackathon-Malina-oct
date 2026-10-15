@@ -101,8 +101,8 @@ test("source importer rejects station fields that contradict interval boundaries
 
 test("retrogrades outside source coverage are rejected by the importer and runtime provider", async () => {
   for (const [from, to] of [
-    ["2025-12-20T00:00:00.000Z", "2026-01-20T00:00:00.000Z"],
-    ["2026-12-20T00:00:00.000Z", "2027-01-20T00:00:00.000Z"],
+    ["2025-12-20T00:00:00.000Z", "2026-01-01T00:00:00.000Z"],
+    ["2027-01-01T00:00:00.000Z", "2027-01-20T00:00:00.000Z"],
   ]) {
     const retrogrades = retrogradeFile(2026, [{
       planet: "Mercury", from, to,
@@ -112,7 +112,7 @@ test("retrogrades outside source coverage are rejected by the importer and runti
     assert.throws(() => importCalendarSources({
       retrogrades: [retrogrades], moonPhases: [moonFile(2026)],
       retrievedAt: "2026-10-15T00:00:00.000Z",
-    }), /outside its source coverage/);
+    }), /does not overlap its source coverage/);
 
     const provider = createApiCalendarProvider({
       fetch: async (url) => sourceResponse(url.includes("retrogrades") ? retrogrades : moonFile(2026)),
@@ -121,6 +121,26 @@ test("retrogrades outside source coverage are rejected by the importer and runti
       start: "2026-01-01T00:00:00.000Z", end: "2027-01-01T00:00:00.000Z",
     }), { status: "unavailable", events: [] });
   }
+});
+
+test("API provider accepts full station intervals crossing source year boundaries", async () => {
+  const intervals = [
+    { planet: "Mercury", from: "2025-12-20T00:00:00.000Z", to: "2026-01-20T00:00:00.000Z" },
+    { planet: "Uranus", from: "2026-09-10T18:28:28.593Z", to: "2027-02-08T12:28:27.274Z" },
+  ];
+  const provider = createApiCalendarProvider({
+    fetch: async (url) => sourceResponse(url.includes("retrogrades")
+      ? retrogradeFile(2026, intervals.map((event) => ({
+        ...event, clippedStart: false, clippedEnd: false,
+        stationRetrograde: event.from, stationDirect: event.to,
+      }))) : moonFile(2026)),
+  });
+  const result = await provider.getEvents({
+    start: "2026-01-01T00:00:00.000Z", end: "2027-01-01T00:00:00.000Z",
+  });
+  assert.equal(result.status, "available");
+  assert.deepEqual(result.events.map((event) => ({ from: event.start, to: event.end })),
+    intervals.map(({ from, to }) => ({ from, to })));
 });
 
 test("source importer joins clipped cross-year segments without presenting the boundary as a station", () => {

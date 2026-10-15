@@ -9,9 +9,12 @@
     "calendar:refresh": "node --import tsx scripts/refresh-calendar.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --conditions=react-server --import tsx --test tests/*.test.ts",
-    "check": "npm run typecheck && npm test"
+    "check": "npm run typecheck && npm test",
+    "test:browser": "node --import tsx --test tests/browser/*.test.ts"
   },
-  "engines": { "node": ">=22.0.0" },
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "dependencies": {
     "next": "16.4.1",
     "openai": "^7.34.0",
@@ -25,6 +28,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "tsx": "^4.20.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "playwright": "1.63.0"
   }
 }
