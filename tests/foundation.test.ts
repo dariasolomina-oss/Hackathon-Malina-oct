@@ -22,7 +22,9 @@ function event(id: string, start: string, end: string | null): AstroEvent {
 
 test("catalog matches the stable IDs and every artwork path exists", () => {
   assert.deepEqual(cards.map((card) => card.id), [...CARD_IDS]);
-  assert.ok(cards.every((card) => existsSync(`public${card.image}`) && card.answerMeaning && card.recommendationMeaning));
+  assert.ok(cards.every((card) => existsSync(`public${card.image}`)
+    && card.meanings.employee.answer && card.meanings.employee.recommendation
+    && card.meanings.leadership.answer && card.meanings.leadership.recommendation));
 });
 
 test("deck contains each card once and does not mutate the catalog", () => {
@@ -66,6 +68,7 @@ test("service passes exact card roles and only relevant events to the oracle", a
     now: new Date("2026-10-15T12:00:00Z"),
     calendar: { async getEvents() { return { status: "available", events: [relevant, event("later", "2027-01-01T00:00:00Z", null)] }; } },
     oracle: { mode: "mock", async generate(input) {
+      assert.equal(input.audience, "employee");
       assert.equal(input.answerCard.id, "the-challenge");
       assert.equal(input.recommendationCard.id, "the-spark");
       assert.deepEqual(input.events, [relevant]);

@@ -24,7 +24,7 @@ export async function createReading(
   }));
   const events = calendar.status === "available" ? selectEvents(calendar.events, period) : [];
   const text = await dependencies.oracle.generate({
-    question: question.label, period, answerCard, recommendationCard, events,
+    audience: question.audience, question: question.label, period, answerCard, recommendationCard, events,
   });
   return {
     ...text, cosmicNote: events.length ? text.cosmicNote : null,

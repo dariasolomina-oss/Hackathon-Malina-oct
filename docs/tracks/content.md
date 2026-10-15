@@ -11,7 +11,7 @@ Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architec
 
 ## Define the 32-card manifest
 
-There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. The supplied 32 names are integrated with stable IDs, image paths, and draft answer/recommendation meanings in the shared manifest. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
+There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. The supplied 32 names are integrated with stable IDs and image paths. Employee and Leadership answer/recommendation meanings are stored per card in the shared manifest from the supplied meanings workbook. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
 
 The original 22 Major Arcana are legacy placeholders and are no longer in the active catalog. Preserve the integrated 32 IDs across artwork, code, and prompts.
 
@@ -19,7 +19,7 @@ The original 22 Major Arcana are legacy placeholders and are no longer in the ac
 
 The 32 faces and one shared back are supplied in `public/cards/` as 1024 by 1536 WebP images. They use a consistent pink-purple illustrated style and include printed titles and numerals at the content owner's direction. Keep role labels in the interface without repeating the card title. `box-cover.webp` is an optional packaging illustration and is not used by the reading flow.
 
-Provide distinct answer and recommendation meanings for each card that work for both audiences. Use audience-specific examples where helpful, without duplicating the deck. Questions and period restrictions come from the product scope: six labels per audience, three available periods, and three fixed-period exceptions.
+Keep distinct answer and recommendation meanings for each audience on every card, without duplicating the deck. Questions and period restrictions come from the product scope: six labels per audience, three available periods, and three fixed-period exceptions.
 
 Write 4-6 short oracle examples covering both audiences, all three period lengths, and the fixed-period questions. Employee examples focus on personal work; Leadership examples focus on company strategy, customer segments, growth, or motivation. Do not invent real client names, company facts, or planetary dates. The backend owner incorporates these examples into the production prompt.
 

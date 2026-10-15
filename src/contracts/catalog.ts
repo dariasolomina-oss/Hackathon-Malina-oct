@@ -13,11 +13,16 @@ export const PERIOD_IDS = ["one-month", "three-months"] as const;
 export type CardId = (typeof CARD_IDS)[number];
 export type QuestionId = (typeof QUESTION_IDS)[number];
 export type PeriodId = (typeof PERIOD_IDS)[number];
+export type Audience = "employee" | "leadership";
+
+export interface CardMeaning {
+  answer: string;
+  recommendation: string;
+}
 
 export interface Card {
   id: CardId;
   name: string;
   image: string;
-  answerMeaning: string;
-  recommendationMeaning: string;
+  meanings: Record<Audience, CardMeaning>;
 }

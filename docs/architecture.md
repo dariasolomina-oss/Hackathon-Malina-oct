@@ -85,7 +85,7 @@ The backend track should validate provider responses and live model output befor
 
 The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The final IDs are in `src/contracts/catalog.ts`, with meanings and image paths in `src/content/cards.ts`. The 32 WebP faces, shared back, and box-cover art are in `public/cards/`; the original 22 SVGs remain unused legacy assets. Preserve the integrated IDs. The artwork contains printed card titles and numerals by content-owner direction, so the interface labels the selected card's role without repeating its title.
 
-Each entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
+Each entry in `src/content/cards.ts` has a name, image path, and separate answer and recommendation meanings for Employee and Leadership. The server derives audience from the selected question and supplies it with both card meanings to the oracle. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
 
 The integrated face artwork is WebP at 1024 by 1536 (2:3). Update the image path in the manifest when replacing an asset. Card titles and numerals are part of this approved artwork. The shared back is `public/cards/back.webp`; the optional box-cover illustration is `public/cards/box-cover.webp`.
 
