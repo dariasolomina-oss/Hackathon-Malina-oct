@@ -1,9 +1,11 @@
-// Shared identifiers. Coordinate changes with all three tracks.
+// Shared identifiers for the 32-card Corporate Oracle deck.
 export const CARD_IDS = [
-  "the-fool", "the-magician", "the-high-priestess", "the-empress", "the-emperor",
-  "the-hierophant", "the-lovers", "the-chariot", "strength", "the-hermit",
-  "wheel-of-fortune", "justice", "the-hanged-man", "death", "temperance",
-  "the-devil", "the-tower", "the-star", "the-moon", "the-sun", "judgement", "the-world",
+  "the-spark", "the-crossroads", "the-momentum", "the-pause", "the-shift", "the-spotlight",
+  "the-fog", "the-bridge", "the-challenge", "the-opening", "the-turning-point", "the-balance",
+  "the-revelation", "the-growth", "the-alignment", "the-harvest", "the-focus", "the-courage",
+  "the-patience", "the-clarity", "the-connection", "the-curiosity", "the-adaptability",
+  "the-preparation", "the-voice", "the-reflection", "the-simplicity", "the-trust",
+  "the-perspective", "the-harmony", "the-experiment", "the-consistency",
 ] as const;
 
 export const QUESTION_IDS = ["project", "recognition", "career-change", "client"] as const;

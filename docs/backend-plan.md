@@ -12,12 +12,12 @@ First coordinate the revised question/period IDs and the shared 32-card manifest
 
 The source of truth is [product.md](product.md): two audiences with six exact questions each, periods of 1/3/12 months, and one shared 32-card deck. The Jira-hours and company-outlook questions are fixed to a year; changing priorities is fixed to three months. The other nine questions allow all periods. Derive audience from the question catalog and validate allowed periods on the server.
 
-The final card identities are pending the content owner's manifest. Do not assume the deck is 22 Major Arcana plus ten new cards. Update catalog validation, images, and tests together once agreed.
+The content owner has supplied and integrated the shared 32-card manifest. Preserve its IDs and use the current catalog, meanings, and image paths in validation, prompts, and tests.
 
 ## Already available in the legacy starter
 
 - `POST /api/readings` with request validation and public error responses.
-- A provisional catalog of 22 cards with separate answer and recommendation meanings; migration to the agreed 32-card deck is required.
+- An integrated 32-card catalog with separate answer and recommendation meanings and artwork; keep its IDs stable.
 - One- and three-month calculation with month-end clamping; add the twelve-month case and leap-day tests.
 - Overlap selection for events, including retrogrades already in progress.
 - Injectable provider interfaces and foundation tests.
@@ -64,14 +64,14 @@ The 2026 retrograde file clips some intervals at year boundaries and marks them 
 
 | Step | Work | Completion evidence |
 | --- | --- | --- |
-| 0. Shared scope migration | Add the twelve question IDs, audience/allowed-period metadata, and annual date calculation; reject fixed-period mismatches; synchronize the agreed 32-card manifest with frontend/content owners | All valid question-period combinations work, invalid ones fail, and the deck matches the agreed manifest |
+| 0. Shared scope migration | Add the twelve question IDs, audience/allowed-period metadata, and annual date calculation; reject fixed-period mismatches; preserve the integrated 32-card manifest | All valid question-period combinations work, invalid ones fail, and the deck remains stable |
 | 1. Configuration and live card-only reading | Add explicit mock/live selection, a server-only AI client, a basic prompt, and structured response parsing | A real request returns the expected three text fields with `meta.mode: live` |
 | 2. Verified calendar snapshot | Validate source data, normalize dates, preserve sources/coverage, and save a small reusable snapshot covering supported demo dates | Known dates and cross-year ranges return the correct overlapping events |
 | 3. Combined oracle | Supply audience, card roles, meanings, exact question, dates, and up to three selected events; incorporate the editorial voice | One coherent reading uses both cards and references only supplied events |
 | 4. Reliability | Add bounded timeouts, malformed-output handling, provider error mapping, and metadata-only diagnostics | Failures are controlled and retryable; a failed AI call never turns into a sample |
 | 5. Integration and handoff | Verify both audiences, all twelve questions, all three periods and fixed-period rules, and the shared deployed endpoint with the frontend owner | The full live journey works from the shared URL |
 
-Target: shared question/period migration and steps 1-3 on day 1; steps 4-5 and prompt refinement on day 2. The content owner can prepare the 32-card manifest in parallel; use clearly provisional existing cards for provider development until it is agreed. Get the first real card-only reading working before spending time on advanced event selection.
+Target: shared question/period migration and steps 1-3 on day 1; steps 4-5 and prompt refinement on day 2. The 32-card manifest is already available for provider development. Get the first real card-only reading working before spending time on advanced event selection.
 
 ## Calendar implementation approach
 
@@ -105,19 +105,19 @@ Use a maximum server request budget below the browser's existing 30-second timeo
 - `tests/`: provider validation, failure, and grounding checks.
 - `.env.example`, `package.json`, and the lockfile: coordinated setup changes only.
 
-The new scope explicitly requires a coordinated question/period/card ID migration in `src/contracts`. Preserve the HTTP field structure and synchronize frontend defaults, content, fixtures, and examples; after that migration keep the agreed identifiers stable. Content contributors own artwork and editorial catalogs; consume those files rather than duplicating them in the backend.
+The new scope explicitly requires a coordinated question/period ID migration in `src/contracts`; the 32 card IDs are already integrated. Preserve the HTTP field structure and synchronize frontend defaults, content, fixtures, and examples; keep all integrated identifiers stable. Content contributors own artwork and editorial catalogs; consume those files rather than duplicating them in the backend.
 
 ## Validation and readiness
 
 Keep the existing nine tests and add cases for invalid source payloads, missing coverage, clipped/year-crossing intervals, duplicate events, missing live configuration, timeouts, refusal/incomplete model output, invalid event references, and no-event readings. Automated tests should use injected fakes and fixtures, not paid live calls.
 
-Test all 36 question-period combinations without paid calls: 30 valid and six invalid because of fixed-period restrictions. Validate exactly 32 unique catalog entries once the manifest is agreed. Manually review at least twelve live examples, one per question, distributing the flexible questions across all three periods and obeying fixed-period rules. Include an annual range spanning two calendar years and verify audience-specific tone. Check card roles, relevance, English tone, length, supplied dates, and absence of unsupported predictions. Record observed latency and usage. Run `npm run check` and `npm run build` before handoff.
+Test all 36 question-period combinations without paid calls: 30 valid and six invalid because of fixed-period restrictions. Validate that the integrated catalog has exactly 32 unique entries and every image path loads. Manually review at least twelve live examples, one per question, distributing the flexible questions across all three periods and obeying fixed-period rules. Include an annual range spanning two calendar years and verify audience-specific tone. Check card roles, relevance, English tone, length, supplied dates, and absence of unsupported predictions. Record observed latency and usage. Run `npm run check` and `npm run build` before handoff.
 
 For the shared demo, verify available API quota, server-only configuration, request limits appropriate to the deployment, and hosting timeout settings. A local memory counter is not a reliable global spending limit on serverless hosting. Keep logs to request IDs, status, duration, and usage rather than credentials or full prompt bodies.
 
 ## First implementation task
 
-First migrate the question catalog, audience metadata, fixed-period validation, and annual date calculation with the frontend owner. Then add provider configuration and one live card-only reading behind the existing endpoint. Confirm and integrate the full 32-card manifest with the content owner when available. The user needs to prepare an API project/key; calendar normalization and tests can proceed independently while that is being configured.
+First migrate the question catalog, audience metadata, fixed-period validation, and annual date calculation with the frontend owner. Then add provider configuration and one live card-only reading behind the existing endpoint using the integrated 32-card catalog. The user needs to prepare an API project/key; calendar normalization and tests can proceed independently while that is being configured.
 
 ## References
 

@@ -16,7 +16,7 @@ Technical contributor 1 owns the final integrated build. Technical contributor 2
 
 Both audiences use one 32-card deck and two draws. Employee and Leadership each have six exact questions. Periods are one month, three months, and one year, with three fixed-period exceptions defined in [product.md](product.md).
 
-Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Developer 3 (Content) determines the 32-card composition, meanings, and artwork, and preserves the supplied question labels. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions. The manifest is still pending; the current 22-card code is provisional.
+Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Developer 3 (Content) determines the 32-card composition, meanings, and artwork, and preserves the supplied question labels. The 32-card manifest and artwork are integrated; the question/period catalog migration remains pending. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions.
 
 ## Agree before splitting work
 
@@ -25,7 +25,7 @@ Backend owns shared validation, audience derivation, annual calculation, and cal
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.
 
-The starter establishes data types and placeholder paths, but its four questions, two periods, and 22 cards predate the updated scope. Migrate question/period identifiers and the agreed 32-card manifest together; preserve those identifiers after migration. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
+The starter's four questions and two periods predate the updated scope. Migrate question/period identifiers and metadata together; preserve the integrated 32 card IDs. The card artwork includes printed names and numerals, so the interface displays the draw role without repeating the card name.
 
 ## Working with Codex
 

@@ -15,7 +15,7 @@ Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architec
 - Keep the HTTP request field structure unchanged. Derive Employee/Leadership from the validated question ID; do not trust a separate free-form role or question label from the client.
 - Add `one-year` as twelve calendar months using existing UTC/month-end conventions. The current two-way month calculation must become explicit for all three options.
 - Enforce fixed periods: `employee-jira-hours` and `leadership-company-outlook` require `one-year`; `leadership-changing-priorities` requires `three-months`. Return HTTP 400/`INVALID_REQUEST` for mismatches.
-- Replace provisional card validation with the agreed 32-card manifest, preserving distinct answer and recommendation roles. Do not invent the missing card identities.
+- Use the integrated 32-card manifest for validation, preserving distinct answer and recommendation roles. Keep those card IDs stable.
 - Coordinate the ID migration with frontend defaults, content, tests, and API examples in one integrated change.
 
 ## Connect providers

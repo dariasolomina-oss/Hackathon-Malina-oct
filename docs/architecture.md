@@ -8,9 +8,9 @@ This starter is runnable without credentials. It intentionally uses a determinis
 
 ## Scope update and migration status
 
-The target experience now has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The current code still has four ungrouped questions, two periods, and 22 provisional placeholder cards. This document distinguishes the target contract from that runnable legacy starter.
+The target experience now has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The 32-card manifest and artwork are integrated; the current code still has four ungrouped questions and two periods. This document distinguishes the target contract from that runnable legacy starter.
 
-Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Developer 3 determines the final 32-card composition and artwork; use their manifest when migrating card IDs. No additional audience-specific deck or authentication system is needed.
+Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Preserve the integrated 32-card manifest and IDs during that work. No additional audience-specific deck or authentication system is needed.
 
 ## Flow
 
@@ -52,12 +52,12 @@ The dependency direction is `UI -> contracts/domain/content` and `API -> service
 {
   "questionId": "employee-jira-hours",
   "periodId": "one-year",
-  "answerCardId": "the-tower",
-  "recommendationCardId": "the-magician"
+  "answerCardId": "the-challenge",
+  "recommendationCardId": "the-spark"
 }
 ```
 
-The field structure stays unchanged. The target example uses revised question/period IDs and illustrative existing card IDs; the final card IDs depend on the agreed manifest. It is not accepted by the legacy starter until migration. The README preserves a working legacy curl example during this transition.
+The field structure stays unchanged. The target example uses revised question/period IDs, which are not accepted until question/period migration, and the integrated card IDs. The README preserves a working legacy curl example during this transition.
 
 Each question has authoritative audience metadata and allowed period IDs in the shared catalog. The server derives audience from the validated question ID and passes it to the oracle. No separate audience field is needed in the HTTP request. Reject unsupported question-period combinations rather than silently changing the requested period.
 
@@ -83,15 +83,15 @@ The backend track should validate provider responses and live model output befor
 
 ## Content contract
 
-The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The current 22 IDs in `src/contracts/catalog.ts` are provisional. Developer 3 (Content) decides the card composition and artwork and supplies the manifest. Frontend/backend coordinate its technical integration, then update contracts, content, images, and tests together. Preserve the integrated IDs. Do not impose creative approval gates on Developer 3.
+The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The final IDs are in `src/contracts/catalog.ts`, with meanings and image paths in `src/content/cards.ts`. The 32 WebP faces, shared back, and box-cover art are in `public/cards/`; the original 22 SVGs remain unused legacy assets. Preserve the integrated IDs. The artwork contains printed card titles and numerals by content-owner direction, so the interface labels the selected card's role without repeating its title.
 
 Each entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
 
-Placeholder images are 600 by 900 SVGs (2:3). Final artwork may be PNG or WebP with the same ratio. Update the image path in the catalog when changing the extension. Render titles in the UI. The shared back is `public/cards/back.svg`; coordinate with the frontend owner if its path changes.
+The integrated face artwork is WebP at 1024 by 1536 (2:3). Update the image path in the manifest when replacing an asset. Card titles and numerals are part of this approved artwork. The shared back is `public/cards/back.webp`; the optional box-cover illustration is `public/cards/box-cover.webp`.
 
 ## Implementation sequence
 
-1. Coordinate the revised question/period catalog and the final 32-card manifest, then migrate shared contracts, UI defaults, content, and tests together. All contributors start from that integrated revision.
+1. Coordinate the revised question/period catalog and migrate shared contracts, UI defaults, content, and tests together. Preserve the integrated 32-card manifest. All contributors start from that integrated revision.
 2. Frontend refines the experience against the mock provider.
 3. Backend implements verified calendar and live oracle adapters behind the existing interfaces.
 4. Content replaces placeholder art and refines meanings and voice examples.

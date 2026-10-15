@@ -13,7 +13,7 @@ The user chooses Employee or Leadership, selects a question and its allowed peri
 - A short answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
 
-The stack remains Next.js + TypeScript. The current starter still has four ungrouped questions, two periods, and 22 placeholder cards. These revised requirements are not yet implemented in application code. See [architecture.md](architecture.md) for the migration boundaries.
+The stack remains Next.js + TypeScript. The shared 32-card deck is implemented. The current application still has four ungrouped questions and two periods; the revised audience and question flow and fixed-period rules are not yet implemented. See [architecture.md](architecture.md) for the remaining migration boundaries.
 
 ## Question catalog
 
@@ -57,7 +57,7 @@ Use rolling periods from the request date, not the next calendar year or quarter
 
 There is one deck with exactly 32 unique cards and one shared back. Audience and period do not change the deck or the number of draws. A yearly reading still uses two cards, not one per quarter.
 
-Developer 3 (Content) determines the final composition, names, meanings, and artwork of the 32-card deck and delivers its manifest. Frontend and backend owners coordinate only technical integration: stable IDs, image paths, and data fields. Content decisions do not require their approval. Other tracks must not invent additions to the provisional 22-card catalog. Once Developer 3 supplies the manifest, synchronize ID validation, images, meanings, and tests.
+Developer 3 (Content) determines the composition, names, meanings, and artwork of the shared deck. The 32 supplied card names and their technical IDs are integrated in `src/contracts/catalog.ts` and `src/content/cards.ts`; each image is stored in `public/cards/`. The original 22 Major Arcana are provisional legacy assets and are no longer in the active catalog. Frontend and backend owners coordinate technical integration without redefining the creative content.
 
 ## Reading algorithm
 
