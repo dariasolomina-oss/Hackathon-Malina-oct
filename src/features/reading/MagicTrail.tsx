@@ -34,7 +34,7 @@ export function MagicTrail() {
     const colors = ["#F5F1EA", "#E0AE55", "#CF6A4E"];
 
     function resize() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const dpr = Math.min(1.25, Math.max(1, window.devicePixelRatio || 1));
       width = window.innerWidth;
       height = window.innerHeight;
       canvas!.width = Math.round(width * dpr);
