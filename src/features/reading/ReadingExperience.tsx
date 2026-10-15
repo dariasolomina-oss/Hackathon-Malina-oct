@@ -31,7 +31,7 @@ export function ReadingExperience() {
     <p className="eyebrow">MALINA / CORPORATE ORACLE</p>
     <h1>The stars have reviewed<br />your performance.</h1>
     <p>Choose a question. Draw two cards. Get a little perspective.</p>
-    <p className="notice">Development starter: sample oracle text and placeholder artwork. Live AI and calendar are not connected.</p>
+    <p className="notice">Development starter: readings use sample text. Live AI and astrology calendar are not connected.</p>
 
     <fieldset disabled={deck.length > 0}>
       <legend>Your question</legend>
@@ -51,8 +51,8 @@ export function ReadingExperience() {
         return <button className="card" key={id} disabled={position >= 0 || chosen.length === 2 || busy}
           aria-label={position >= 0 ? `${position === 0 ? "Answer" : "Recommendation"}: ${card.name}` : `Draw face-down card ${index + 1}`}
           onClick={() => setChosen((previous) => previous.length < 2 && !previous.includes(id) ? [...previous, id] : previous)}>
-          <img src={position >= 0 ? card.image : "/cards/back.svg"} alt="" width="120" height="180" />
-          <span>{position >= 0 ? `${position === 0 ? "Answer" : "Advice"}: ${card.name}` : "Draw"}</span>
+          <img src={position >= 0 ? card.image : "/cards/back.webp"} alt="" width="120" height="180" />
+          <span>{position >= 0 ? (position === 0 ? "Answer" : "Recommendation") : "Draw"}</span>
         </button>;
       })}</div>
     </section>}

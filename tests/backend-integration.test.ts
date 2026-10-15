@@ -12,8 +12,8 @@ import type { OracleInput, OracleProvider } from "../src/server/providers/types"
 const fixedNow = new Date("2026-10-15T12:00:00.000Z");
 const offlineCalendar = createSnapshotCalendarProvider(snapshotJson);
 const cards = {
-  answerCardId: "the-tower",
-  recommendationCardId: "the-magician",
+  answerCardId: "the-challenge",
+  recommendationCardId: "the-spark",
 } as const;
 
 function readingRequest(questionId: ReadingRequest["questionId"], periodId: ReadingRequest["periodId"]): Request {

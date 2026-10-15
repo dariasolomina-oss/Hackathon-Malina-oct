@@ -50,7 +50,7 @@ With the development server running:
 ```bash
 curl http://localhost:3000/api/readings \
   -H 'Content-Type: application/json' \
-  -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
+  -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-challenge","recommendationCardId":"the-spark"}'
 ```
 
 The response reports `meta.mode: "mock"`. The server still requests calendar data for the resolved period. A source failure, invalid response, incomplete coverage, or five-second calendar deadline returns a card-only reading with `meta.calendarStatus: "unavailable"`.

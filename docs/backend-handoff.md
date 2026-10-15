@@ -20,8 +20,8 @@ Send the two revealed cards in click order and keep them unchanged on retry:
 {
   "questionId": "employee-jira-hours",
   "periodId": "one-year",
-  "answerCardId": "the-tower",
-  "recommendationCardId": "the-magician"
+  "answerCardId": "the-challenge",
+  "recommendationCardId": "the-spark"
 }
 ```
 
@@ -35,8 +35,8 @@ A successful response follows this shape:
   "request": {
     "questionId": "employee-jira-hours",
     "periodId": "one-year",
-    "answerCardId": "the-tower",
-    "recommendationCardId": "the-magician"
+    "answerCardId": "the-challenge",
+    "recommendationCardId": "the-spark"
   },
   "period": {
     "start": "2026-10-15T00:00:00.000Z",

@@ -14,7 +14,7 @@ import { createReadingsPost } from "../src/server/readings-handler";
 const offlineCalendar = { async getEvents() { return { status: "available" as const, events: [] }; } };
 
 const request: ReadingRequest = {
-  questionId: "employee-project-deadline", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
+  questionId: "employee-project-deadline", periodId: "one-month", answerCardId: "the-challenge", recommendationCardId: "the-spark",
 };
 // Synthetic event dates are used only in tests, never in the product calendar.
 function event(id: string, start: string, end: string | null): AstroEvent {
@@ -65,14 +65,14 @@ test("question-period validation accepts 30 combinations and rejects the six fix
 
 test("deck contains each card once and does not mutate the catalog", () => {
   const deck = shuffleDeck(() => 0);
-  assert.equal(new Set(deck).size, 22);
+  assert.equal(new Set(deck).size, 32);
   assert.deepEqual([...deck].sort(), [...CARD_IDS].sort());
-  assert.equal(CARD_IDS[0], "the-fool");
+  assert.equal(CARD_IDS[0], "the-spark");
 });
 
 test("request rejects duplicates, unknown IDs, and extra fields", () => {
   assert.ok(readingRequestSchema.safeParse(request).success);
-  assert.equal(readingRequestSchema.safeParse({ ...request, recommendationCardId: "the-tower" }).success, false);
+  assert.equal(readingRequestSchema.safeParse({ ...request, recommendationCardId: "the-challenge" }).success, false);
   assert.equal(readingRequestSchema.safeParse({ ...request, questionId: "unknown" }).success, false);
   assert.equal(readingRequestSchema.safeParse({ ...request, inventedEvent: "Venus" }).success, false);
 });
@@ -110,8 +110,8 @@ test("service passes exact card roles and only relevant events to the oracle", a
     oracle: { mode: "mock", async generate(input) {
       assert.equal(input.audience, "employee");
       assert.equal(input.question, "Will I be able to finish my project on time?");
-      assert.equal(input.answerCard.id, "the-tower");
-      assert.equal(input.recommendationCard.id, "the-magician");
+      assert.equal(input.answerCard.id, "the-challenge");
+      assert.equal(input.recommendationCard.id, "the-spark");
       assert.deepEqual(input.events, [relevant]);
       return { answer: "Answer", recommendation: "Advice", cosmicNote: "Test note" };
     } },
@@ -140,8 +140,8 @@ test("calendar failure produces an explicitly card-only mock reading", async () 
   assert.equal(result.meta.mode, "mock");
   assert.deepEqual(result.events, []);
   assert.equal(result.cosmicNote, null);
-  assert.match(result.answer, /The Tower/);
-  assert.match(result.recommendation, /The Magician/);
+  assert.match(result.answer, /The Challenge/);
+  assert.match(result.recommendation, /The Spark/);
 });
 
 test("oracle failures propagate instead of silently switching to a sample", async () => {

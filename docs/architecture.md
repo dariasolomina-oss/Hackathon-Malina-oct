@@ -52,8 +52,8 @@ The dependency direction is `UI -> contracts/domain/content` and `API -> service
 {
   "questionId": "employee-jira-hours",
   "periodId": "one-year",
-  "answerCardId": "the-tower",
-  "recommendationCardId": "the-magician"
+  "answerCardId": "the-challenge",
+  "recommendationCardId": "the-spark"
 }
 ```
 

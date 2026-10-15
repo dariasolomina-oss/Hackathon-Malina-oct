@@ -34,8 +34,8 @@ const input: OracleInput = {
   audience: "leadership",
   question: "What should be our top strategic priority?",
   period,
-  answerCard: cards.find((card) => card.id === "the-tower")!,
-  recommendationCard: cards.find((card) => card.id === "the-magician")!,
+  answerCard: cards.find((card) => card.id === "the-challenge")!,
+  recommendationCard: cards.find((card) => card.id === "the-spark")!,
   events: [suppliedEvent],
 };
 
