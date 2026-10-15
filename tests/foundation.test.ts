@@ -12,7 +12,7 @@ import { oracleProvider } from "../src/server/providers/oracle";
 import { POST } from "../src/app/api/readings/route";
 
 const request: ReadingRequest = {
-  questionId: "project", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
+  questionId: "employee-project-on-time", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
 };
 // Synthetic event dates are used only in tests, never in the product calendar.
 function event(id: string, start: string, end: string | null): AstroEvent {
@@ -27,7 +27,8 @@ test("catalog matches the stable IDs and every artwork path exists", () => {
 
 test("deck contains each card once and does not mutate the catalog", () => {
   const deck = shuffleDeck(() => 0);
-  assert.equal(new Set(deck).size, 22);
+  assert.equal(CARD_IDS.length, 32);
+  assert.equal(new Set(deck).size, 32);
   assert.deepEqual([...deck].sort(), [...CARD_IDS].sort());
   assert.equal(CARD_IDS[0], "the-fool");
 });

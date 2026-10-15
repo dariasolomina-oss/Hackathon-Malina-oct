@@ -10,7 +10,7 @@ This starter is runnable without credentials. It intentionally uses a determinis
 
 ```mermaid
 flowchart LR
-  UI[Question and period] --> Deck[Reveal two cards]
+  UI[Deck, question, and period] --> Deck[Reveal two cards]
   Deck --> API[POST /api/readings]
   API --> Validate[Validate shared contract]
   Validate --> Service[Reading service]
@@ -44,14 +44,14 @@ The dependency direction is `UI -> contracts/domain/content` and `API -> service
 
 ```json
 {
-  "questionId": "project",
+  "questionId": "employee-project-on-time",
   "periodId": "one-month",
   "answerCardId": "the-tower",
   "recommendationCardId": "the-magician"
 }
 ```
 
-The response contains `answer`, `recommendation`, nullable `cosmicNote`, the original `request`, the resolved `period`, the selected `events`, and `meta` with oracle mode and calendar status. The exact types live in `src/contracts/reading.ts`; use them rather than creating a second schema.
+`questionId` identifies one of the Employee Arcana or Leadership Arcana questions. The response contains `answer`, `recommendation`, nullable `cosmicNote`, the original `request`, the resolved `period`, the selected `events`, and `meta` with oracle mode and calendar status. The exact types live in `src/contracts/reading.ts`; use them rather than creating a second schema.
 
 - `200`: reading generated; `meta.mode` is `mock` or `live`.
 - `400`: `{ "error": { "code": "INVALID_REQUEST", "message": "..." } }`.
@@ -61,7 +61,7 @@ The response contains `answer`, `recommendation`, nullable `cosmicNote`, the ori
 
 ## Dates and events
 
-The server starts the range at midnight UTC on the request date. A month means a calendar month, with month-end clamping (January 31 + one month becomes February 28 or 29). All ranges are start-inclusive and end-exclusive. The response is the authoritative resolved period.
+The server starts the range at midnight UTC on the request date. Month periods use calendar-month arithmetic with month-end clamping (January 31 + one month becomes February 28 or 29). The year period is twelve calendar months. All ranges are start-inclusive and end-exclusive. The response is the authoritative resolved period.
 
 Calendar providers must normalize dates to ISO UTC, retain source URLs, and indicate incomplete or unavailable coverage. An available empty result means the provider actually covers the period and found no events. The initial unavailable provider makes no such claim.
 
@@ -71,7 +71,7 @@ The backend track should validate provider responses and live model output befor
 
 ## Content contract
 
-All 22 IDs are fixed in `src/contracts/catalog.ts`. Each card entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Edit meanings and artwork without changing IDs.
+All 32 IDs are fixed in `src/contracts/catalog.ts`: the 22 Major Arcana and ten selected Minor Arcana. Each card entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Edit meanings and artwork without changing IDs.
 
 Placeholder images are 600 by 900 SVGs (2:3). Final artwork may be PNG or WebP with the same ratio. Update the image path in the catalog when changing the extension. Render titles in the UI. The shared back is `public/cards/back.svg`; coordinate with the frontend owner if its path changes.
 

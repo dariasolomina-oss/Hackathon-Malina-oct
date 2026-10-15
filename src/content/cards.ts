@@ -155,5 +155,75 @@ export const cards = [
     "image": "/cards/the-world.svg",
     "answerMeaning": "Completion and a broader perspective are within the story.",
     "recommendationMeaning": "Define what done means and close the remaining loose ends."
+  },
+  {
+    "id": "ace-of-pentacles",
+    "name": "Ace of Pentacles",
+    "image": "/cards/ace-of-pentacles.svg",
+    "answerMeaning": "A practical opportunity is taking shape, though it still needs a plan.",
+    "recommendationMeaning": "Turn the promising idea into a first step with an owner and a date."
+  },
+  {
+    "id": "three-of-pentacles",
+    "name": "Three of Pentacles",
+    "image": "/cards/three-of-pentacles.svg",
+    "answerMeaning": "Good work depends on different skills coming together.",
+    "recommendationMeaning": "Ask for specific feedback and agree how the pieces fit."
+  },
+  {
+    "id": "eight-of-pentacles",
+    "name": "Eight of Pentacles",
+    "image": "/cards/eight-of-pentacles.svg",
+    "answerMeaning": "Steady practice is building quality, even if progress feels incremental.",
+    "recommendationMeaning": "Protect focused time and make the next improvement measurable."
+  },
+  {
+    "id": "two-of-wands",
+    "name": "Two of Wands",
+    "image": "/cards/two-of-wands.svg",
+    "answerMeaning": "A choice between a familiar route and a larger ambition is emerging.",
+    "recommendationMeaning": "Compare the options against one clear priority before committing."
+  },
+  {
+    "id": "three-of-wands",
+    "name": "Three of Wands",
+    "image": "/cards/three-of-wands.svg",
+    "answerMeaning": "Early plans are reaching beyond the immediate team or task.",
+    "recommendationMeaning": "Check who needs to be involved next and what they need from you."
+  },
+  {
+    "id": "eight-of-wands",
+    "name": "Eight of Wands",
+    "image": "/cards/eight-of-wands.svg",
+    "answerMeaning": "Several messages or decisions may arrive in quick succession.",
+    "recommendationMeaning": "Respond to the essential next step and keep the rest in a clear queue."
+  },
+  {
+    "id": "six-of-swords",
+    "name": "Six of Swords",
+    "image": "/cards/six-of-swords.svg",
+    "answerMeaning": "A difficult stretch is giving way to a more workable approach.",
+    "recommendationMeaning": "Carry forward the useful lessons and leave the unhelpful process behind."
+  },
+  {
+    "id": "page-of-swords",
+    "name": "Page of Swords",
+    "image": "/cards/page-of-swords.svg",
+    "answerMeaning": "Curiosity and fresh questions can uncover an important detail.",
+    "recommendationMeaning": "Check the source, ask directly, and share what you learn clearly."
+  },
+  {
+    "id": "queen-of-swords",
+    "name": "Queen of Swords",
+    "image": "/cards/queen-of-swords.svg",
+    "answerMeaning": "Clear judgment and honest communication matter more than pleasing everyone.",
+    "recommendationMeaning": "State the constraint plainly and make your recommendation with evidence."
+  },
+  {
+    "id": "ten-of-wands",
+    "name": "Ten of Wands",
+    "image": "/cards/ten-of-wands.svg",
+    "answerMeaning": "Too many responsibilities may have accumulated around one person.",
+    "recommendationMeaning": "Name what can be delegated, delayed, or dropped before taking on more."
   }
 ] satisfies Card[];

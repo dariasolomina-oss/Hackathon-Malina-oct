@@ -6,7 +6,7 @@ Starting token: `ODYSSEY-2026-UNLEASH-THE-GODS`
 
 ## User journey
 
-1. Choose a workplace question and a time period.
+1. Choose Employee Arcana or Leadership Arcana, then choose a question and time period.
 2. Draw two different cards: one answers the question, the other suggests what to do.
 3. Read a short AI-generated interpretation with relevant calendar events woven into the story.
 
@@ -50,7 +50,7 @@ With the development server running:
 ```bash
 curl http://localhost:3000/api/readings \
   -H 'Content-Type: application/json' \
-  -d '{"questionId":"project","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
+  -d '{"questionId":"employee-project-on-time","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
 ```
 
 The response reports `meta.mode: "mock"` and `meta.calendarStatus: "unavailable"`. This is intentional. The starter makes no external AI or calendar requests.

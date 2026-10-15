@@ -2,15 +2,35 @@
 
 ## Core experience
 
-The user selects one of three or four workplace questions and a period, draws two cards, and receives a human-sounding corporate oracle reading. The first card answers the question; the second recommends an action. Relevant astrological events enrich the same narrative.
+The user selects Employee Arcana or Leadership Arcana, chooses a question and period, draws two cards, and receives a human-sounding corporate oracle reading. The first card answers the question; the second recommends an action. Relevant astrological events enrich the same narrative.
 
 ## Proposed MVP defaults
 
-- Four questions: project outlook, recognition or promotion, changing jobs or teams, and client negotiations.
-- Two periods: the next month and the next three months, displayed as explicit dates.
-- A deck of 22 Major Arcana, upright only, with no repeated card within a reading.
+- Six fixed questions for each audience: project delivery, recognition, performance review, new projects, and time management for employees; company outlook, customer attraction, growth, team motivation, and strategy for leadership.
+- Three periods: the next month, next three months, and next year, displayed as explicit dates.
+- A 32-card upright deck: all 22 Major Arcana and ten selected Minor Arcana, with no repeated card within a reading.
 - A short result with an answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
+
+### Fixed questions
+
+Employee Arcana:
+
+1. Will I be able to finish my project on time?
+2. Will my hard work be recognized?
+3. How will my performance review go?
+4. Will an exciting new project come my way soon?
+5. Will I finally manage to log my hours in Jira on time?
+6. Will I ever have a week without surprise meetings?
+
+Leadership Arcana:
+
+1. What does the next year hold for our company?
+2. Which customers should we focus on attracting?
+3. What new growth opportunities are on the horizon?
+4. How can we strengthen our team and keep everyone motivated?
+5. What should be our top strategic priority?
+6. Will we finally make it through a quarter without changing our priorities?
 
 These defaults are implemented in the starter. The stack is Next.js + TypeScript; see [architecture.md](architecture.md). Final visual style and editorial wording remain track work.
 
