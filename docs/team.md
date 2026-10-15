@@ -12,14 +12,20 @@ The runnable foundation and fixed boundaries are documented in [architecture.md]
 
 Technical contributor 1 owns the final integrated build. Technical contributor 2 owns the data exchange format and production oracle prompt. The content contributor supplies examples and editorial feedback for that prompt.
 
+## Updated shared scope
+
+Both audiences use one 32-card deck and two draws. Employee and Leadership each have six exact questions. Periods are one month, three months, and one year, with three fixed-period exceptions defined in [product.md](product.md).
+
+Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Content owns the complete 32-card manifest, artwork, and exact labels. Coordinate catalog IDs and fixtures before integrating the revised experience. The manifest is still pending; the current 22-card code is provisional.
+
 ## Agree before splitting work
 
-- Final questions, period options, and the shared list of card IDs.
+- Use the twelve exact questions and allowed periods from the product scope; agree the still-pending 32-card manifest.
 - Input and output fields between the interface and reading logic, with one sample request and response.
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.
 
-The starter establishes shared IDs, data types, artwork paths, and default question wording. Refine wording and visuals without changing IDs. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
+The starter establishes data types and placeholder paths, but its four questions, two periods, and 22 cards predate the updated scope. Migrate question/period identifiers and the agreed 32-card manifest together; preserve those identifiers after migration. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
 
 ## Working with Codex
 
@@ -37,4 +43,4 @@ Integrate small completed changes several times a day. Coordinate changes to sha
 | Day 2, first half | Final assets, improved readings, mobile layout, and error handling |
 | Final 3-4 hours | Fixes, stability checks, and demo rehearsal; no new features |
 
-At each checkpoint, check all question types, two-card uniqueness, role consistency, date overlap, and behavior when a service fails. Prioritize a complete working journey over additional effects or event types.
+At each checkpoint, check both audiences, exact question lists, fixed-period restrictions, all three date ranges, the 32-card catalog, two-card uniqueness and role consistency, annual calendar coverage, and service failures. Prioritize a complete working journey over additional effects or event types.

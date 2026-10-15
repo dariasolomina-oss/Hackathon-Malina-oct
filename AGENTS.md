@@ -6,6 +6,7 @@
 - Keep explanations short and precise. Explain behavior and algorithms for an analyst; avoid unnecessary implementation details.
 - Optimize for a working two-day hackathon demo. Prefer small changes and reuse the existing stack once it is established.
 - Keep work within the assigned area. Preserve other contributors' changes and coordinate changes to shared formats and project configuration.
+- Follow `docs/product.md` for the revised two-audience, twelve-question, three-period scope and fixed-period rules. The target deck has 32 cards; its final manifest is pending, and the current 22-card starter is provisional. Coordinate the shared ID migration before treating new IDs as implemented.
 - Use the same card IDs and meanings across artwork, selection logic, and oracle prompts. A reading contains exactly two distinct cards with fixed roles: answer and recommendation.
 - Pass verified, dated event data to the AI. Never ask it to invent planetary events or favorable date ranges. Separate astronomical facts from playful interpretations.
 - Keep API credentials on the server and out of version control. Track placeholder configuration only.

@@ -6,8 +6,8 @@ Starting token: `ODYSSEY-2026-UNLEASH-THE-GODS`
 
 ## User journey
 
-1. Choose a workplace question and a time period.
-2. Draw two different cards: one answers the question, the other suggests what to do.
+1. Choose Employee or Leadership, then one of its six questions and an allowed time period (one month, three months, or one year).
+2. Draw two different cards from one shared 32-card deck: one answers the question, the other suggests what to do.
 3. Read a short AI-generated interpretation with relevant calendar events woven into the story.
 
 The cards establish the story; astrological events add timing and atmosphere. This is an entertainment experience, not a factual prediction.
@@ -15,6 +15,8 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 ## Project status
 
 Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Live AI, verified event data, final artwork, and deployment remain track work.
+
+The updated target scope is documented in [product scope](docs/product.md). Application code has not yet migrated: it still uses four ungrouped questions, two periods, and 22 placeholder cards. The final 32-card manifest is pending. Three target questions have fixed periods, as defined in the product scope.
 
 ## Run locally
 
@@ -37,7 +39,7 @@ npm start
 
 ## Try the API independently
 
-With the development server running:
+Legacy starter example (still valid before the revised IDs are implemented), with the development server running:
 
 ```bash
 curl http://localhost:3000/api/readings \
