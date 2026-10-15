@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Corporate Oracle | Malina", description: "Two cards. One workplace question. A little cosmic perspective.",
+  title: "Malina Oracle — A little perspective for the working week",
+  description: "Bring a work question. Draw two cards. Leave with a fresh perspective.",
 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en"><body>{children}</body></html>;

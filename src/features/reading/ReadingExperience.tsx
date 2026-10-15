@@ -64,7 +64,7 @@ export function ReadingExperience() {
 
     <div className="experience">
       <nav className="steps" aria-label="Reading steps">
-        {["Set your question", "Draw two cards", "Read your oracle"].map((label, index) => <div className={`step ${step >= index + 1 ? "is-current" : ""} ${step > index + 1 ? "is-complete" : ""}`} key={label}>
+        {["Set your question", "Draw two cards", "Read your oracle"].map((label, index) => <div className={`step ${step >= index + 1 ? "is-current" : ""} ${step > index + 1 ? "is-complete" : ""}`} aria-current={step === index + 1 ? "step" : undefined} key={label}>
           <span className="step-number">{step > index + 1 ? "✓" : `0${index + 1}`}</span><span>{label}</span>
         </div>)}
       </nav>
@@ -83,7 +83,7 @@ export function ReadingExperience() {
         </div>
       </section>}
 
-      {!!deck.length && <section className="draw panel" aria-labelledby="draw-title">
+      {!!deck.length && <section className="draw panel" aria-labelledby="draw-title" aria-busy={busy}>
         <div className="draw-heading">
           <div><span className="section-kicker">02 / THE REVEAL</span><h2 id="draw-title">{chosen.length === 0 ? "Draw the answer" : chosen.length === 1 ? "Now draw your next move" : "Your cards are on the table"}</h2>
             <p>{chosen.length === 0 ? "Choose a card to see what the situation is telling you." : chosen.length === 1 ? "One more card for the action to take." : "The first card answers. The second offers a recommendation."}</p></div>
@@ -105,12 +105,13 @@ export function ReadingExperience() {
       </section>}
 
       {!!deck.length && <div className="action-row">
-        {chosen.length === 2 && !result && <button className="primary-button consult-button" type="button" disabled={busy} onClick={consult}>
+        {chosen.length === 2 && !result && <button className="primary-button consult-button" type="button" disabled={busy} aria-describedby={busy ? "consult-status" : undefined} onClick={consult}>
           {busy ? <><span className="spinner" aria-hidden="true" /> Consulting the oracle…</> : error ? "Retry this reading" : "Reveal your reading"}<span aria-hidden="true">↗</span>
         </button>}
         <button className="text-button" type="button" disabled={busy} onClick={restart}>{result ? "Start a new reading" : "Start over"}</button>
       </div>}
 
+      {busy && <p className="sr-only" id="consult-status" role="status">Consulting the oracle. Your two cards are saved.</p>}
       {error && <div className="error-message" role="alert"><span aria-hidden="true">✳</span><p>{error}</p><span>Your cards are saved. Try again when you’re ready.</span></div>}
 
       <div aria-live="polite" aria-atomic="true">{result && <section className="reading panel" aria-labelledby="reading-title">
@@ -122,7 +123,7 @@ export function ReadingExperience() {
         {result.cosmicNote && <aside className="cosmic-note"><span className="section-kicker">A COSMIC TIMING NOTE</span><p>{result.cosmicNote}</p></aside>}
         {result.meta.calendarStatus === "unavailable" && <p className="calendar-status">The event calendar is unavailable, so this reading is based on your cards alone.</p>}
         {result.meta.calendarStatus === "available" && result.events.length === 0 && <p className="calendar-status">No calendar events overlap this period, so this reading is based on your cards alone.</p>}
-        {!!result.events.length && <div className="events"><span className="section-kicker">IN THE COSMIC CALENDAR</span><ul>{result.events.map((event) => <li key={event.id}><span><strong>{event.name}</strong><small>{formatDate(event.start)}</small></span><a href={event.source.url} target="_blank" rel="noreferrer">Source: {event.source.name} ↗</a></li>)}</ul></div>}
+        {!!result.events.length && <div className="events"><span className="section-kicker">IN THE COSMIC CALENDAR</span><ul>{result.events.map((event) => <li key={event.id}><span><strong>{event.name}</strong><small>{formatDate(event.start)}</small></span><a href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`Event source: ${event.source.name} (opens in a new tab)`}>Source: {event.source.name} ↗</a></li>)}</ul></div>}
         <p className="disclaimer">For entertainment and reflection. The universe is not your project manager.</p>
       </section>}</div>
 

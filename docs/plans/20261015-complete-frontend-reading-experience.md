@@ -46,12 +46,12 @@ Finish and integrate the frontend question-to-reading journey. Existing changes 
 - Modify: `src/features/reading/ReadingExperience.tsx` only if needed
 - Modify or create: relevant tests under `tests/`
 
-- [ ] Review styling at narrow and wide viewport sizes and fix layout issues in setup, deck, actions, and reading result.
-- [ ] Confirm question choices and card draws work with keyboard controls and expose selection, roles, loading, and errors accessibly.
-- [ ] Preserve reduced-motion handling and visible focus styles.
-- [ ] Check metadata, external event-source links, and image labels against the rendered experience.
-- [ ] Add or update automated coverage for any changed frontend logic.
-- [ ] Run `npm run check`; require it to pass before Task 3.
+- [x] Review styling at narrow and wide viewport sizes and fix layout issues in setup, deck, actions, and reading result.
+- [x] Confirm question choices and card draws work with keyboard controls and expose selection, roles, loading, and errors accessibly.
+- [x] Preserve reduced-motion handling and visible focus styles.
+- [x] Check metadata, external event-source links, and image labels against the rendered experience.
+- [x] Add or update automated coverage for any changed frontend logic.
+- [x] Run `npm run check`; require it to pass before Task 3.
 
 ### Task 3: Integrate setup documentation and verify acceptance
 
