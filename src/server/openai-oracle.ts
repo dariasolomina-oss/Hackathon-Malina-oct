@@ -3,7 +3,6 @@ import OpenAI, { type ClientOptions } from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { AstroEvent, DateRange, OracleText } from "@/contracts/reading";
-import { formatEventTiming } from "./event-timing";
 import { buildOracleUserPrompt, ORACLE_SYSTEM_PROMPT } from "./oracle-prompt";
 import type { OracleProvider } from "./providers/types";
 
@@ -16,12 +15,10 @@ const oracleStructuredOutputSchema = z.object({
   recommendation: z.string(),
   cosmicReferences: z.array(z.object({
     eventId: z.string(),
-    advice: z.string(),
   }).strict()).nullable(),
 }).strict();
 
 const proseSchema = z.string().trim().min(1).max(800);
-const adviceSchema = z.string().trim().min(1).max(300);
 
 export interface OracleTransportResponse {
   status: string;
@@ -182,26 +179,23 @@ export function validateAndRenderOutput(
   if (references === null) {
     throw new OracleGenerationError("The oracle omitted the supplied event context.");
   }
-  if (references.length < 1 || references.length > 2) {
+  if (references.length < 1 || references.length > events.length) {
     throw new OracleGenerationError("The oracle returned an invalid number of event references.");
   }
 
   const eventById = new Map(events.map((event) => [event.id, event]));
   const seen = new Set<string>();
-  const notes = references.map((reference) => {
-    const advice = adviceSchema.safeParse(reference.advice);
+  for (const reference of references) {
     const event = eventById.get(reference.eventId);
-    if (!advice.success || !event || seen.has(reference.eventId)) {
+    if (!event || seen.has(reference.eventId)
+      || Date.parse(event.start) >= Date.parse(period.end)
+      || (event.end === null ? Date.parse(event.start) < Date.parse(period.start)
+        : Date.parse(event.end) <= Date.parse(period.start))) {
       throw new OracleGenerationError("The oracle returned an invalid event reference.");
     }
     seen.add(reference.eventId);
-    return `${formatEventTiming(event, period)} ${advice.data}`;
-  });
+  }
 
-  const cosmicNote = notes.join(" ");
-  return {
-    answer: answer.data,
-    recommendation: `${recommendation.data} ${cosmicNote}`,
-    cosmicNote,
-  };
+  // Both paragraphs are the model's complete prose; event facts stay in the calendar.
+  return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
 }

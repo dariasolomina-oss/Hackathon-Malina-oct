@@ -81,6 +81,8 @@ The live OpenAI oracle is implemented behind explicit server configuration and v
 
 ## Voice
 
+The live model writes both complete blocks: What happens uses the answer card to address the exact question in two or three sentences; What to do uses the recommendation card for three or four sentences of practical advice. Supplied event interpretations inform both blocks in natural workplace language, with broad timing such as "in early November" grounded in the event/reading overlap. Keep exact dates, planet names, retrograde terminology, and event IDs out of both paragraphs; those facts remain in the calendar. Avoid card-definition recitals and generic appended advice. The server validates references but does not append or rewrite prose.
+
 Warm, witty, readable, and specific to work at T1A. Every answer, recommendation, and cosmic advice line stays within that workplace scope. Employee readings focus on the employee's T1A projects, processes, collaboration, recognition, reviews, meetings, and daily routines. Leadership readings focus on T1A strategy, customer segments, growth opportunities, projects, motivation, and priorities.
 
 Use recognizable situations such as changing requirements, client approvals, Slack messages, and Jira tasks. Avoid frightening certainty and guaranteed career or business outcomes. Do not discuss personal life or life outside work at T1A, including romance, family, health, or private finances. Do not predict or suggest firing, layoffs, job loss, leaving T1A, or threatening HR outcomes, and do not guarantee job security. Honor each supplied card's role and meaning while interpreting it only through T1A projects, processes, decisions, collaboration, and teamwork.

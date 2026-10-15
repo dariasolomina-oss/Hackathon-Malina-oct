@@ -77,7 +77,7 @@ The runtime calendar provider fetches both Zodiacs.org source families for every
 
 Event selection includes intervals already in progress at the start date and excludes events beginning at the end boundary. A January 1 end boundary does not require that next UTC year's source file. A null event end represents an instant. Selection returns at most three events. Short ranges rank workplace-relevant events deterministically. Ranges longer than 180 days divide the requested period into thirds and choose the strongest candidate in each populated third, then fill empty slots by relevance. Cross-year intervals are merged during import, and the provider claims availability only when fetched sources cover every instant in the requested range.
 
-The backend validates provider responses and live model output before exposing them through this contract. Model event references must match supplied event IDs; the server adds authoritative event names and dates. Automated tests cover this boundary with injected fakes. Three live gateway readings preserved those constraints, but factual tone and editorial quality still require the full live review.
+The backend validates provider responses and live model output before exposing them through this contract. Model event references must match supplied event IDs; the server preserves the model’s complete paragraphs without appending event facts. Exact event names and dates remain in the calendar, while the prompt asks for broad, grounded timing in ordinary workplace language. Automated tests cover this boundary with injected fakes. Three live gateway readings preserved those constraints, but factual tone and editorial quality still require the full live review.
 
 ## Content contract
 

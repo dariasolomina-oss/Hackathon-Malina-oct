@@ -51,7 +51,7 @@ The checked JSON is only an offline test fixture and review aid. Refresh it with
 npm run calendar:refresh -- 2026 2027 2028
 ```
 
-Review generated changes before committing them. The public `events` array retains raw source event boundaries. For a retrograde that begins before or ends after a reading, the server-rendered `cosmicNote` clips its displayed active range to the reading period without presenting that clipped boundary as a planetary station date.
+Review generated changes before committing them. The public `events` array retains raw source event boundaries. The live model uses only timing overlapping the reading period and writes both complete paragraphs with broad temporal language. Event names and exact dates remain in calendar metadata; the server validates references and appends no prose.
 
 ## Remaining dependencies
 
