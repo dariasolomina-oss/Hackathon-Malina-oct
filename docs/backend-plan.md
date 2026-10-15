@@ -2,7 +2,7 @@
 
 Branch: `track/backend`, based on the shared `main` foundation.
 
-This is an implementation plan. The current application still uses a mock oracle and an unavailable calendar. The settings and modules proposed below are not implemented yet.
+This is an implementation plan. The current application still uses a mock oracle. The calendar step is implemented as a versioned, runtime-only snapshot covering 2026–2028; live AI settings and modules remain pending.
 
 ## Outcome
 
@@ -75,6 +75,8 @@ The 2026 retrograde file clips some intervals at year boundaries and marks them 
 Target: shared question/period migration and steps 1-3 on day 1; steps 4-5 and prompt refinement on day 2. The content owner can prepare the 32-card manifest in parallel; use clearly provisional existing cards for provider development until it is agreed. Get the first real card-only reading working before spending time on advanced event selection.
 
 ## Calendar implementation approach
+
+Implemented October 15, 2026: `calendar-snapshot.v1.json` contains source-validated retrogrades and new/full moons for 2026–2028. `npm run calendar:refresh -- 2026 2027 2028` validates and atomically replaces it. The server performs no runtime calendar network calls. Data is CC BY 4.0: `Data: Zodiacs.org — https://zodiacs.org`.
 
 Use a checked snapshot as the initial runtime source, with an explicit refresh/import script. This avoids calling a calendar service on every reading and works with read-only deployment filesystems. Store retrieval time, source attribution, coverage, and normalized events. Never claim coverage beyond what was verified.
 

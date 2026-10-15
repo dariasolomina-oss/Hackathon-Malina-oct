@@ -14,7 +14,7 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 
 ## Project status
 
-Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Live AI, verified event data, final artwork, and deployment remain track work.
+Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. A checked calendar snapshot supplies source-validated events for 2026–2028. Live AI, final artwork, and deployment remain track work.
 
 The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
 
@@ -47,7 +47,13 @@ curl http://localhost:3000/api/readings \
   -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
 ```
 
-The response reports `meta.mode: "mock"` and `meta.calendarStatus: "unavailable"`. This is intentional. The starter makes no external AI or calendar requests.
+The response reports `meta.mode: "mock"`. For ranges fully inside 2026–2028, `meta.calendarStatus` is `"available"`; ranges outside that snapshot are `"unavailable"` and remain card-only. Runtime requests never call an external calendar service.
+
+## Calendar snapshot
+
+The checked snapshot contains retrograde intervals and exact new/full-moon instants from Zodiacs.org. Refresh it offline with `npm run calendar:refresh -- 2026 2027 2028`, then review and commit the generated JSON. The importer validates schemas, full-year coverage, station boundaries, duplicates, and source attribution before replacing the snapshot atomically.
+
+Calendar data is licensed under CC BY 4.0. Attribution: [Data: Zodiacs.org](https://zodiacs.org).
 
 ## Project documents
 
