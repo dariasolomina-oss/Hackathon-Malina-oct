@@ -8,6 +8,7 @@
 - Keep work within the assigned area. Preserve other contributors' changes and coordinate changes to shared formats and project configuration.
 - Follow `docs/product.md` for the revised two-audience, twelve-question, three-period scope and fixed-period rules. The target deck has 32 cards; its final manifest is pending, and the current 22-card starter is provisional. Coordinate the shared ID migration before treating new IDs as implemented.
 - Use the same card IDs and meanings across artwork, selection logic, and oracle prompts. A reading contains exactly two distinct cards with fixed roles: answer and recommendation.
+- Developer 3 (Content) determines the 32-card composition, meanings, and artwork. Other tracks coordinate technical IDs and paths and consume that manifest; they do not approve or independently redefine the creative content.
 - Pass verified, dated event data to the AI. Never ask it to invent planetary events or favorable date ranges. Separate astronomical facts from playful interpretations.
 - Keep API credentials on the server and out of version control. Track placeholder configuration only.
 - Run `npm run check` for logic or contract changes and `npm run build` for application changes. Check UI changes in a browser. Report what was actually verified.

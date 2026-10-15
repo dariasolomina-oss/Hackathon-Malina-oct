@@ -9,15 +9,15 @@ Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architec
 - `src/content/oracle-voice.md`: voice and example readings
 - `public/cards/`: artwork and one shared back
 
-## Agree the 32-card manifest first
+## Define the 32-card manifest
 
-There is one shared deck for Employee and Leadership, with 32 unique cards. Final card names and composition have not been supplied. Deliver a manifest containing stable ID, display name, image path, answer meaning, and recommendation meaning for all 32 cards. Agree it with the other owners before generating the full series.
+There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. Deliver a manifest containing stable ID, display name, image path, answer meaning, and recommendation meaning for all 32 cards. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
 
-Do not assume the existing 22 Major Arcana plus ten additional cards is the intended deck. Current IDs are provisional until the complete manifest is agreed; after that, preserve them across artwork, code, and prompts.
+The existing 22 Major Arcana are placeholders, not a constraint on the final composition. Developer 3 may retain or replace them when defining the 32-card deck. Current IDs are provisional until the manifest is delivered and integrated; after that, preserve them across artwork, code, and prompts.
 
 ## Build
 
-Start with one face and one shared back, agree the visual direction, then produce the other 31 faces. Use a 2:3 ratio, preferably 600 by 900 pixels initially. Do not embed titles; the interface renders them. PNG or WebP may replace SVG placeholders by updating catalog image paths. Coordinate changes to the back path with frontend.
+Start with one face and one shared back, establish a consistent visual direction, then produce the other 31 faces. Developer 3 determines the imagery and style. Use a 2:3 ratio, preferably 600 by 900 pixels initially. Do not embed titles; the interface renders them. PNG or WebP may replace SVG placeholders by updating catalog image paths. Coordinate changes to the back path with frontend.
 
 Provide distinct answer and recommendation meanings for each card that work for both audiences. Use audience-specific examples where helpful, without duplicating the deck. Questions and period restrictions come from the product scope: six labels per audience, three available periods, and three fixed-period exceptions.
 

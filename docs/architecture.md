@@ -10,7 +10,7 @@ This starter is runnable without credentials. It intentionally uses a determinis
 
 The target experience now has Employee and Leadership audiences with six questions each, three periods (one month, three months, one year), and one shared 32-card deck. Three questions have fixed periods. Exact labels, IDs, and restrictions are defined in [product.md](product.md). The current code still has four ungrouped questions, two periods, and 22 provisional placeholder cards. This document distinguishes the target contract from that runnable legacy starter.
 
-Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Agree the final 32-card manifest before changing card IDs. No additional audience-specific deck or authentication system is needed.
+Coordinate one shared migration of question/period identifiers, audience metadata, validation, UI defaults, fixtures, and examples. Developer 3 determines the final 32-card composition and artwork; use their manifest when migrating card IDs. No additional audience-specific deck or authentication system is needed.
 
 ## Flow
 
@@ -83,7 +83,7 @@ The backend track should validate provider responses and live model output befor
 
 ## Content contract
 
-The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The current 22 IDs in `src/contracts/catalog.ts` are provisional. The content owner must provide the final manifest; do not automatically invent ten additions. Agree the full manifest, then update contracts, content, images, and tests together. Once agreed, preserve the IDs.
+The target is one shared deck with 32 unique IDs, with exactly two draws for every audience and period. The current 22 IDs in `src/contracts/catalog.ts` are provisional. Developer 3 (Content) decides the card composition and artwork and supplies the manifest. Frontend/backend coordinate its technical integration, then update contracts, content, images, and tests together. Preserve the integrated IDs. Do not impose creative approval gates on Developer 3.
 
 Each entry in `src/content/cards.ts` has a name, an image path, an answer meaning, and a recommendation meaning. Question content must expose audience and allowed-period metadata so UI choices and backend validation use the same rules.
 

@@ -16,11 +16,11 @@ Technical contributor 1 owns the final integrated build. Technical contributor 2
 
 Both audiences use one 32-card deck and two draws. Employee and Leadership each have six exact questions. Periods are one month, three months, and one year, with three fixed-period exceptions defined in [product.md](product.md).
 
-Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Content owns the complete 32-card manifest, artwork, and exact labels. Coordinate catalog IDs and fixtures before integrating the revised experience. The manifest is still pending; the current 22-card code is provisional.
+Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Developer 3 (Content) determines the 32-card composition, meanings, and artwork, and preserves the supplied question labels. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions. The manifest is still pending; the current 22-card code is provisional.
 
 ## Agree before splitting work
 
-- Use the twelve exact questions and allowed periods from the product scope; agree the still-pending 32-card manifest.
+- Use the twelve exact questions and allowed periods from the product scope; integrate the 32-card manifest supplied by Developer 3.
 - Input and output fields between the interface and reading logic, with one sample request and response.
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.

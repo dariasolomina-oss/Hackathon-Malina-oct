@@ -57,7 +57,7 @@ Use rolling periods from the request date, not the next calendar year or quarter
 
 There is one deck with exactly 32 unique cards and one shared back. Audience and period do not change the deck or the number of draws. A yearly reading still uses two cards, not one per quarter.
 
-The final names, composition, and IDs of the 32 cards have not been supplied. The content owner must deliver a manifest agreed with the backend and frontend owners. Do not assume the deck is the existing 22 Major Arcana plus ten invented additions. The current catalog is provisional. After agreement, synchronize the manifest, ID validation, images, meanings, and tests.
+Developer 3 (Content) determines the final composition, names, meanings, and artwork of the 32-card deck and delivers its manifest. Frontend and backend owners coordinate only technical integration: stable IDs, image paths, and data fields. Content decisions do not require their approval. Other tracks must not invent additions to the provisional 22-card catalog. Once Developer 3 supplies the manifest, synchronize ID validation, images, meanings, and tests.
 
 ## Reading algorithm
 
