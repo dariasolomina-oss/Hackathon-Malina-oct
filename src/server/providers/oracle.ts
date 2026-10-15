@@ -1,5 +1,6 @@
 import type { OracleProvider } from "./types";
 import { getOracleConfig, type OracleConfig } from "../oracle-config";
+import { formatEventTiming } from "../event-timing";
 
 type LiveOracleConfig = Extract<OracleConfig, { mode: "live" }>;
 type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> | OracleProvider;
@@ -7,22 +8,24 @@ type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> |
 // Deterministic development placeholder. Never label this as a live AI result.
 export const mockOracleProvider: OracleProvider = {
   mode: "mock",
-  async generate({ audience, question, answerCard, recommendationCard }) {
-    const answerMeaning = answerCard.meanings[audience];
-    const recommendationMeaning = recommendationCard.meanings[audience];
+  async generate({ audience, question, period, answerCard, recommendationCard, events }) {
+    const answerMeaning = answerCard.meanings[audience].answer;
+    const recommendationMeaning = recommendationCard.meanings[audience].recommendation;
     const context = audience === "employee"
       ? "Keep the next step practical for your own work and daily routine."
       : "Frame the next step around company direction, customers, and the team.";
+    const event = events[0];
+    const cosmicNote = event
+      ? `${formatEventTiming(event, period)} ${event.interpretation} Before the plan moves forward, confirm the T1A owner, approvals, and next written step.`
+      : null;
+    const recommendation = `${recommendationCard.name} suggests: ${recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`;
     return {
-      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerMeaning.answer} ${context} The universe has reviewed the meeting notes. Apparently, someone still owes you an update.`,
-      recommendation: `${recommendationCard.name} suggests: ${recommendationMeaning.recommendation} Even cosmic alignment benefits from a clear owner and a written next step.`,
-      cosmicNote: null,
+      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerMeaning} ${context}`,
+      recommendation: cosmicNote ? `${recommendation} ${cosmicNote}` : recommendation,
+      cosmicNote,
     };
   },
 };
-
-// Compatibility export for injected tests and frontend development.
-export const oracleProvider = mockOracleProvider;
 
 export async function createConfiguredOracleProvider(
   environment: Record<string, string | undefined> = process.env,

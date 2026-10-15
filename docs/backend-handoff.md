@@ -54,13 +54,13 @@ Display mock results as samples. `meta.mode: "live"` is returned only by the con
 
 `Data: Zodiacs.org — https://zodiacs.org`
 
-The `events` array contains raw normalized event dates. A retrograde may start before or end after the resolved reading period. The server-generated `cosmicNote` clips the displayed active range to the reading dates. Use `period` as the authoritative range shown to the user.
+The `events` array contains raw normalized event dates. A retrograde may start before or end after the resolved reading period. The live model receives dates, symbolic interpretations, the exact question, and audience-specific card meanings and writes both complete paragraphs. It translates timing into ordinary workplace advice using broad phrases such as "in early November"; exact dates and astrological names stay in the calendar. Internal event references are checked for known, unique IDs overlapping the reading period. The server appends no prose and returns `cosmicNote: null` for live readings. Without events, the model writes a card-only reading. Semantic adherence still requires editorial review; reference validation alone cannot prove every sentence is grounded. Sample mode remains a deterministic development placeholder.
 
 HTTP 400 with `INVALID_REQUEST` means the selection is invalid. HTTP 503 with `READING_FAILED` is retryable with the same cards. Do not replace a failed live response with sample text.
 
 ## Content integration
 
-The content owner's 32-card manifest is integrated across `src/contracts/catalog.ts`, `src/content/cards.ts`, artwork files, and tests. Preserve its stable IDs, names, image paths, and meanings. Each reading contains exactly two distinct roles: answer first, recommendation second.
+The content owner's 32-card manifest and artwork are integrated. Preserve stable IDs, names, image paths, answer meanings, and recommendation meanings from `src/content/cards.ts`; names match the supplied filenames. The approved images already contain card titles. Preserve exactly two distinct roles: answer first, recommendation second. The earlier live checks below used provisional cards and precede the final T1A-only prompt.
 
 ## Deployment setup
 

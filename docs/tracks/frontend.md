@@ -20,10 +20,14 @@ Use the agreed shared catalog and `requestReading`. The request continues to car
 
 ## Coordinate
 
-The shared question/period IDs, audience selection, fixed-period rules, and backend validation are integrated. Consume the shared metadata without independently renaming IDs or changing request/response fields. The supplied 32-card catalog and artwork are integrated.
+The shared question/period IDs and backend validation are migrated. Consume the shared metadata without independently renaming IDs or changing request/response fields. The content owner's 32-card manifest and WebP artwork are integrated.
 
-Keep visual changes out of server/domain/API files. Coordinate card image paths with the content owner and contract changes with the backend owner. Preserve the content owner's final card identities.
+Keep visual changes out of server/domain/API files. Coordinate card image paths with the content owner and contract changes with the backend owner. Preserve the integrated card names and filenames.
 
 ## Done when
 
 Both audiences show the correct six labels; all flexible and fixed period paths behave correctly; the agreed deck contains 32 cards; two-card roles and retry behavior are preserved. Verify role switching and stale-selection prevention, then run `npm run check`, `npm run build`, and a browser journey on mobile and desktop. Establish the shared deployment and document it in the README.
+
+## Integrated status
+
+The `ds-1` interface is integrated into `main` with the authoritative question IDs, fixed-period rules, and the content owner's 32-card WebP deck. See [integration status](../integration-status.md) for verification and remaining work.

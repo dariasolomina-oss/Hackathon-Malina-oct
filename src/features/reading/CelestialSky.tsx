@@ -47,7 +47,7 @@ export function CelestialSky() {
 
     const draw = (timestamp = 0) => {
       if (!canvas || !context) return;
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      const dpr = Math.min(1.25, Math.max(1, window.devicePixelRatio || 1));
       const nextWidth = Math.max(1, window.innerWidth);
       const nextHeight = Math.max(1, window.innerHeight);
       if (nextWidth !== width || nextHeight !== height) {

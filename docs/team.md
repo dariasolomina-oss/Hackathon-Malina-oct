@@ -16,7 +16,7 @@ Technical contributor 1 owns the final integrated build. Technical contributor 2
 
 Both audiences use one 32-card deck and two draws. Employee and Leadership each have six exact questions. Periods are one month, three months, and one year, with three fixed-period exceptions defined in [product.md](product.md).
 
-Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. The content owner supplied the integrated 32-card composition, meanings, and artwork, and preserves the supplied question labels. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions.
+Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Developer 3 (Content) determines the 32-card composition, meanings, and artwork, and preserves the supplied question labels. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions. The supplied 32-card manifest and artwork are integrated.
 
 ## Agree before splitting work
 
@@ -25,11 +25,11 @@ Backend owns shared validation, audience derivation, annual calculation, and cal
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.
 
-The shared contract, frontend, and backend use the twelve question identifiers, audience metadata, three periods, and fixed-period rules. Preserve those identifiers. The supplied 32-card deck and artwork are integrated; keep card labels in the interface and preserve the agreed card IDs when changing assets or meanings.
+The shared contract implements all twelve question identifiers, audience metadata, three periods, and fixed-period rules. The integrated frontend consumes these values. The content owner's 32-card manifest is authoritative; its names and filenames match, and the approved artwork contains printed titles.
 
 ## Current handoff status
 
-The backend contract, per-reading Zodiacs.org API provider, live OpenAI adapter, validation, and failure handling are implemented and covered with no-network fakes. Three limited live gateway readings also succeeded. The checked calendar JSON remains only an offline fixture. Frontend and content contributors should use [backend-handoff.md](backend-handoff.md) for fixed-period metadata, request/response fields, attribution, and retry behavior. Deployment must allow the five-second calendar budget plus the 20-second oracle budget. The final 32-card manifest, frontend migration, deployment, and full live-output review remain open.
+`main` combines `track/backend`, `Mashenka_Solnyshko`, and `ds-1`. The backend, interface, and card assets are integrated. Deployment must allow the five-second calendar budget plus the 20-second oracle budget. Remaining work is editorial review, full live quality review with the new deck and prompt, deployment, and demo rehearsal. See [integration status](integration-status.md).
 
 ## Working with Codex
 

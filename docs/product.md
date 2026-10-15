@@ -13,7 +13,7 @@ The user chooses Employee or Leadership, selects a question and its allowed peri
 - A short answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
 
-The stack remains Next.js + TypeScript. The shared contract, backend, and interface implement the twelve questions, audience metadata, three periods, fixed-period validation, and the supplied 32-card deck. See [architecture.md](architecture.md) for the integration boundaries.
+The integrated Next.js + TypeScript application implements the audience/question flow, backend validation, fixed periods, and the content owner's 32-card deck. See [integration status](integration-status.md) for verification and remaining demo work.
 
 ## Question catalog
 
@@ -49,7 +49,7 @@ The labels are the user's supplied wording. The IDs below are the shared impleme
 | `three-months` | Next three months | Three calendar months from the request date |
 | `one-year` | Next year | Twelve calendar months from the request date |
 
-The Jira-hours and company-outlook questions require a one-year period; changing priorities requires three months. Selecting one of the three fixed-period questions automatically sets its allowed period and prevents choosing another. Display the fixed period clearly. The backend rejects an incompatible question-period pair with `INVALID_REQUEST`; it must not silently substitute another range.
+The user confirmed that questions explicitly referring to next year or a quarter use a fixed year or quarter. Selecting one of the three fixed-period questions automatically sets its allowed period and prevents choosing another. Display the fixed period clearly. The backend rejects an incompatible question-period pair with `INVALID_REQUEST`; it must not silently substitute another range.
 
 Use rolling periods from the request date, not the next calendar year or quarter. Keep the existing UTC start-inclusive/end-exclusive convention and clamp month ends, including February 29. Display the resolved date range. The mention of a meeting-free week describes a desired outcome within the selected period; it does not introduce a fourth, weekly period.
 
@@ -57,7 +57,7 @@ Use rolling periods from the request date, not the next calendar year or quarter
 
 There is one deck with exactly 32 unique cards and one shared back. Audience and period do not change the deck or the number of draws. A yearly reading still uses two cards, not one per quarter.
 
-The content owner supplied the 32-card composition, names, meanings, and artwork. Its stable IDs, image paths, and data fields are integrated across the contract, content catalog, artwork, and tests. Frontend and backend owners preserve those choices while coordinating technical changes.
+Developer 3 (Content) owns the composition, names, meanings, and artwork. Their 32-card manifest is integrated in `src/contracts/catalog.ts` and `src/content/cards.ts`. Every card has distinct answer and recommendation meanings for Employee and Leadership; the oracle receives only the pair for the selected question's audience. Each display name maps to its supplied filename (for example, The Spark uses `the-spark.webp`). The approved artwork contains printed titles; preserve them. The shared back is `public/cards/back.webp`. Only these 32 faces and the shared back belong in `public/cards/`.
 
 ## Reading algorithm
 
@@ -80,6 +80,8 @@ Event dates are data; their workplace significance is entertainment. Positive ti
 The live OpenAI oracle is implemented behind explicit server configuration and verified with no-network fakes. Three limited live gateway readings succeeded with grounded output; the full editorial and cost review remains pending.
 
 ## Voice
+
+The live model writes both complete blocks: What happens uses the answer card to address the exact question in two or three sentences; What to do uses the recommendation card for three or four sentences of practical advice. Supplied event interpretations inform both blocks in natural workplace language, with broad timing such as "in early November" grounded in the event/reading overlap. Keep exact dates, planet names, retrograde terminology, and event IDs out of both paragraphs; those facts remain in the calendar. Avoid card-definition recitals and generic appended advice. The server validates references but does not append or rewrite prose.
 
 Warm, witty, readable, and specific to work at T1A. Every answer, recommendation, and cosmic advice line stays within that workplace scope. Employee readings focus on the employee's T1A projects, processes, collaboration, recognition, reviews, meetings, and daily routines. Leadership readings focus on T1A strategy, customer segments, growth opportunities, projects, motivation, and priorities.
 

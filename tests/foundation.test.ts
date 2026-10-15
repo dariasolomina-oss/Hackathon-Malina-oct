@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import test from "node:test";
 import { cards } from "../src/content/cards";
 import { CARD_IDS, PERIOD_IDS, QUESTIONS } from "../src/contracts/catalog";
@@ -8,7 +8,7 @@ import { shuffleDeck } from "../src/domain/deck";
 import { selectEvents } from "../src/domain/events";
 import { resolvePeriod } from "../src/domain/period";
 import { createReading } from "../src/server/reading-service";
-import { oracleProvider } from "../src/server/providers/oracle";
+import { mockOracleProvider } from "../src/server/providers/oracle";
 import { createReadingsPost } from "../src/server/readings-handler";
 
 const offlineCalendar = { async getEvents() { return { status: "available" as const, events: [] }; } };
@@ -24,9 +24,19 @@ function event(id: string, start: string, end: string | null): AstroEvent {
 
 test("catalog matches the stable IDs and every artwork path exists", () => {
   assert.deepEqual(cards.map((card) => card.id), [...CARD_IDS]);
+  assert.equal(cards.length, 32);
+  for (const card of cards) {
+    assert.equal(card.id, card.name.toLowerCase().replace(/ /g, "-"));
+    assert.equal(card.image, `/cards/${card.id}.webp`);
+  }
+  assert.ok(existsSync("public/cards/back.webp"));
   assert.ok(cards.every((card) => existsSync(`public${card.image}`)
     && card.meanings.employee.answer && card.meanings.employee.recommendation
     && card.meanings.leadership.answer && card.meanings.leadership.recommendation));
+  assert.deepEqual(
+    readdirSync("public/cards").sort(),
+    [...cards.map((card) => `${card.id}.webp`), "back.webp"].sort(),
+  );
 });
 
 test("question catalog has the exact audience, labels, and allowed periods", () => {
@@ -127,16 +137,20 @@ test("mock readings use the authoritative audience context", async () => {
     ...request, questionId: "leadership-strategic-priority", periodId: "three-months",
   };
   const [employee, leadership] = await Promise.all([
-    createReading(request, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: oracleProvider }),
-    createReading(leadershipRequest, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: oracleProvider }),
+    createReading(request, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: mockOracleProvider }),
+    createReading(leadershipRequest, { calendar: { async getEvents() { return { status: "available", events: [] }; } }, oracle: mockOracleProvider }),
   ]);
   assert.match(employee.answer, /your own work and daily routine/);
   assert.match(leadership.answer, /company direction, customers, and the team/);
+  assert.match(employee.answer, /A challenge may require extra effort/);
+  assert.match(employee.recommendation, /Try a new approach; small ideas can make a big difference/);
+  assert.match(leadership.answer, /A problem may reveal limits in current practices/);
+  assert.match(leadership.recommendation, /Invite new ideas and assess their business potential/);
 });
 
 test("calendar failure produces an explicitly card-only mock reading", async () => {
   const result = await createReading(request, {
-    calendar: { async getEvents() { throw new Error("Offline"); } }, oracle: oracleProvider,
+    calendar: { async getEvents() { throw new Error("Offline"); } }, oracle: mockOracleProvider,
   });
   assert.equal(result.meta.calendarStatus, "unavailable");
   assert.equal(result.meta.mode, "mock");
@@ -154,7 +168,7 @@ test("oracle failures propagate instead of silently switching to a sample", asyn
 });
 
 test("route accepts a valid reading and rejects malformed, duplicate, or fixed-period requests", async () => {
-  const POST = createReadingsPost((input) => createReading(input, { calendar: offlineCalendar, oracle: oracleProvider }));
+  const POST = createReadingsPost((input) => createReading(input, { calendar: offlineCalendar, oracle: mockOracleProvider }));
   const valid = await POST(new Request("http://localhost/api/readings", { method: "POST", body: JSON.stringify(request) }));
   assert.equal(valid.status, 200);
   assert.equal((await valid.json()).meta.mode, "mock");

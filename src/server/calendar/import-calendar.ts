@@ -24,8 +24,8 @@ function assertUniqueYears(files: Array<{ year: number }>, kind: string): void {
 function validateRetrogradeFile(file: RetrogradeSource): void {
   for (const event of file.retrogrades) {
     if (Date.parse(event.from) >= Date.parse(event.to)) throw new Error(`Invalid ${event.planet} retrograde interval.`);
-    if (Date.parse(event.from) < Date.parse(file.coverage.from) || Date.parse(event.to) > Date.parse(file.coverage.to)) {
-      throw new Error("A retrograde interval falls outside its source coverage.");
+    if (Date.parse(event.to) <= Date.parse(file.coverage.from) || Date.parse(event.from) >= Date.parse(file.coverage.to)) {
+      throw new Error("A retrograde interval does not overlap its source coverage.");
     }
     if (event.clippedStart) {
       if (event.from !== file.coverage.from || event.stationRetrograde !== null) {

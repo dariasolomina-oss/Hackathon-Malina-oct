@@ -11,13 +11,13 @@ Read `AGENTS.md`, [product scope](../product.md), and [architecture](../architec
 
 ## Define the 32-card manifest
 
-There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. Deliver a manifest containing stable ID, display name, image path, answer meaning, and recommendation meaning for all 32 cards. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
+There is one shared deck for Employee and Leadership, with 32 unique cards. Developer 3 (Content) owns the decision on card composition, names, meanings, and artwork. The supplied 32 names are integrated with stable IDs, image paths, and audience-specific answer/recommendation meanings in the shared manifest. Coordinate technical IDs and paths with the other owners; their approval is not required for content or visual decisions.
 
-The content owner has supplied the 32-card composition, names, meanings, and artwork. The manifest is integrated across the shared catalog, prompts, and UI. Preserve its IDs across artwork, code, and prompts.
+Preserve the integrated 32 IDs across artwork, code, and prompts.
 
 ## Build
 
-Start with one face and one shared back, establish a consistent visual direction, then produce the other 31 faces. Developer 3 determines the imagery and style. Use a 2:3 ratio, preferably 600 by 900 pixels initially. Do not embed titles; the interface renders them. PNG or WebP may replace SVG placeholders by updating catalog image paths. Coordinate changes to the back path with frontend.
+The 32 faces and one shared back are supplied in `public/cards/` as 1024 by 1536 WebP images. They use a consistent pink-purple illustrated style and include printed titles and numerals at the content owner's direction. Keep role labels in the interface without repeating the card title. Do not add unused artwork to this directory.
 
 Keep distinct answer and recommendation meanings for each audience on every card, without duplicating the deck. Questions and period restrictions come from the product scope: six labels per audience, three available periods, and three fixed-period exceptions.
 
@@ -25,4 +25,4 @@ Write 4-6 short oracle examples covering both audiences, all three period length
 
 ## Done when
 
-The agreed 32-card manifest, all 32 faces, and one back are consistent; every image loads; each card has both meanings; all twelve question labels are exact. Review tone for both audiences and provide a short demo story. Run catalog checks once the shared code migration is complete and review the app visually.
+The 32-card manifest, faces, and shared back are consistent; every image loads; each card has all four audience-and-role meanings; all twelve question labels are exact. Review the tone for both audiences, add 4-6 oracle examples, and provide a short demo story. Run catalog checks and review the app visually.

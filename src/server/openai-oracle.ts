@@ -4,7 +4,9 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import type { AstroEvent, DateRange, OracleText } from "@/contracts/reading";
 import { buildOracleUserPrompt, ORACLE_SYSTEM_PROMPT } from "./oracle-prompt";
-import type { OracleInput, OracleProvider } from "./providers/types";
+import type { OracleProvider } from "./providers/types";
+
+export { formatEventTiming } from "./event-timing";
 
 const DIRECT_OPENAI_BASE_URL = "https://api.openai.com/v1";
 
@@ -13,12 +15,10 @@ const oracleStructuredOutputSchema = z.object({
   recommendation: z.string(),
   cosmicReferences: z.array(z.object({
     eventId: z.string(),
-    advice: z.string(),
   }).strict()).nullable(),
 }).strict();
 
 const proseSchema = z.string().trim().min(1).max(800);
-const adviceSchema = z.string().trim().min(1).max(300);
 
 export interface OracleTransportResponse {
   status: string;
@@ -177,58 +177,25 @@ export function validateAndRenderOutput(
     return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
   }
   if (references === null) {
-    return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
+    throw new OracleGenerationError("The oracle omitted the supplied event context.");
   }
-  if (references.length < 1 || references.length > 2) {
+  if (references.length < 1 || references.length > events.length) {
     throw new OracleGenerationError("The oracle returned an invalid number of event references.");
   }
 
   const eventById = new Map(events.map((event) => [event.id, event]));
   const seen = new Set<string>();
-  const notes = references.map((reference) => {
-    const advice = adviceSchema.safeParse(reference.advice);
+  for (const reference of references) {
     const event = eventById.get(reference.eventId);
-    if (!advice.success || !event || seen.has(reference.eventId)) {
+    if (!event || seen.has(reference.eventId)
+      || Date.parse(event.start) >= Date.parse(period.end)
+      || (event.end === null ? Date.parse(event.start) < Date.parse(period.start)
+        : Date.parse(event.end) <= Date.parse(period.start))) {
       throw new OracleGenerationError("The oracle returned an invalid event reference.");
     }
     seen.add(reference.eventId);
-    return `${formatEventTiming(event, period)} ${advice.data}`;
-  });
-
-  return { answer: answer.data, recommendation: recommendation.data, cosmicNote: notes.join(" ") };
-}
-
-export function formatEventTiming(event: AstroEvent, period: DateRange): string {
-  if (event.end === null) {
-    return `${event.name} occurs on ${formatUtcDate(event.start)}.`;
   }
 
-  const activeStart = new Date(Math.max(Date.parse(event.start), Date.parse(period.start)));
-  const exclusiveEnd = Math.min(Date.parse(event.end), Date.parse(period.end));
-  const activeLastInstant = new Date(exclusiveEnd - 1);
-  const startLabel = formatUtcDate(activeStart.toISOString());
-  const endLabel = formatUtcDate(activeLastInstant.toISOString());
-  const activeRange = startLabel === endLabel
-    ? startLabel
-    : activeStart.getUTCFullYear() === activeLastInstant.getUTCFullYear()
-      ? `${formatUtcMonthDay(activeStart.toISOString())}–${endLabel}`
-      : `${startLabel}–${endLabel}`;
-  return `${event.name} is active during ${activeRange}.`;
-}
-
-function formatUtcMonthDay(isoDate: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(isoDate));
-}
-
-function formatUtcDate(isoDate: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(isoDate));
+  // Both paragraphs are the model's complete prose; event facts stay in the calendar.
+  return { answer: answer.data, recommendation: recommendation.data, cosmicNote: null };
 }
