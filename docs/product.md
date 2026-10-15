@@ -12,7 +12,7 @@ The user selects one of three or four workplace questions and a period, draws tw
 - A short result with an answer, a recommendation, and an optional cosmic timing note.
 - No birth data or personal zodiac sign required.
 
-These defaults are a starting point for the team. Final question wording, visual style, and the technology stack remain to be selected.
+These defaults are implemented in the starter. The stack is Next.js + TypeScript; see [architecture.md](architecture.md). Final visual style and editorial wording remain track work.
 
 ## Reading algorithm
 

@@ -16,3 +16,6 @@ coverage/
 *.log
 .venv/
 __pycache__/
+*.tsbuildinfo
+.vercel/
+next-env.d.ts

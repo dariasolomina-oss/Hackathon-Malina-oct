@@ -1,6 +1,7 @@
 # Repository instructions
 
 - Read `README.md` and `docs/product.md` before implementation. Read `docs/team.md` when coordinating work.
+- Read `docs/architecture.md` and the relevant assignment under `docs/tracks/` before changing application code. Preserve the shared request/response contract and card IDs across tracks.
 - Write all project files, documentation, comments, prompts, UI copy, filenames, and commit messages in English. Conversation may follow the user's language.
 - Keep explanations short and precise. Explain behavior and algorithms for an analyst; avoid unnecessary implementation details.
 - Optimize for a working two-day hackathon demo. Prefer small changes and reuse the existing stack once it is established.
@@ -8,7 +9,18 @@
 - Use the same card IDs and meanings across artwork, selection logic, and oracle prompts. A reading contains exactly two distinct cards with fixed roles: answer and recommendation.
 - Pass verified, dated event data to the AI. Never ask it to invent planetary events or favorable date ranges. Separate astronomical facts from playful interpretations.
 - Keep API credentials on the server and out of version control. Track placeholder configuration only.
-- Run checks appropriate to the change and report what was actually verified. Until application tooling exists, do not invent build or test commands.
+- Run `npm run check` for logic or contract changes and `npm run build` for application changes. Check UI changes in a browser. Report what was actually verified.
+- Keep mock readings visibly labeled. A live AI failure must not silently switch to sample text. Browser code must not import `src/server` modules.
 - Update relevant documentation when behavior or setup changes. Label proposed features and unverified integrations honestly.
 
 Instruction-file reference: [OpenAI Codex documentation](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide#using-agentsmd).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

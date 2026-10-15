@@ -2,6 +2,8 @@
 
 ## Parallel workstreams
 
+The runnable foundation and fixed boundaries are documented in [architecture.md](architecture.md). Start from the same integrated base commit, then use separate branches such as `track/frontend`, `track/backend`, and `track/content`. Task briefs are in [tracks/frontend.md](tracks/frontend.md), [tracks/backend.md](tracks/backend.md), and [tracks/content.md](tracks/content.md).
+
 | Owner | Responsibility | Independent starting point |
 | --- | --- | --- |
 | Technical contributor 1 | Interface, card reveal interaction, result display, integration, and deployment | Placeholder cards and a sample response |
@@ -17,7 +19,7 @@ Technical contributor 1 owns the final integrated build. Technical contributor 2
 - Illustration dimensions, file naming, and a shared visual reference.
 - Repository areas owned by each contributor and the owner of shared configuration.
 
-Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
+The starter establishes shared IDs, data types, artwork paths, and default question wording. Refine wording and visuals without changing IDs. Keep card labels in the interface rather than embedded in generated artwork. Deliver artwork and meanings using the agreed card IDs so placeholders can be replaced without changing logic.
 
 ## Working with Codex
 
