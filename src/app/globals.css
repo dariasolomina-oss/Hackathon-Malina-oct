@@ -83,9 +83,8 @@ h1 { max-width: 820px; margin: 0 0 20px; font-size: clamp(3.5rem, 7vw, 5.2rem); 
 .period-option:disabled { opacity: .4; cursor: not-allowed; }
 .period-symbol { color: var(--gold); font: 400 1.4rem/1 'Bodoni Moda', Georgia, serif; }
 .deck-action { display: flex; flex-direction: column; align-items: center; margin: 30px auto 0; }
-.deck-stack { position: relative; width: 96px; height: 105px; margin: 0 auto 12px; }
-.deck-stack span { position: absolute; left: 16px; top: 7px; width: 64px; height: 94px; transform: var(--rest-transform); border: 1px solid var(--gold); border-radius: 7px; background: var(--indigo); }
-.deck-stack .deck-top-card::after { content: '✧'; position: absolute; inset: 0; display: grid; place-items: center; color: var(--gold); font: 400 1.6rem/1 'Bodoni Moda', Georgia, serif; }
+.deck-stack { position: relative; width: 96px; height: 107px; margin: 0 auto 12px; }
+.deck-stack span { position: absolute; left: 16px; top: 7px; width: 64px; height: 96px; transform: var(--rest-transform); border-radius: 6px; background: url('/cards/back.webp') center / cover no-repeat; }
 .deck-stack.is-shuffling span { will-change: transform; animation: shuffle-card .76s var(--shuffle-delay) ease-in-out both; }
 @keyframes shuffle-card {
   0%, 100% { transform: var(--rest-transform); }
