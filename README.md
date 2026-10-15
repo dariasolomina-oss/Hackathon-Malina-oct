@@ -14,7 +14,7 @@ The cards establish the story; astrological events add timing and atmosphere. Th
 
 ## Project status
 
-Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. A checked calendar snapshot supplies source-validated events for 2026–2028. The live OpenAI oracle is implemented and fake-tested but has not been exercised with a project key. Final artwork and deployment remain track work.
+Runnable Next.js + TypeScript foundation for a two-day, three-person hackathon. The complete interaction works with placeholder artwork and a clearly labeled mock oracle. Every reading fetches source-validated calendar events from Zodiacs.org, including mock-oracle readings. The live OpenAI oracle is implemented and fake-tested but has not been exercised with a project key. Final artwork and deployment remain track work.
 
 The application contract now contains the twelve target questions, two audiences, three periods, and fixed-period validation. The interface migration is still in progress, and the final 32-card manifest is pending; the runnable starter continues to use 22 provisional cards.
 
@@ -37,7 +37,7 @@ npm run build
 npm start
 ```
 
-`check` runs TypeScript validation and foundation tests. `start` serves the production build after `build` succeeds.
+`check` runs TypeScript validation and foundation tests. Tests inject offline calendar fixtures and do not call Zodiacs.org. `start` serves the production build after `build` succeeds.
 
 ## Live oracle
 
@@ -53,11 +53,13 @@ curl http://localhost:3000/api/readings \
   -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-tower","recommendationCardId":"the-magician"}'
 ```
 
-The response reports `meta.mode: "mock"`. For ranges fully inside 2026–2028, `meta.calendarStatus` is `"available"`; ranges outside that snapshot are `"unavailable"` and remain card-only. Runtime requests never call an external calendar service.
+The response reports `meta.mode: "mock"`. The server still requests calendar data for the resolved period. A source failure, invalid response, incomplete coverage, or five-second calendar deadline returns a card-only reading with `meta.calendarStatus: "unavailable"`.
 
-## Calendar snapshot
+## Calendar data
 
-The checked snapshot contains retrograde intervals and exact new/full-moon instants from Zodiacs.org. Refresh it offline with `npm run calendar:refresh -- 2026 2027 2028`, then review and commit the generated JSON. The importer validates schemas, full-year coverage, station boundaries, duplicates, and source attribution before replacing the snapshot atomically.
+Each reading fetches retrograde and moon-phase files for every UTC year touched by its start-inclusive/end-exclusive range. Requests run concurrently with `cache: "no-store"` under one five-second deadline. The importer validates schemas, requested years, full-year coverage, station boundaries, duplicates, and source attribution before events become available. There is no runtime cache or snapshot fallback.
+
+The checked 2026–2028 JSON remains an offline fixture for tests and source review. Refresh that fixture with `npm run calendar:refresh -- 2026 2027 2028`, then review generated changes before committing them.
 
 Calendar data is licensed under CC BY 4.0. Attribution: [Data: Zodiacs.org](https://zodiacs.org).
 

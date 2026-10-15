@@ -5,10 +5,12 @@ import type { ApiError, AstroEvent, ReadingRequest, ReadingResponse } from "../s
 import { createReading } from "../src/server/reading-service";
 import { createReadingsPost } from "../src/server/readings-handler";
 import { createConfiguredOracleProvider } from "../src/server/providers/oracle";
-import { calendarProvider } from "../src/server/providers/calendar";
+import snapshotJson from "../src/server/calendar/data/calendar-snapshot.v1.json";
+import { createSnapshotCalendarProvider } from "../src/server/providers/calendar-fixture";
 import type { OracleInput, OracleProvider } from "../src/server/providers/types";
 
 const fixedNow = new Date("2026-10-15T12:00:00.000Z");
+const offlineCalendar = createSnapshotCalendarProvider(snapshotJson);
 const cards = {
   answerCardId: "the-tower",
   recommendationCardId: "the-magician",
@@ -42,7 +44,7 @@ test("route and service preserve the contract for all question-period combinatio
   };
   const POST = createReadingsPost((input) => createReading(input, {
     now: fixedNow,
-    calendar: calendarProvider,
+    calendar: offlineCalendar,
     oracle: fakeLiveOracle,
   }));
 
@@ -112,7 +114,7 @@ test("route hides keyless live configuration and provider failures", async () =>
     }),
     createReadingsPost((input) => createReading(input, {
       now: fixedNow,
-      calendar: calendarProvider,
+      calendar: offlineCalendar,
       oracle: { mode: "live", async generate() { throw new Error("provider-secret-detail"); } },
     })),
   ];

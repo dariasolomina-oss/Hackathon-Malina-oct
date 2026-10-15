@@ -71,9 +71,9 @@ If no relevant events are available, produce a card-only reading without inventi
 
 ## Event data
 
-The implemented runtime source is a checked [Zodiacs.org](https://zodiacs.org/developers/) snapshot containing 103 validated retrograde and new/full-moon events for 2026–2028. Runtime reading requests do not call an external calendar service. The importer validates schemas, complete-year coverage, station boundaries, duplicates, and required attribution before replacing the snapshot.
+Every reading, including a mock-oracle reading, fetches retrograde and new/full-moon source files from [Zodiacs.org](https://zodiacs.org/developers/) for each UTC year touched by its period. The requests bypass runtime caching and share a five-second deadline. The importer validates schemas, requested years, complete-year coverage, station boundaries, duplicates, and required attribution. A source or validation failure produces an explicitly card-only reading; there is no stale or local runtime fallback.
 
-The provider verifies coverage for the complete selected range, including all years touched by a twelve-month reading. It distinguishes unavailable coverage from a covered period with no selected events. Annual selection considers the full period. Public event metadata retains normalized source dates; generated timing text clips an interval to the reading range without describing the clipped boundary as a planetary station date. Display `Data: Zodiacs.org — https://zodiacs.org` when calendar data is shown.
+The provider verifies coverage for the complete selected range, including all years touched by a twelve-month reading. An end boundary at January 1 does not fetch the new year because periods are end-exclusive. It distinguishes unavailable coverage from a covered period with no selected events. Annual selection considers the full period. Public event metadata retains normalized source dates; generated timing text clips an interval to the reading range without describing the clipped boundary as a planetary station date. Display `Data: Zodiacs.org — https://zodiacs.org` when calendar data is shown. The checked 2026–2028 JSON is retained only as an offline test fixture and refresh utility.
 
 Event dates are data; their workplace significance is entertainment. Positive timing suggestions must also refer to supplied events and curated symbolic meanings.
 

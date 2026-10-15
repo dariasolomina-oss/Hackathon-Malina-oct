@@ -11,6 +11,8 @@ import { createReading } from "../src/server/reading-service";
 import { oracleProvider } from "../src/server/providers/oracle";
 import { createReadingsPost } from "../src/server/readings-handler";
 
+const offlineCalendar = { async getEvents() { return { status: "available" as const, events: [] }; } };
+
 const request: ReadingRequest = {
   questionId: "employee-project-deadline", periodId: "one-month", answerCardId: "the-tower", recommendationCardId: "the-magician",
 };
@@ -150,7 +152,7 @@ test("oracle failures propagate instead of silently switching to a sample", asyn
 });
 
 test("route accepts a valid reading and rejects malformed, duplicate, or fixed-period requests", async () => {
-  const POST = createReadingsPost((input) => createReading(input, { oracle: oracleProvider }));
+  const POST = createReadingsPost((input) => createReading(input, { calendar: offlineCalendar, oracle: oracleProvider }));
   const valid = await POST(new Request("http://localhost/api/readings", { method: "POST", body: JSON.stringify(request) }));
   assert.equal(valid.status, 200);
   assert.equal((await valid.json()).meta.mode, "mock");
