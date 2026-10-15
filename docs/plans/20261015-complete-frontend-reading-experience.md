@@ -70,8 +70,8 @@ Finish and integrate the frontend question-to-reading journey. Existing changes 
 **Files:**
 - Modify relevant project documentation if observed frontend behavior, setup, or ownership boundaries changed.
 
-- [ ] Record proposed or unverified integrations honestly; do not claim deployment is complete unless configured and verified.
-- [ ] Update relevant documentation for any behavior or setup changes.
+- [x] Record proposed or unverified integrations honestly; README and architecture docs state that live AI, verified event data, and deployment remain unconfigured or unverified.
+- [x] Update relevant documentation for any behavior or setup changes (no additional setup or behavior changes from this review required documentation updates).
 
 ## Post-Completion
 
