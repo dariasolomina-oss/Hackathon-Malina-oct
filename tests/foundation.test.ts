@@ -30,7 +30,9 @@ test("catalog matches the stable IDs and every artwork path exists", () => {
     assert.equal(card.image, `/cards/${card.id}.webp`);
   }
   assert.ok(existsSync("public/cards/back.webp"));
-  assert.ok(cards.every((card) => existsSync(`public${card.image}`) && card.answerMeaning && card.recommendationMeaning));
+  assert.ok(cards.every((card) => existsSync(`public${card.image}`)
+    && card.meanings.employee.answer && card.meanings.employee.recommendation
+    && card.meanings.leadership.answer && card.meanings.leadership.recommendation));
   assert.deepEqual(
     readdirSync("public/cards").sort(),
     [...cards.map((card) => `${card.id}.webp`), "back.webp"].sort(),
@@ -140,6 +142,10 @@ test("mock readings use the authoritative audience context", async () => {
   ]);
   assert.match(employee.answer, /your own work and daily routine/);
   assert.match(leadership.answer, /company direction, customers, and the team/);
+  assert.match(employee.answer, /A challenge may require extra effort/);
+  assert.match(employee.recommendation, /Try a new approach; small ideas can make a big difference/);
+  assert.match(leadership.answer, /A problem may reveal limits in current practices/);
+  assert.match(leadership.recommendation, /Invite new ideas and assess their business potential/);
 });
 
 test("calendar failure produces an explicitly card-only mock reading", async () => {

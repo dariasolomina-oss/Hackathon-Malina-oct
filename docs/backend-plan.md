@@ -55,7 +55,7 @@ Review generated changes before committing them. The public `events` array retai
 
 ## Remaining dependencies
 
-- The content owner should review the integrated draft meanings and supply the remaining oracle examples and demo story. The 32-card manifest and artwork are integrated.
+- The content owner's Employee and Leadership answer/recommendation meanings are integrated. The remaining content work is the oracle examples and demo story; the 32-card manifest and artwork are already integrated.
 - The integrated frontend implements audience grouping, fixed-period controls, resolved dates, attribution, and retry. Shared deployment remains open.
 - Three live gateway samples have been measured. Cost and broad editorial quality remain unverified; review at least one valid period per question.
 - The deployment owner must configure request and spending controls appropriate to the hosting platform. An in-memory request counter would not be a reliable global limit on serverless or multi-instance hosting.

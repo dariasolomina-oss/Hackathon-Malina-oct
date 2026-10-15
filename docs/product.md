@@ -57,7 +57,7 @@ Use rolling periods from the request date, not the next calendar year or quarter
 
 There is one deck with exactly 32 unique cards and one shared back. Audience and period do not change the deck or the number of draws. A yearly reading still uses two cards, not one per quarter.
 
-Developer 3 (Content) owns the composition, names, meanings, and artwork. Their 32-card manifest is integrated in `src/contracts/catalog.ts` and `src/content/cards.ts`. Each display name maps to its supplied filename (for example, The Spark uses `the-spark.webp`). The approved artwork contains printed titles; preserve them. The shared back is `public/cards/back.webp`. Only these 32 faces and the shared back belong in `public/cards/`.
+Developer 3 (Content) owns the composition, names, meanings, and artwork. Their 32-card manifest is integrated in `src/contracts/catalog.ts` and `src/content/cards.ts`. Every card has distinct answer and recommendation meanings for Employee and Leadership; the oracle receives only the pair for the selected question's audience. Each display name maps to its supplied filename (for example, The Spark uses `the-spark.webp`). The approved artwork contains printed titles; preserve them. The shared back is `public/cards/back.webp`. Only these 32 faces and the shared back belong in `public/cards/`.
 
 ## Reading algorithm
 

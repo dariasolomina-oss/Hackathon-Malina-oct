@@ -200,8 +200,16 @@ test("live provider sends the T1A policy and the authoritative context for both 
   }
   assert.match(requests[0].userPrompt, /"audience": "employee"/);
   assert.match(requests[0].userPrompt, /Will my hard work be recognized\?/);
+  assert.match(requests[0].userPrompt, /A challenge may require extra effort/);
+  assert.match(requests[0].userPrompt, /Try a new approach; small ideas can make a big difference/);
+  assert.doesNotMatch(requests[0].userPrompt, /A problem may reveal limits in current practices/);
+  assert.doesNotMatch(requests[0].userPrompt, /Invite new ideas and assess their business potential/);
   assert.match(requests[1].userPrompt, /"audience": "leadership"/);
   assert.match(requests[1].userPrompt, /What should be our top strategic priority\?/);
+  assert.match(requests[1].userPrompt, /A problem may reveal limits in current practices/);
+  assert.match(requests[1].userPrompt, /Invite new ideas and assess their business potential/);
+  assert.doesNotMatch(requests[1].userPrompt, /A challenge may require extra effort/);
+  assert.doesNotMatch(requests[1].userPrompt, /Try a new approach; small ideas can make a big difference/);
 });
 
 test("OpenAI transport sends one strict Responses request with bounded, private settings", async () => {

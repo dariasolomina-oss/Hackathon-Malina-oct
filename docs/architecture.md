@@ -81,7 +81,7 @@ The backend validates provider responses and live model output before exposing t
 
 ## Content contract
 
-The shared deck has exactly 32 unique IDs, with two draws for every audience and period. `src/contracts/catalog.ts` defines IDs; `src/content/cards.ts` contains the content owner's names, meanings, and image paths. Preserve those values. Names match filenames, such as The Spark and `the-spark.webp`.
+The shared deck has exactly 32 unique IDs, with two draws for every audience and period. `src/contracts/catalog.ts` defines IDs; `src/content/cards.ts` contains the content owner's names, image paths, and separate answer/recommendation meanings for Employee and Leadership. The server selects the meanings for the question's authoritative audience before building the oracle prompt. Preserve those values. Names match filenames, such as The Spark and `the-spark.webp`.
 
 The 32 WebP faces are 1024 by 1536 (2:3). They contain approved printed titles, so the selected-card caption shows its role without repeating the title. The shared back is `public/cards/back.webp`. These 33 files are the complete artwork set in `public/cards/`.
 
@@ -89,6 +89,6 @@ The 32 WebP faces are 1024 by 1536 (2:3). They contain approved printed titles, 
 
 The question and period contract, fixed-period validation, request-time calendar provider, event selection, explicit oracle modes, grounded Structured Outputs adapter, controlled timeouts, and public error mapping are implemented. The checked calendar JSON is an offline fixture rather than a runtime fallback. The backend path is covered across all 36 question-period combinations with injected offline dependencies.
 
-The frontend and content are integrated. Remaining work is shared deployment, editorial review of the supplied meanings and live readings, and demo preparation. See [backend-handoff.md](backend-handoff.md) for the integration contract.
+The frontend and audience-specific content are integrated. Remaining work is shared deployment, editorial review of live readings, and demo preparation. See [backend-handoff.md](backend-handoff.md) for the integration contract.
 
 Deploy as one Node-capable Next.js service (for example, Vercel). Static-only hosting cannot run the reading route. Set the host request timeout above 25 seconds so the five-second calendar budget and subsequent 20-second oracle budget can finish with controlled responses. Deployment itself is not configured in this starter.

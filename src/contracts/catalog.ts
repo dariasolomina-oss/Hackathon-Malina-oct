@@ -114,10 +114,14 @@ export function isPeriodAllowed(questionId: QuestionId, periodId: PeriodId): boo
   return getQuestion(questionId).allowedPeriodIds.some((allowedId) => allowedId === periodId);
 }
 
+export interface CardMeaning {
+  answer: string;
+  recommendation: string;
+}
+
 export interface Card {
   id: CardId;
   name: string;
   image: string;
-  answerMeaning: string;
-  recommendationMeaning: string;
+  meanings: Record<Audience, CardMeaning>;
 }

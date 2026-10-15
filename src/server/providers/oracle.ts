@@ -9,6 +9,8 @@ type LiveOracleFactory = (config: LiveOracleConfig) => Promise<OracleProvider> |
 export const mockOracleProvider: OracleProvider = {
   mode: "mock",
   async generate({ audience, question, period, answerCard, recommendationCard, events }) {
+    const answerMeaning = answerCard.meanings[audience].answer;
+    const recommendationMeaning = recommendationCard.meanings[audience].recommendation;
     const context = audience === "employee"
       ? "Keep the next step practical for your own work and daily routine."
       : "Frame the next step around company direction, customers, and the team.";
@@ -16,9 +18,9 @@ export const mockOracleProvider: OracleProvider = {
     const cosmicNote = event
       ? `${formatEventTiming(event, period)} ${event.interpretation} Before the plan moves forward, confirm the T1A owner, approvals, and next written step.`
       : null;
-    const recommendation = `${recommendationCard.name} suggests: ${recommendationCard.recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`;
+    const recommendation = `${recommendationCard.name} suggests: ${recommendationMeaning} Even cosmic alignment benefits from a clear owner and a written next step.`;
     return {
-      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerCard.answerMeaning} ${context}`,
+      answer: `You asked: "${question}" ${answerCard.name} replies: ${answerMeaning} ${context}`,
       recommendation: cosmicNote ? `${recommendation} ${cosmicNote}` : recommendation,
       cosmicNote,
     };
