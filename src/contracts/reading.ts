@@ -34,6 +34,18 @@ export interface OracleText {
   recommendation: string;
   cosmicNote: string | null;
 }
+
+export interface NasaSkyEvent {
+  id: string;
+  name: string;
+  kind: "solar-eclipse" | "lunar-eclipse" | "meteor-shower";
+  date: string;
+  // Inclusive date-only endpoint for a meteor peak spanning two nights.
+  endDate?: string;
+  visibility: string;
+  source: { name: string; url: string };
+}
+
 export interface ReadingResponse extends OracleText {
   request: ReadingRequest;
   period: DateRange;

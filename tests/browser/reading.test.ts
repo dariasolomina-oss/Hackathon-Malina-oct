@@ -58,9 +58,11 @@ test("both audiences use the shared questions and lock fixed periods", { timeout
   const browser = await chromium.launch({ executablePath: process.env.TEST_BROWSER_PATH || undefined });
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+    await page.route("**/api/nasa-events", (route) => route.fulfill({ json: { events: [] } }));
     await page.goto(baseURL);
     for (const audience of ["employee", "leadership"] as const) {
-      await page.goto(baseURL);
+      await page.route("**/api/nasa-events", (route) => route.fulfill({ json: { events: [] } }));
+    await page.goto(baseURL);
       await page.getByRole("button", { name: audience === "employee" ? "Employee" : "Leadership", exact: true }).click();
       await page.getByRole("button", { name: /Choose a question/ }).click();
       assert.equal(await page.getByRole("group", { name: "Choose a workplace question" }).getByRole("button").count(), 6);
@@ -97,7 +99,8 @@ test("tablet fans keep every rotated card inside the draw panel", { timeout: 90_
   try {
     for (const width of [601, 760]) {
       const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
-      await page.goto(baseURL);
+      await page.route("**/api/nasa-events", (route) => route.fulfill({ json: { events: [] } }));
+    await page.goto(baseURL);
       await openDraw(page);
       await page.locator(".card").first().waitFor();
       await page.mouse.move(1, 1);
@@ -151,7 +154,21 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
         };
         await route.fulfill({ json: response });
       });
-      await page.goto(baseURL);
+      await page.route("**/api/nasa-events", (route) => route.fulfill({ json: { events: [] } }));
+    await page.goto(baseURL);
+      const nasaRequests: unknown[] = [];
+      await page.route("**/api/nasa-events", async (route) => {
+        nasaRequests.push(route.request().postDataJSON());
+        await route.fulfill({ json: { events: [{
+          id: "nasa-fixture", name: "Fixture meteor shower", kind: "meteor-shower",
+          date: "2026-10-21", endDate: "2026-10-22", visibility: "Northern Hemisphere; fixture only.",
+          source: { name: "NASA Science", url: "https://science.nasa.gov/" },
+        }, {
+          id: "nasa-fixture-2", name: "Fixture lunar eclipse", kind: "lunar-eclipse",
+          date: "2026-10-28", visibility: "Fixture visibility region.",
+          source: { name: "NASA Science", url: "https://science.nasa.gov/" },
+        }] } });
+      });
       await assertFits(page);
 
       // Use keyboard activation for question, period, shuffle, and both card roles.
@@ -185,7 +202,14 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       const face = page.locator(".draw-overlay-face");
       assert.deepEqual(await face.evaluate((image: HTMLImageElement) => ({ width: image.naturalWidth, height: image.naturalHeight, fit: getComputedStyle(image).objectFit })), { width: 1024, height: 1536, fit: "contain" });
       if (!reducedMotion) {
-        await page.waitForTimeout(900);
+        const timing = await page.locator(".draw-overlay-card").evaluate((element) => {
+          const animation = element.getAnimations()[0];
+          const frames = (animation.effect as KeyframeEffect).getKeyframes();
+          return { duration: Number(animation.effect!.getTiming().duration), dwell: (frames[3].computedOffset - frames[2].computedOffset) * Number(animation.effect!.getTiming().duration) };
+        });
+        assert.equal(timing.duration, 2288);
+        assert.ok(Math.abs(timing.dwell - 1000) < 1);
+        await page.waitForTimeout(300);
         assert.equal(await overlay.isVisible(), true);
         await page.locator(".draw-overlay-card").evaluate((element) => {
           const animation = element.getAnimations()[0];
@@ -204,6 +228,11 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       const answer = await page.locator(".pair-card strong").first().textContent();
       const recommendation = await page.locator(".pair-card strong").nth(1).textContent();
       const pair = page.locator(".pair-stage");
+      const pairFonts = await pair.evaluate((element) => [
+        getComputedStyle(element.querySelector("h2")!).fontFamily,
+        getComputedStyle(element.querySelector(".pair-card-label")!).fontFamily,
+        getComputedStyle(element.querySelector(".draw-instruction")!).fontFamily,
+      ]);
       assert.equal(await pair.getByRole("heading", { level: 2 }).textContent(), "Will my hard work be recognized?");
       assert.equal(await pair.getByText("Next three months", { exact: true }).count(), 0);
       const layout = await pair.locator(".pair-card").evaluateAll((items) => items.map((item) => {
@@ -240,7 +269,26 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       assert.deepEqual(await page.locator(".reading-panel-card").allTextContents(), ["", ""]);
       assert.deepEqual(await page.locator(".reading-panel-card img").evaluateAll((images) => images.map((image) => image.getAttribute("alt"))), [answer, recommendation]);
       await page.getByText("Fixture event timing shapes this action.", { exact: false }).waitFor();
-      assert.equal(await page.getByRole("link", { name: /Event source: Fixture calendar/ }).getAttribute("href"), "https://example.com/calendar");
+      assert.equal(await page.getByRole("link", { name: /Source: Fixture calendar/ }).getAttribute("href"), "https://example.com/calendar");
+      await assertFits(page);
+
+      await page.getByRole("heading", { name: "Look up — sky highlights" }).waitFor();
+      assert.equal(await page.locator(".nasa-events .event-sources a").count(), 1);
+      assert.equal(await page.locator(".nasa-events .event-date").first().textContent(), "Peak: October 21, 2026 – October 22, 2026");
+      assert.deepEqual(nasaRequests[0], { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" });
+      assert.deepEqual(Object.keys(requests[1]).sort(), ["answerCardId", "periodId", "questionId", "recommendationCardId"]);
+      const typography = await page.locator(".reading").evaluate((element) => {
+        const question = getComputedStyle(element.querySelector(".reading-question")!);
+        const heading = getComputedStyle(element.querySelector(".reading-panel-copy h3")!);
+        const prose = getComputedStyle(element.querySelector(".reading-panel-copy p")!);
+        return { questionSize: parseFloat(question.fontSize), headingSize: parseFloat(heading.fontSize), fonts: [question.fontFamily, heading.fontFamily, prose.fontFamily] };
+      });
+      assert.ok(typography.questionSize >= typography.headingSize);
+      assert.deepEqual(typography.fonts, pairFonts);
+      const activeStepColors = await page.locator('.step[aria-current="step"]').evaluate((element) =>
+        [...element.querySelectorAll("span")].map((span) => getComputedStyle(span).color));
+      assert.deepEqual(activeStepColors, ["rgb(224, 174, 85)", "rgb(224, 174, 85)"]);
+      if (process.env.TEST_SCREENSHOTS) await page.locator(".reading").screenshot({ path: `/tmp/oracle-updated-final-${viewport.width}.png` });
       await assertFits(page);
 
       await page.getByRole("button", { name: "Start a new reading" }).press("Enter");
@@ -252,7 +300,8 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Enter");
       await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
       await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
-      await page.getByText("Personal reading", { exact: true }).waitFor();
+      await page.locator("#reading-title").waitFor();
+      assert.equal(await page.getByText("Personal reading", { exact: true }).count(), 0);
       assert.equal(await page.getByText("Sample reading", { exact: true }).count(), 0);
       await assertFits(page);
     } finally {
@@ -278,7 +327,8 @@ test("reading explains unavailable and empty calendars", { timeout: 90_000 }, as
       await route.fulfill({ json: response });
     });
 
-      await page.goto(baseURL);
+      await page.route("**/api/nasa-events", (route) => route.fulfill({ json: { events: [] } }));
+    await page.goto(baseURL);
     for (const [status, expected] of [
       ["unavailable", "The event calendar is unavailable, so this reading is based on your cards alone."],
       ["available", "No calendar events overlap this period, so this reading is based on your cards alone."],
@@ -293,6 +343,35 @@ test("reading explains unavailable and empty calendars", { timeout: 90_000 }, as
       await page.getByText(expected, { exact: true }).waitFor();
       await page.getByRole("button", { name: "Start a new reading" }).click();
     }
+  } finally {
+    await browser.close();
+  }
+});
+
+test("back to question cancels shuffling and allows a fresh shuffle", { timeout: 30_000 }, async () => {
+  const browser = await chromium.launch({ executablePath: process.env.TEST_BROWSER_PATH || undefined });
+  try {
+    const page = await browser.newPage({ reducedMotion: "no-preference" });
+    await page.goto(baseURL);
+    await page.getByRole("button", { name: /Choose a question/ }).click();
+    await page.getByRole("button", { name: /Choose a time period/ }).click();
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await page.getByRole("button", { name: "Shuffle the deck", exact: true }).press("Enter");
+      assert.equal(await page.getByRole("button", { name: "Shuffling the deck…", exact: true }).isDisabled(), true);
+      await page.getByRole("button", { name: "Back to question", exact: true }).press("Enter");
+      // Wait beyond the cancelled shuffle deadline: no delayed jump to the deck.
+      await page.waitForTimeout(1500);
+      assert.equal(await page.locator("#question-title").isVisible(), true);
+      assert.equal(await page.locator(".draw").count(), 0);
+      assert.equal(await page.locator("#question-title:focus").count(), 1);
+      await page.getByRole("button").filter({ hasText: "Will my hard work be recognized?" }).click();
+      await page.getByRole("button", { name: /Choose a time period/ }).click();
+      assert.equal(await page.getByRole("button", { name: "Shuffle the deck", exact: true }).isEnabled(), true);
+    }
+    await page.getByRole("button", { name: "Shuffle the deck", exact: true }).click();
+    await page.locator(".draw-instruction:focus").waitFor();
+    assert.equal(await page.locator("#draw-title").textContent(), "Will my hard work be recognized?");
+    assert.equal(await page.locator(".card").count(), 32);
   } finally {
     await browser.close();
   }

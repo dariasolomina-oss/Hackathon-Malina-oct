@@ -6,7 +6,7 @@ import { MagicTrail } from "./MagicTrail";
 import { cards } from "@/content/cards";
 import { audiences } from "@/content/questions";
 import { PERIODS, QUESTIONS, getQuestion, isPeriodAllowed, type Audience, type CardId, type PeriodId, type QuestionId } from "@/contracts/catalog";
-import type { ReadingResponse } from "@/contracts/reading";
+import type { AstroEvent, NasaSkyEvent, ReadingResponse } from "@/contracts/reading";
 import { shuffleDeck } from "@/domain/deck";
 import { requestReading } from "./client";
 
@@ -17,11 +17,23 @@ type DrawAnimation = {
   originScale: number;
 };
 
-const DRAW_DURATION_MS = 2800;
+const DRAW_DURATION_MS = 2288;
 const REDUCED_DRAW_DURATION_MS = 700;
 
 function formatDate(date: string, dateStyle: "medium" | "long" = "medium") {
   return new Intl.DateTimeFormat("en", { dateStyle, timeZone: "UTC" }).format(new Date(date));
+}
+
+function formatEventDates(event: AstroEvent) {
+  const start = formatDate(event.start, "long");
+  // Calendar intervals are end-exclusive, just like the reading period.
+  const end = event.end ? formatDate(new Date(Date.parse(event.end) - 1).toISOString(), "long") : null;
+  return !end || start === end ? start : `${start} – ${end}`;
+}
+
+function CalendarSources({ sources }: { sources: AstroEvent["source"][] }) {
+  const uniqueSources = Array.from(new Map(sources.map((source) => [source.url, source])).values());
+  return <div className="event-sources">{uniqueSources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{source.name === "Zodiacs.org" ? "Data: Zodiacs.org — https://zodiacs.org" : `Source: ${source.name}`} ↗</a>)}</div>;
 }
 
 export function ReadingExperience() {
@@ -32,6 +44,7 @@ export function ReadingExperience() {
   const [deck, setDeck] = useState<CardId[]>([]);
   const [chosen, setChosen] = useState<CardId[]>([]);
   const [result, setResult] = useState<ReadingResponse | null>(null);
+  const [nasaEvents, setNasaEvents] = useState<NasaSkyEvent[]>([]);
   const [busy, setBusy] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [error, setError] = useState("");
@@ -77,6 +90,12 @@ export function ReadingExperience() {
     if (!isPeriodAllowed(id, periodId)) setPeriod(getQuestion(id).allowedPeriodIds[0]);
   }
 
+  function cancelShuffle() {
+    if (shuffleTimer.current !== null) window.clearTimeout(shuffleTimer.current);
+    shuffleTimer.current = null;
+    setShuffling(false);
+  }
+
   function shuffle() {
     if (shuffling) return;
     setShuffling(true);
@@ -100,12 +119,9 @@ export function ReadingExperience() {
     setError("");
     setAnnouncement("Reading your two cards.");
     try {
-      setResult(await requestReading({
-        questionId,
-        periodId,
-        answerCardId: chosen[0],
-        recommendationCardId: chosen[1],
-      }));
+      const reading = await requestReading({ questionId, periodId, answerCardId: chosen[0], recommendationCardId: chosen[1] });
+      setResult(reading);
+      setNasaEvents([]);
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "The oracle is unavailable. Please try again.");
     } finally {
@@ -114,12 +130,14 @@ export function ReadingExperience() {
   }
 
   function restart() {
+    cancelShuffle();
     drawSequence.current += 1;
     drawLocked.current = false;
     if (drawTimer.current !== null) window.clearTimeout(drawTimer.current);
     setDeck([]);
     setChosen([]);
     setResult(null);
+    setNasaEvents([]);
     setError("");
     setSetupStage(1);
     setAnnouncement("Reading reset. Choose your audience.");
@@ -176,6 +194,16 @@ export function ReadingExperience() {
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
+
+  useEffect(() => {
+    if (!result) return;
+    const controller = new AbortController();
+    fetch("/api/nasa-events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(result.period), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(6_000)]) })
+      .then((response) => response.ok ? response.json() as Promise<{ events?: NasaSkyEvent[] }> : null)
+      .then((payload) => { if (!controller.signal.aborted) setNasaEvents(payload?.events ?? []); })
+      .catch(() => { if (!controller.signal.aborted) setNasaEvents([]); });
+    return () => controller.abort();
+  }, [result]);
 
   return <main className="page-shell">
     <CelestialSky />
@@ -242,7 +270,11 @@ export function ReadingExperience() {
             </div>
           </div>
           <div className="setup-nav">
-            <button className="text-button" type="button" onClick={() => setSetupStage(2)}>Back to question</button>
+            <button className="text-button" type="button" onClick={() => {
+              cancelShuffle();
+              setSetupStage(2);
+              setAnnouncement("Choose a question.");
+            }}>Back to question</button>
             <div className={`deck-action ${shuffling ? "is-shuffling" : ""}`}>
               <div className={`deck-stack ${shuffling ? "is-shuffling" : ""}`} aria-hidden="true">
                 {Array.from({ length: 32 }, (_, index) => {
@@ -348,7 +380,7 @@ export function ReadingExperience() {
       <div>{result && <section className="reading panel" aria-labelledby="reading-title">
         <div className="reading-topline">
           <h2 id="reading-title" tabIndex={-1} ref={readingHeadingRef}>Your reading</h2>
-          <span className={`mode-label ${result.meta.mode}`}>{result.meta.mode === "mock" ? "Sample reading" : "Personal reading"}</span>
+          {result.meta.mode === "mock" && <span className="mode-label mock">Sample reading</span>}
         </div>
         <div className="reading-context">
           <p className="reading-question">{resultQuestion?.label}</p>
@@ -362,15 +394,28 @@ export function ReadingExperience() {
             <div className="reading-panel-card"><img src={card.image} alt={card.name} width="1024" height="1536" /></div>
             <div className="reading-panel-copy">
               <span className="reading-number">{index === 0 ? "I" : "II"}</span>
-              <h3>{role} — {card.name}</h3>
+              <h3><span>{role}</span> — <strong>{card.name}</strong></h3>
               <p>{copy}</p>
             </div>
           </article>;
         })}</div>
         {result.meta.calendarStatus === "unavailable" && <p className="calendar-status">The event calendar is unavailable, so this reading is based on your cards alone.</p>}
         {result.meta.calendarStatus === "available" && result.events.length === 0 && <p className="calendar-status">No calendar events overlap this period, so this reading is based on your cards alone.</p>}
-        {!!result.events.length && <div className="events"><span className="section-kicker">In the cosmic calendar</span><ul>{result.events.map((event) => <li key={event.id}><span><strong>{event.name}</strong><small>{formatDate(event.start)}</small></span><a href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`Event source: ${event.source.name} (opens in a new tab)`}>Source: {event.source.name} ↗</a></li>)}</ul></div>}
-        {result.events.some((event) => event.source.name === "Zodiacs.org") && <p className="calendar-status">Data: <a href="https://zodiacs.org" target="_blank" rel="noopener noreferrer">Zodiacs.org — https://zodiacs.org</a></p>}
+        {!!result.events.length && <section className="events" aria-labelledby="cosmic-calendar-title">
+          <h3 className="section-kicker" id="cosmic-calendar-title">In the cosmic calendar</h3>
+          <ul>{result.events.map((event) => <li key={event.id}>
+            <strong>{event.name}</strong><span className="event-date">{formatEventDates(event)}</span>
+          </li>)}</ul>
+          <CalendarSources sources={result.events.map((event) => event.source)} />
+        </section>}
+        {!!nasaEvents.length && <section className="events nasa-events" aria-labelledby="nasa-calendar-title">
+          <h3 className="section-kicker" id="nasa-calendar-title">Look up — sky highlights</h3>
+          <ul>{nasaEvents.map((event) => <li key={event.id}>
+            <span><strong>{event.name}</strong><small>{event.visibility}</small></span>
+            <span className="event-date">{event.kind === "meteor-shower" ? "Peak: " : ""}{formatDate(event.date, "long")}{event.endDate && event.endDate !== event.date ? ` – ${formatDate(event.endDate, "long")}` : ""}</span>
+          </li>)}</ul>
+          <CalendarSources sources={nasaEvents.map((event) => event.source)} />
+        </section>}
         <p className="disclaimer">For entertainment and reflection. The universe is not your project manager.</p>
       </section>}</div>
 

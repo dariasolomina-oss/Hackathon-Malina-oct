@@ -12,7 +12,7 @@ For the motivation, delivered features, and next steps, read the [project write-
 
 The question appears above the current draw instruction. The shuffled deck forms two fans of 16 cards on desktop and four fans of eight on phones. Selecting a card leaves a gap without moving the other cards.
 
-Each selected card enlarges at the center of the screen, flips face-up, pauses for approximately 1.5 seconds, and exits below the screen. Selection stays locked during this sequence. Reduced-motion mode shows a static face briefly instead. The first draw answers the question; the second recommends an action.
+Each selected card enlarges at the center of the screen, flips face-up, pauses for approximately 1 second, and exits below the screen. Selection stays locked during this sequence. Reduced-motion mode shows a static face briefly instead. The first draw answers the question; the second recommends an action.
 
 After both draws, the question and **Ready to reveal your reading?** appear above two card faces displayed side by side. Each card has its role and name above the image. **Reveal your reading** requests the oracle response; selecting cards alone does not call the reading API. The final result includes the period and dates.
 

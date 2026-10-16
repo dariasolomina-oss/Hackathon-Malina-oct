@@ -54,6 +54,10 @@ npm run calendar:refresh -- 2026 2027 2028
 
 Review the changed data before committing. Public event metadata retains source dates. The interface lists names, start dates, and source links, and displays `Data: Zodiacs.org — https://zodiacs.org` for CC BY 4.0 attribution.
 
+## NASA sky highlights
+
+The final screen requests NASA sky highlights through a separate `/api/nasa-events` route after the reading response arrives. The route fetches allowlisted NASA Eclipse Web Site annual pages and NASA Science meteor-shower pages with a shared four-second deadline, bounds requests to at most one year, parses only explicitly dated eclipse or meteor peak entries, sorts and limits results to the three nearest events, and omits failed sources while retaining successful ones. Meteor peaks use only the explicit year in the published Active row; dates are never repeated into an unpublished future year. Overnight peaks retain both dates. There is no snapshot fallback or guarantee of complete year-ahead meteor coverage. This payload is rendered independently and is never passed to the oracle prompt, so NASA availability cannot change recommendations or make a reading fail. Source links retain NASA provenance and visibility wording is broad because no observer location is collected.
+
 ## Oracle
 
 `ORACLE_MODE=mock` is the default. It uses deterministic sample text from card meanings and, if available, the first selected event. It is visibly labeled and does not reproduce the live model's prose style.
