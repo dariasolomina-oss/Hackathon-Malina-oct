@@ -22,6 +22,10 @@ function event(id: string, start: string, end: string | null): AstroEvent {
     source: { name: "Test fixture", url: "https://example.com" } };
 }
 
+function namedEvent(id: string, name: string, start: string): AstroEvent {
+  return { ...event(id, start, null), name };
+}
+
 test("catalog matches the stable IDs and every artwork path exists", () => {
   assert.deepEqual(cards.map((card) => card.id), [...CARD_IDS]);
   assert.equal(cards.length, 32);
@@ -130,6 +134,54 @@ test("service passes exact card roles and only relevant events to the oracle", a
   });
   assert.equal(reading.cosmicNote, "Test note");
   assert.deepEqual(reading.request, request);
+});
+
+test("service exposes sorted deduplicated period events while oracle receives only three", async () => {
+  const sourceEvents = [
+    namedEvent("late", "Jupiter retrograde", "2027-01-10T00:00:00Z"),
+    namedEvent("early", "Mercury retrograde", "2026-10-20T00:00:00Z"),
+    namedEvent("middle", "New Moon", "2026-11-10T00:00:00Z"),
+    namedEvent("duplicate", "Venus retrograde", "2026-12-01T00:00:00Z"),
+    namedEvent("duplicate", "Venus retrograde", "2026-12-02T00:00:00Z"),
+    namedEvent("outside", "Mars retrograde", "2028-01-01T00:00:00Z"),
+  ];
+  let oracleEvents: AstroEvent[] = [];
+  const reading = await createReading({ ...request, periodId: "three-months" }, {
+    now: new Date("2026-10-15T12:00:00Z"),
+    calendar: { async getEvents() { return { status: "available" as const, events: sourceEvents }; } },
+    oracle: { mode: "mock", async generate(input) { oracleEvents = input.events; return { answer: "Answer", recommendation: "Advice", cosmicNote: null }; } },
+  });
+  assert.deepEqual(reading.availableEvents?.map((item) => item.id), ["early", "middle", "duplicate", "late"]);
+  assert.equal(new Set(reading.availableEvents?.map((item) => item.id)).size, 4);
+  assert.equal(oracleEvents.length, 3);
+  assert.ok(oracleEvents.every((item) => reading.availableEvents?.some((candidate) => candidate.id === item.id)));
+});
+
+test("event selection repeats a family only when no diverse alternative exists", () => {
+  const diverse = selectEvents([
+    namedEvent("m1", "Mercury retrograde", "2026-10-20T00:00:00Z"),
+    namedEvent("m2", "Mercury retrograde", "2026-11-20T00:00:00Z"),
+    namedEvent("v1", "Venus retrograde", "2026-12-20T00:00:00Z"),
+    namedEvent("moon", "New Moon", "2026-12-21T00:00:00Z"),
+  ], { start: "2026-10-15T00:00:00Z", end: "2027-01-15T00:00:00Z" });
+  assert.deepEqual(diverse.map((item) => item.id), ["m1", "v1", "moon"]);
+  const mercuryOnly = selectEvents([
+    namedEvent("m1", "Mercury retrograde", "2026-10-20T00:00:00Z"),
+    namedEvent("m2", "Mercury retrograde", "2026-11-20T00:00:00Z"),
+    namedEvent("m3", "Mercury retrograde", "2026-12-20T00:00:00Z"),
+  ], { start: "2026-10-15T00:00:00Z", end: "2027-01-15T00:00:00Z" });
+  assert.deepEqual(mercuryOnly.map((item) => item.id), ["m1", "m2", "m3"]);
+});
+
+test("annual selection diversifies events while covering three parts of the year", () => {
+  const selected = selectEvents([
+    namedEvent("m1", "Mercury retrograde", "2026-10-20T00:00:00Z"),
+    namedEvent("m2", "Mercury retrograde", "2027-03-20T00:00:00Z"),
+    namedEvent("moon", "New Moon", "2027-03-21T00:00:00Z"),
+    namedEvent("m3", "Mercury retrograde", "2027-08-20T00:00:00Z"),
+    namedEvent("venus", "Venus retrograde", "2027-08-21T00:00:00Z"),
+  ], { start: "2026-10-15T00:00:00Z", end: "2027-10-15T00:00:00Z" });
+  assert.deepEqual(selected.map((item) => item.id), ["m1", "moon", "venus"]);
 });
 
 test("mock readings use the authoritative audience context", async () => {

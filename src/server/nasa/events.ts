@@ -97,6 +97,6 @@ export async function getNasaSkyEvents(period: DateRange, fetcher: typeof fetch 
       const start = Date.parse(`${event.date}T00:00:00Z`);
       const end = Date.parse(`${event.endDate ?? event.date}T00:00:00Z`) + DAY_MS;
       return start < Date.parse(period.end) && end > Date.parse(period.start);
-    }).sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id)).slice(0, 3);
+    }).sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
   } finally { clearTimeout(timer); }
 }

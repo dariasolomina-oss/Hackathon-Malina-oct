@@ -27,6 +27,10 @@ flowchart LR
 
 Browser modules must not import server modules. The production prompt is defined in `src/server/oracle-prompt.ts`; the editorial rules are in [product.md](product.md).
 
+## Typography
+
+Bodoni Moda is used for headings, question text, and card titles, with Bodoni 72, Didot, and Georgia fallbacks. Inter Tight is used for body text, buttons, cues, summaries, and navigation, with Avenir Next, Avenir, and Arial fallbacks. The local Witch font is reserved for “Malina” in the wordmark. Shared CSS font variables keep the draw, pair, and reading screens consistent.
+
 ## Reading pipeline
 
 The browser uses a Fisher–Yates shuffle with `Math.random()` once per new deck. Click order assigns **Read the situation** and **What to do** roles. Desktop uses two curved fans of 16 cards; phones use four fans of eight. A draw keeps every card in its shuffled position, leaves a gap, and shows the selected face in a viewport-fixed overlay before moving it below the viewport. Input stays locked through that sequence. Reduced-motion mode shows the face without spatial movement for a short pause. After the second card exits, a selected-pair stage replaces the deck; only its reveal button requests a reading. Retrying preserves the ordered selection but makes a new reading request. Restarting or leaving the component cancels pending draw work. This entertainment app validates card IDs and uniqueness; it does not prevent a caller from deliberately choosing another valid pair.
@@ -44,7 +48,7 @@ Every reading, including mock readings, requests these Zodiacs.org endpoints for
 
 Requests run concurrently with `cache: "no-store"`; one five-second deadline covers retrieval and parsing. The importer validates schemas, requested years, coverage, station boundaries, and duplicates, and joins cross-year intervals. A source or validation failure returns `calendarStatus: "unavailable"` with no events. There is no runtime snapshot fallback.
 
-Selection keeps at most three events overlapping the reading range, including intervals already in progress. Short ranges rank events by curated workplace relevance. Ranges of at least 180 days first select candidates across three time buckets, then fill remaining slots by relevance. The AI receives this selected subset, not the entire annual source dataset. Symbolic workplace interpretations are curated in the importer; they are not scientific forecasts.
+Selection keeps at most three events overlapping the reading range, including intervals already in progress. Candidates are ranked by curated workplace relevance, with Mercury ranked highest. Each next selection prefers an unused planet or moon-phase type. Ranges of at least 180 days apply this preference within each of three time buckets to preserve coverage across the period; a bucket may repeat a family if it has no alternative. The response also carries `availableEvents`, the deduplicated chronological list of all verified events overlapping the requested period for the expandable calendar. The interface initially shows the selected three events; `View all events` reveals the full list and `Show fewer events` restores the selection without another API request. The AI receives only the selected `events` subset. Symbolic workplace interpretations are curated in the importer; they are not scientific forecasts.
 
 The checked calendar snapshot and `calendar-fixture.ts` are used by offline tests, not the production route. To refresh the fixture intentionally:
 
@@ -56,7 +60,7 @@ Review the changed data before committing. Public event metadata retains source 
 
 ## NASA sky highlights
 
-The final screen requests NASA sky highlights through a separate `/api/nasa-events` route after the reading response arrives. The route fetches allowlisted NASA Eclipse Web Site annual pages and NASA Science meteor-shower pages with a shared four-second deadline, bounds requests to at most one year, parses only explicitly dated eclipse or meteor peak entries, sorts and limits results to the three nearest events, and omits failed sources while retaining successful ones. Meteor peaks use only the explicit year in the published Active row; dates are never repeated into an unpublished future year. Overnight peaks retain both dates. There is no snapshot fallback or guarantee of complete year-ahead meteor coverage. This payload is rendered independently and is never passed to the oracle prompt, so NASA availability cannot change recommendations or make a reading fail. Source links retain NASA provenance and visibility wording is broad because no observer location is collected.
+The final screen requests NASA sky highlights through a separate `/api/nasa-events` route after the reading response arrives. The route fetches allowlisted NASA Eclipse Web Site annual pages and NASA Science meteor-shower pages with a shared four-second deadline, bounds requests to at most one year, parses only explicitly dated eclipse or meteor peak entries, and returns every verified matching event in chronological order. The interface shows the nearest three first and lets users expand the full returned list. Failed sources are omitted while successful sources remain. Meteor peaks use only the explicit year in the published Active row; dates are never repeated into an unpublished future year. Overnight peaks retain both dates. There is no snapshot fallback or guarantee of complete year-ahead meteor coverage. This payload is rendered independently and is never passed to the oracle prompt, so NASA availability cannot change recommendations or make a reading fail. Source links retain NASA provenance and visibility wording is broad because no observer location is collected.
 
 ## Oracle
 
@@ -97,7 +101,8 @@ curl http://localhost:3000/api/readings \
 | `cosmicNote` | Compatibility field; null in live mode, may contain text in mock mode |
 | `request` | Validated question, period, and ordered card IDs |
 | `period` | Resolved UTC `start` and exclusive `end` |
-| `events` | Selected event metadata with ID, name, kind, dates, interpretation, and source |
+| `events` | Up to three selected events supplied to the oracle, with dates, interpretation, and source |
+| `availableEvents` | All verified events overlapping the period, deduplicated and chronological; optional for older clients |
 | `meta.mode` | `mock` or `live` |
 | `meta.calendarStatus` | `available` or `unavailable` |
 

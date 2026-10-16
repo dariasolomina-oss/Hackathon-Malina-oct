@@ -38,11 +38,11 @@ test("real NASA Active rows use their explicit year, retaining both peak nights"
   assert.deepEqual(parseMeteorPage(ambiguous, "quadrantids", "test"), []);
 });
 
-test("NASA events combine sources in chronological order and cap at three", async () => {
+test("NASA events combine all matching sources in chronological order", async () => {
   const events = await getNasaSkyEvents(period, fixtureFetch);
   assert.deepEqual(events.map((event) => event.date), ["2027-01-03", "2027-02-06", "2027-02-20"]);
   const upcoming = await getNasaSkyEvents({ start: "2026-10-16T00:00:00Z", end: "2027-10-16T00:00:00Z" }, fixtureFetch);
-  assert.deepEqual(upcoming.map((event) => event.date), ["2026-10-21", "2026-11-16", "2026-12-13"]);
+  assert.deepEqual(upcoming.map((event) => event.date), ["2026-10-21", "2026-11-16", "2026-12-13", "2027-01-03", "2027-02-06", "2027-02-20", "2027-04-22", "2027-07-18", "2027-08-02", "2027-08-17"]);
 });
 
 test("NASA filters peaks by overlap including second night, without inventing next-year recurrence", async () => {

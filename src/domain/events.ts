@@ -3,7 +3,7 @@ import type { AstroEvent, DateRange } from "@/contracts/reading";
 const MAX_SELECTED_EVENTS = 3;
 const ANNUAL_SPREAD_THRESHOLD_DAYS = 180;
 
-function overlaps(event: AstroEvent, start: number, end: number): boolean {
+export function overlaps(event: AstroEvent, start: number, end: number): boolean {
   const eventStart = Date.parse(event.start);
   if (!Number.isFinite(eventStart)) return false;
   if (event.end === null) return eventStart >= start && eventStart < end;
@@ -19,6 +19,15 @@ function relevance(event: AstroEvent): number {
   if (event.kind === "lunation") return 70;
   if (name.includes("mars") || name.includes("saturn")) return 65;
   return 50;
+}
+
+function family(event: AstroEvent): string {
+  if (event.kind === "lunation") return event.name.toLowerCase().startsWith("new moon") ? "new-moon" : "full-moon";
+  if (event.kind === "retrograde") {
+    const planet = event.name.toLowerCase().match(/mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto/)?.[0];
+    return planet ? `${planet}-retrograde` : "retrograde";
+  }
+  return event.kind;
 }
 
 function compareCandidates(a: AstroEvent, b: AstroEvent): number {
@@ -45,29 +54,45 @@ export function selectEvents(events: AstroEvent[], period: DateRange): AstroEven
   const durationDays = (end - start) / 86_400_000;
   let selected: AstroEvent[];
 
+  const choose = (pool: AstroEvent[], used: Set<string>) => pool
+    .filter((event) => !used.has(family(event)))
+    .sort(compareCandidates)[0] ?? pool.sort(compareCandidates)[0];
+
   if (durationDays >= ANNUAL_SPREAD_THRESHOLD_DAYS) {
     const chosen = new Set<string>();
+    const usedFamilies = new Set<string>();
     selected = [];
     for (let bucket = 0; bucket < MAX_SELECTED_EVENTS; bucket += 1) {
       const bucketStart = start + ((end - start) * bucket) / MAX_SELECTED_EVENTS;
       const bucketEnd = start + ((end - start) * (bucket + 1)) / MAX_SELECTED_EVENTS;
-      const best = candidates
+      const bucketCandidates = candidates
+        .filter((event) => !chosen.has(event.id))
         .filter((event) => {
           const time = Math.max(Date.parse(event.start), start);
           return time >= bucketStart && time < bucketEnd;
-        })
-        .sort(compareCandidates)[0];
+        });
+      const best = choose(bucketCandidates, usedFamilies);
       if (best) {
         selected.push(best);
         chosen.add(best.id);
+        usedFamilies.add(family(best));
       }
     }
     if (selected.length < MAX_SELECTED_EVENTS) {
-      selected.push(...candidates.filter((event) => !chosen.has(event.id)).sort(compareCandidates)
-        .slice(0, MAX_SELECTED_EVENTS - selected.length));
+      while (selected.length < MAX_SELECTED_EVENTS) {
+        const best = choose(candidates.filter((event) => !chosen.has(event.id)), usedFamilies);
+        if (!best) break;
+        selected.push(best); chosen.add(best.id); usedFamilies.add(family(best));
+      }
     }
   } else {
-    selected = candidates.sort(compareCandidates).slice(0, MAX_SELECTED_EVENTS);
+    selected = [];
+    const usedFamilies = new Set<string>();
+    while (selected.length < MAX_SELECTED_EVENTS) {
+      const best = choose(candidates.filter((event) => !selected.some((item) => item.id === event.id)), usedFamilies);
+      if (!best) break;
+      selected.push(best); usedFamilies.add(family(best));
+    }
   }
 
   return selected.sort((a, b) => Date.parse(a.start) - Date.parse(b.start) || a.id.localeCompare(b.id));

@@ -50,6 +50,8 @@ export interface ReadingResponse extends OracleText {
   request: ReadingRequest;
   period: DateRange;
   events: AstroEvent[];
+  /** All verified events overlapping the period; the oracle receives only `events`. */
+  availableEvents?: AstroEvent[];
   meta: {
     mode: "mock" | "live";
     calendarStatus: CalendarResult["status"];

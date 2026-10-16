@@ -64,6 +64,8 @@ export function ReadingExperience() {
   const [chosen, setChosen] = useState<CardId[]>([]);
   const [result, setResult] = useState<ReadingResponse | null>(null);
   const [nasaEvents, setNasaEvents] = useState<NasaSkyEvent[]>([]);
+  const [cosmicExpanded, setCosmicExpanded] = useState(false);
+  const [nasaExpanded, setNasaExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [shuffling, setShuffling] = useState(false);
   const [error, setError] = useState("");
@@ -142,6 +144,8 @@ export function ReadingExperience() {
       const reading = await requestReading({ questionId, periodId, answerCardId: chosen[0], recommendationCardId: chosen[1] });
       setResult(reading);
       setNasaEvents([]);
+      setCosmicExpanded(false);
+      setNasaExpanded(false);
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "The oracle is unavailable. Please try again.");
     } finally {
@@ -158,6 +162,8 @@ export function ReadingExperience() {
     setChosen([]);
     setResult(null);
     setNasaEvents([]);
+    setCosmicExpanded(false);
+    setNasaExpanded(false);
     setError("");
     setSetupStage(1);
     setAnnouncement("Reading reset. Choose your audience.");
@@ -301,7 +307,7 @@ export function ReadingExperience() {
           <div className="reading-summary" aria-label="Your reading choices">
             <div><span>Reading for</span><strong>{audiences.find((audience) => audience.id === audienceId)?.label}</strong></div>
             <div><span>Your question</span><strong>{getQuestion(questionId).label}</strong></div>
-            <button className="text-button" type="button" onClick={() => { setSetupStage(2); setAnnouncement("Your choices are saved. Edit your question or audience."); }}>Edit choices</button>
+            <button className="text-button" type="button" onClick={() => { cancelShuffle(); setSetupStage(2); setAnnouncement("Your choices are saved. Edit your question or audience."); }}>Edit choices</button>
           </div>
           <div className="period-section">
             {fixedPeriod && <p className="fixed-period-note" id="fixed-period-note"><strong>Fixed for this question.</strong> Reading period: {fixedPeriod.label}.</p>}
@@ -449,19 +455,21 @@ export function ReadingExperience() {
         })}</div>
         {result.meta.calendarStatus === "unavailable" && <p className="calendar-status">The event calendar is unavailable, so this reading is based on your cards alone.</p>}
         {result.meta.calendarStatus === "available" && result.events.length === 0 && <p className="calendar-status">No calendar events overlap this period, so this reading is based on your cards alone.</p>}
-        {!!result.events.length && <section className="events" aria-labelledby="cosmic-calendar-title">
+        {!!(result.availableEvents?.length ?? result.events.length) && <section className="events" aria-labelledby="cosmic-calendar-title">
           <h3 className="section-kicker" id="cosmic-calendar-title">In the cosmic calendar</h3>
-          <ul>{result.events.map((event) => <li key={event.id}>
+          <ul id="cosmic-calendar-list">{(cosmicExpanded ? (result.availableEvents ?? result.events) : result.events.slice(0, 3)).map((event) => <li key={event.id}>
             <strong>{event.name}</strong><span className="event-date">{formatEventDates(event)}</span>
           </li>)}</ul>
-          <CalendarSources sources={result.events.map((event) => event.source)} />
+          {(result.availableEvents?.length ?? result.events.length) > 3 && <button className="text-button events-toggle" type="button" aria-expanded={cosmicExpanded} aria-controls="cosmic-calendar-list" onClick={() => setCosmicExpanded((expanded) => !expanded)}>{cosmicExpanded ? "Show fewer events" : "View all events"}</button>}
+          <CalendarSources sources={(result.availableEvents ?? result.events).map((event) => event.source)} />
         </section>}
         {!!nasaEvents.length && <section className="events nasa-events" aria-labelledby="nasa-calendar-title">
           <h3 className="section-kicker" id="nasa-calendar-title">Look up — sky highlights</h3>
-          <ul>{nasaEvents.map((event) => <li key={event.id}>
+          <ul id="nasa-calendar-list">{(nasaExpanded ? nasaEvents : nasaEvents.slice(0, 3)).map((event) => <li key={event.id}>
             <span><strong><a className="event-title" href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`${event.name} — NASA (opens in a new tab)`}>{event.name} <span aria-hidden="true">↗</span></a></strong><small>{event.visibility}</small></span>
             <span className="event-date">{event.kind === "meteor-shower" ? "Peak: " : ""}{formatDate(event.date, "long")}{event.endDate && event.endDate !== event.date ? ` – ${formatDate(event.endDate, "long")}` : ""}</span>
           </li>)}</ul>
+          {nasaEvents.length > 3 && <button className="text-button events-toggle" type="button" aria-expanded={nasaExpanded} aria-controls="nasa-calendar-list" onClick={() => setNasaExpanded((expanded) => !expanded)}>{nasaExpanded ? "Show fewer events" : "View all events"}</button>}
         </section>}
         <p className="disclaimer">For entertainment and reflection. The universe is not your project manager.</p>
       </section>}</div>

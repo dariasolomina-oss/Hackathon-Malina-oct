@@ -145,11 +145,15 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
           await route.fulfill({ status: 503, json: { error: { code: "READING_FAILED", message: "Oracle temporarily unavailable." } } });
           return;
         }
+        const availableEvents: ReadingResponse["events"] = Array.from({ length: 5 }, (_, index) => ({
+          id: `fixture-${index}`, name: `Fixture event ${index + 1}`, kind: "aspect",
+          start: `2026-10-${20 + index}T00:00:00.000Z`, end: null,
+          interpretation: "Test interpretation", source: { name: "Fixture calendar", url: "https://example.com/calendar" },
+        }));
         const response: ReadingResponse = {
           request, answer: "Test answer", recommendation: "Test recommendation. Fixture event timing shapes this action.", cosmicNote: "Fixture event timing shapes this action.",
           period: { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" },
-          events: [{ id: "fixture", name: "Fixture event", kind: "aspect", start: "2026-10-20T00:00:00.000Z", end: null,
-            interpretation: "Test interpretation", source: { name: "Fixture calendar", url: "https://example.com/calendar" } }],
+          events: [availableEvents[0], availableEvents[2], availableEvents[4]], availableEvents,
           meta: { mode, calendarStatus: "available" },
         };
         await route.fulfill({ json: response });
@@ -167,7 +171,11 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
           id: "nasa-fixture-2", name: "Fixture lunar eclipse", kind: "lunar-eclipse",
           date: "2026-10-28", visibility: "Fixture visibility region.",
           source: { name: "NASA Science", url: "https://science.nasa.gov/" },
-        }] } });
+        }, ...[29, 30].map((day) => ({
+          id: `nasa-fixture-${day}`, name: `Fixture sky event ${day}`, kind: "lunar-eclipse",
+          date: `2026-10-${day}`, visibility: "Fixture only.",
+          source: { name: "NASA Science", url: "https://science.nasa.gov/" },
+        }))] } });
       });
       await assertFits(page);
 
@@ -274,7 +282,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
 
       await page.getByRole("heading", { name: "Look up — sky highlights" }).waitFor();
       assert.equal(await page.locator(".nasa-events .event-sources").count(), 0);
-      assert.equal(await page.locator(".nasa-events .event-title").count(), 2);
+      assert.equal(await page.locator(".nasa-events .event-title").count(), 3);
       const nasaTitle = page.getByRole("link", { name: "Fixture meteor shower — NASA (opens in a new tab)" });
       assert.equal(await nasaTitle.getAttribute("href"), "https://science.nasa.gov/");
       assert.equal(await nasaTitle.getAttribute("target"), "_blank");
@@ -292,9 +300,34 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       const activeStepColors = await page.locator('.step[aria-current="step"]').evaluate((element) =>
         [...element.querySelectorAll("span")].map((span) => getComputedStyle(span).color));
       assert.deepEqual(activeStepColors, ["rgb(224, 174, 85)", "rgb(224, 174, 85)"]);
+      const cosmic = page.locator(".events").filter({ has: page.locator("#cosmic-calendar-title") });
+      const nasa = page.locator(".nasa-events");
+      assert.equal(await cosmic.locator("li").count(), 3);
+      assert.equal(await nasa.locator("li").count(), 3);
+      for (const [section, count] of [[cosmic, 5], [nasa, 4]] as const) {
+        const toggle = section.getByRole("button", { name: "View all events" });
+        assert.equal(await toggle.getAttribute("aria-expanded"), "false");
+        await toggle.click();
+        assert.equal(await section.locator("li").count(), count);
+        assert.equal(await section.getByRole("button", { name: "Show fewer events" }).getAttribute("aria-expanded"), "true");
+      }
+      assert.equal(requests.length, 2);
+      assert.equal(nasaRequests.length, 1);
+      const calendarSizes = await page.locator(".events .section-kicker, .events li strong, .events .event-date, .events .event-title").evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).fontSize));
+      assert.equal(new Set(calendarSizes).size, 1);
+      const contextLayout = await readingContext.locator("p").evaluateAll((nodes) => nodes.map((node) => ({ top: node.getBoundingClientRect().top, bottom: node.getBoundingClientRect().bottom })));
+      assert.ok(contextLayout[1].top >= contextLayout[0].bottom);
+      assert.equal(await cosmic.locator("h3").evaluate((node) => getComputedStyle(node).fontFamily), pairFonts[0]);
+      assert.deepEqual(await page.locator(".reading-panel-copy h3 span").evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).color)), ["rgb(224, 174, 85)", "rgb(224, 174, 85)"]);
+      await assertFits(page);
       if (process.env.TEST_SCREENSHOTS) await page.locator(".reading").screenshot({ path: `/tmp/oracle-updated-final-${viewport.width}.png` });
       await assertFits(page);
 
+      for (const section of [cosmic, nasa]) {
+        await section.getByRole("button", { name: "Show fewer events" }).click();
+        assert.equal(await section.locator("li").count(), 3);
+      }
+      await cosmic.getByRole("button", { name: "View all events" }).click();
       await page.getByRole("button", { name: "Start a new reading" }).press("Enter");
       assert.equal(await page.getByText("Sample reading", { exact: true }).count(), 0);
       await openDraw(page);
@@ -305,6 +338,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
       await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
       await page.locator("#reading-title").waitFor();
+      assert.equal(await page.locator("#cosmic-calendar-list li").count(), 3);
       assert.equal(await page.getByText("Personal reading", { exact: true }).count(), 0);
       assert.equal(await page.getByText("Sample reading", { exact: true }).count(), 0);
       await assertFits(page);
