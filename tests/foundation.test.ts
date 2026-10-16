@@ -47,7 +47,7 @@ test("question catalog has the exact audience, labels, and allowed periods", () 
     { id: "employee-recognition", label: "Will my hard work be recognized?", audience: "employee", allowedPeriodIds: [...PERIOD_IDS] },
     { id: "employee-performance-review", label: "How will my performance review go?", audience: "employee", allowedPeriodIds: [...PERIOD_IDS] },
     { id: "employee-new-project", label: "Will an exciting new project come my way soon?", audience: "employee", allowedPeriodIds: [...PERIOD_IDS] },
-    { id: "employee-jira-hours", label: "Will I finally manage to log my hours in Jira on time next year?", audience: "employee", allowedPeriodIds: ["one-year"] },
+    { id: "employee-jira-hours", label: "Will I finally manage to log my hours in Jira on time?", audience: "employee", allowedPeriodIds: ["one-year"] },
     { id: "employee-surprise-meetings", label: "Will I ever have a week without surprise meetings?", audience: "employee", allowedPeriodIds: [...PERIOD_IDS] },
     { id: "leadership-company-outlook", label: "What does the next year hold for our company?", audience: "leadership", allowedPeriodIds: ["one-year"] },
     { id: "leadership-customer-focus", label: "Which customers should we focus on attracting?", audience: "leadership", allowedPeriodIds: [...PERIOD_IDS] },

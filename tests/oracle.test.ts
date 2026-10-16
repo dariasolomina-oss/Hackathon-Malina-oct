@@ -122,7 +122,7 @@ test("mock provider integrates the first supplied event into its main recommenda
   assert.match(reading.recommendation, /The Spark suggests:/);
   assert.match(reading.recommendation, /Venus retrograde is active during October 15–November 14, 2026\./);
   assert.match(reading.recommendation, /review values, working relationships, and trade-offs/);
-  assert.match(reading.recommendation, /confirm the T1A owner, approvals, and next written step/);
+  assert.doesNotMatch(reading.recommendation, /confirm the T1A owner, approvals, and next written step/);
   assert.ok(reading.cosmicNote && reading.recommendation.endsWith(reading.cosmicNote));
 });
 

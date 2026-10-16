@@ -20,7 +20,7 @@ The labels are the agreed product wording. IDs and allowed periods are implement
 | `employee-recognition` | Will my hard work be recognized? | All three |
 | `employee-performance-review` | How will my performance review go? | All three |
 | `employee-new-project` | Will an exciting new project come my way soon? | All three |
-| `employee-jira-hours` | Will I finally manage to log my hours in Jira on time next year? | Fixed: `one-year` |
+| `employee-jira-hours` | Will I finally manage to log my hours in Jira on time? | Fixed: `one-year` |
 | `employee-surprise-meetings` | Will I ever have a week without surprise meetings? | All three |
 
 ### Leadership

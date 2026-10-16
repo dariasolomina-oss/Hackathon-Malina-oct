@@ -9,7 +9,6 @@ export const CARD_IDS = [
 ] as const;
 
 export type CardId = (typeof CARD_IDS)[number];
-
 export const PERIODS = [
   { id: "one-month", label: "Next month", months: 1 },
   { id: "three-months", label: "Next three months", months: 3 },
@@ -49,7 +48,7 @@ export const QUESTIONS = [
   },
   {
     id: "employee-jira-hours",
-    label: "Will I finally manage to log my hours in Jira on time next year?",
+    label: "Will I finally manage to log my hours in Jira on time?",
     audience: "employee",
     allowedPeriodIds: ["one-year"],
   },
