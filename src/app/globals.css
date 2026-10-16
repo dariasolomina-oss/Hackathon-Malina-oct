@@ -247,7 +247,7 @@ h1 { max-width: 760px; margin: 0 0 28px; font-size: clamp(3.8rem, 7vw, 4.8rem); 
   .setup-help, .fixed-period-note { font-size: var(--type-support); }
   .setup-stage .section-kicker { font-size: 1.05rem; }
   .deck-option { min-height: 76px; padding-inline: 26px; }
-  .question-grid { grid-auto-rows: 250px; gap: 16px; }
+  .question-grid { grid-auto-rows: minmax(250px, 1fr); gap: 16px; }
   .question-option { min-height: 0; padding: 28px 26px 24px; font-size: 1.65rem; line-height: 1.38; }
   .question-topline { left: 26px; right: 26px; }
   .question-index { font-size: 1.45rem; }
