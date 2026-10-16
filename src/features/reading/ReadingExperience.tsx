@@ -36,6 +36,25 @@ function CalendarSources({ sources }: { sources: AstroEvent["source"][] }) {
   return <div className="event-sources">{uniqueSources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{source.name === "Zodiacs.org" ? "Data: Zodiacs.org — https://zodiacs.org" : `Source: ${source.name}`} ↗</a>)}</div>;
 }
 
+const QUESTION_CUES: Record<QuestionId, string> = {
+  "employee-project-deadline": "Planning & delivery",
+  "employee-recognition": "Visibility & appreciation",
+  "employee-performance-review": "Feedback & growth",
+  "employee-new-project": "New opportunities",
+  "employee-jira-hours": "Routines & follow-through",
+  "employee-surprise-meetings": "Time & focus",
+  "leadership-company-outlook": "Company direction",
+  "leadership-customer-focus": "Customer strategy",
+  "leadership-growth-opportunities": "Growth & expansion",
+  "leadership-team-motivation": "Team energy",
+  "leadership-strategic-priority": "Strategic focus",
+  "leadership-changing-priorities": "Stability & priorities",
+};
+
+const HERO_SPREAD_IDS: CardId[] = [
+  "the-spark", "the-crossroads", "the-momentum", "the-pause", "the-shift", "the-spotlight", "the-fog",
+];
+
 export function ReadingExperience() {
   const [audienceId, setAudience] = useState<Audience>("employee");
   const [questionId, setQuestion] = useState<QuestionId>("employee-project-deadline");
@@ -103,6 +122,7 @@ export function ReadingExperience() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setDeck(shuffleDeck());
       setShuffling(false);
+      setAnnouncement("The shared deck is ready. Choose two cards.");
       return;
     }
     shuffleTimer.current = window.setTimeout(() => {
@@ -110,7 +130,7 @@ export function ReadingExperience() {
       setShuffling(false);
       setAnnouncement("The shared deck is ready. Choose two cards.");
       shuffleTimer.current = null;
-    }, 1250);
+    }, 1520);
   }
 
   async function consult() {
@@ -209,15 +229,31 @@ export function ReadingExperience() {
     <CelestialSky />
     <MagicTrail />
     <header className="masthead">
-      <a className="wordmark" href="#top" aria-label="Malina Corporate Oracle home"><span className="wordmark-name">Malina</span> <span className="wordmark-divider">/</span> Corporate oracle</a>
-      <span className="masthead-note">A reading for the working week</span>
+      <a className="wordmark" href="#top" aria-label="Malina Corporate Oracle home"><span className="wordmark-name">Malina</span> Corporate Oracle</a>
     </header>
 
     <section className="intro" id="top" aria-labelledby="page-title">
-      <p className="eyebrow">Tarot for work, under the stars</p>
-      <h1 id="page-title">Turn over the cards.<br className="desktop-break" /> <span className="headline-second-line">Read the sky.</span></h1>
-      <p className="intro-copy">Choose a work question and a time frame. The cards reveal the story; dated sky events add a little timing.</p>
-      <a className="begin-link" href="#experience">Begin your reading <span aria-hidden="true">↘</span></a>
+      <div className="intro-content">
+        <h1 id="page-title"><span className="headline-first-line">Turn the cards.</span><br className="desktop-break" /> <span className="headline-second-line">Read the sky.</span></h1>
+        <p className="intro-copy">Choose a work question and a time frame. The cards reveal the story; dated sky events add a little timing.</p>
+        <a className="begin-link" href="#experience">Begin your reading <span className="begin-candle" aria-hidden="true">🕯️</span></a>
+      </div>
+      <div className="intro-art">
+        <div className="deck-box" aria-hidden="true"><span /><span /><span /></div>
+        <div className="hero-spread" aria-hidden="true">
+          {HERO_SPREAD_IDS.map((id, index) => {
+            const card = cards.find((item) => item.id === id)!;
+            const spread = index - (HERO_SPREAD_IDS.length - 1) / 2;
+            const style = {
+              "--spread-transform": `translateX(calc(-50% + ${spread * 32}px)) translateY(${Math.abs(spread) * 8}px) rotate(${spread * 8}deg)`,
+              "--spread-delay": `${index * 95}ms`,
+            } as CSSProperties;
+            return <img className="spread-card" key={id} src={card.image} alt="" style={style} />;
+          })}
+        </div>
+        <div className="hero-card"><img src="/box-cover.webp" alt="Malina Corporate Oracle box cover with three women beneath a starry sky" width="2559" height="3840" /></div>
+        <span className="intro-art-spark" aria-hidden="true">✦</span>
+      </div>
     </section>
 
     <div className="experience" id="experience">
@@ -249,6 +285,7 @@ export function ReadingExperience() {
           <div className="question-grid" role="group" aria-label="Choose a workplace question">
             {visibleQuestions.map((question, index) => <button className={`question-option ${questionId === question.id ? "selected" : ""}`} type="button" key={question.id} aria-pressed={questionId === question.id} onClick={() => selectQuestion(question.id)}>
               <span className="question-topline"><span className="question-index">{String(index + 1).padStart(2, "0")}</span><span className="option-check" aria-hidden="true">{questionId === question.id ? "✓" : ""}</span></span>
+              <span className="question-cue">{QUESTION_CUES[question.id]}</span>
               <span className="question-label">{question.label}</span>
             </button>)}
           </div>
@@ -259,8 +296,13 @@ export function ReadingExperience() {
         </div>}
         {setupStage === 3 && <div className="setup-stage" aria-labelledby="period-title">
           <p className="section-kicker">Last, choose a time period</p>
-          <h2 id="period-title" tabIndex={-1} ref={stageHeadingRef}>How far ahead should we look?</h2>
-          <p className="setup-help">The cards will reflect this rolling time frame.</p>
+          <h2 id="period-title" tabIndex={-1} ref={stageHeadingRef}>Choose a time period</h2>
+          <p className="setup-help">Choose the time frame you want this reading to explore.</p>
+          <div className="reading-summary" aria-label="Your reading choices">
+            <div><span>Reading for</span><strong>{audiences.find((audience) => audience.id === audienceId)?.label}</strong></div>
+            <div><span>Your question</span><strong>{getQuestion(questionId).label}</strong></div>
+            <button className="text-button" type="button" onClick={() => { setSetupStage(2); setAnnouncement("Your choices are saved. Edit your question or audience."); }}>Edit choices</button>
+          </div>
           <div className="period-section">
             {fixedPeriod && <p className="fixed-period-note" id="fixed-period-note"><strong>Fixed for this question.</strong> Reading period: {fixedPeriod.label}.</p>}
             <div className="period-options" role="group" aria-label="Choose a time period">
@@ -269,34 +311,40 @@ export function ReadingExperience() {
               </button>)}
             </div>
           </div>
-          <div className="setup-nav">
-            <button className="text-button" type="button" onClick={() => {
-              cancelShuffle();
-              setSetupStage(2);
-              setAnnouncement("Choose a question.");
-            }}>Back to question</button>
-            <div className={`deck-action ${shuffling ? "is-shuffling" : ""}`}>
-              <div className={`deck-stack ${shuffling ? "is-shuffling" : ""}`} aria-hidden="true">
-                {Array.from({ length: 32 }, (_, index) => {
-                  const offset = (index - 15.5) * 0.7;
-                  const angle = (index - 15.5) * 0.36;
-                  const style = {
-                    left: `calc(136px + ${offset}px)`,
-                    top: `calc(22px + ${Math.abs(offset) * 0.12}px)`,
-                    "--rest-transform": `rotate(${angle}deg) translateY(${Math.abs(offset) * 0.1}px)`,
-                    "--shuffle-delay": `${(index % 8) * 32}ms`,
-                    "--shuffle-direction": index % 2 === 0 ? -1 : 1,
-                    "--fan-x": `${(index - 15.5) * 7}px`,
-                    "--fan-y": `${-Math.abs(index - 15.5) * 2}px`,
-                    "--fan-angle": `${(index - 15.5) * 1.6}deg`,
-                  } as CSSProperties;
-                  return <span key={index} style={style} />;
-                })}
+          <div className="setup-nav period-nav">
+            <div className={`deck-stack ${shuffling ? "is-shuffling" : ""}`} aria-hidden="true">
+              {Array.from({ length: 32 }, (_, index) => {
+                const offset = (index - 15.5) * 0.7;
+                const angle = (index - 15.5) * 0.36;
+                const ribbonSlot = index % 10;
+                const style = {
+                  "--stack-offset-x": `${offset}px`,
+                  top: `calc(22px + ${Math.abs(offset) * 0.12}px)`,
+                  "--rest-transform": `rotate(${angle}deg) translateY(${Math.abs(offset) * 0.1}px)`,
+                  "--shuffle-delay": `${index * 18}ms`,
+                  "--trail-tilt": index % 2 === 0 ? "-2deg" : "2deg",
+                  "--ribbon-x": `${(ribbonSlot - 4.5) * 22}px`,
+                  "--ribbon-y": `${ribbonSlot * 10}px`,
+                  "--ribbon-mobile-x": `${(ribbonSlot - 4.5) * 12}px`,
+                  "--ribbon-mobile-y": `${ribbonSlot * 5.5}px`,
+                  "--ribbon-rotation": index % 2 === 0 ? "15deg" : "11deg",
+                  zIndex: 32 - index,
+                } as CSSProperties;
+                return <span key={index} style={style} />;
+              })}
+            </div>
+            <div className="period-nav-controls">
+              <button className="text-button" type="button" onClick={() => {
+                cancelShuffle();
+                setSetupStage(2);
+                setAnnouncement("Choose a question.");
+              }}>Back to question</button>
+              <div className={`deck-action ${shuffling ? "is-shuffling" : ""}`}>
+                <button className="primary-button" type="button" disabled={shuffling} onClick={shuffle} aria-live="polite">
+                  <span className="shuffle-orb" aria-hidden="true">🔮</span>{shuffling ? "Shuffling the deck…" : "Shuffle the deck"}
+                </button>
+                <p>{shuffling ? "The cards are finding their places." : "Your cards are ready when you are."}</p>
               </div>
-              <button className="primary-button" type="button" disabled={shuffling} onClick={shuffle} aria-live="polite">
-                <span className="shuffle-orb" aria-hidden="true"><span /></span>{shuffling ? "Shuffling the deck…" : "Shuffle the deck"}
-              </button>
-              <p>{shuffling ? "The cards are finding their places." : "Your cards are ready when you are."}</p>
             </div>
           </div>
         </div>}
