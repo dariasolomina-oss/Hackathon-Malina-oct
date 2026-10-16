@@ -12,33 +12,111 @@ async function assertFits(page: Page) {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
 }
 
+async function assertEveryCardIsReachable(page: Page, expectedFans: number) {
+  const cards = page.locator(".card");
+  await cards.first().waitFor();
+  const centers = await cards.evaluateAll((elements) => elements.map((element) => {
+    const rect = element.getBoundingClientRect();
+    return rect.top + rect.height / 2 + scrollY;
+  }).sort((a, b) => a - b));
+  const fanCenters: number[] = [];
+  for (const center of centers) {
+    if (!fanCenters.some((value) => Math.abs(value - center) < 45)) fanCenters.push(center);
+  }
+  const unreachable: string[] = [];
+  for (let index = 0; index < await cards.count(); index += 1) {
+    const card = cards.nth(index);
+    await card.scrollIntoViewIfNeeded();
+    await page.mouse.move(1, 1);
+    const reachable = await card.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      for (let y = Math.max(0, rect.top); y <= Math.min(innerHeight - 1, rect.bottom); y += 4) {
+        for (let x = Math.max(0, rect.left); x <= Math.min(innerWidth - 1, rect.right); x += 4) {
+          if (document.elementFromPoint(x, y)?.closest(".card") === element) return true;
+        }
+      }
+      return false;
+    });
+    if (!reachable) unreachable.push(await card.getAttribute("aria-label") ?? `position ${index + 1}`);
+  }
+  assert.deepEqual(unreachable, []);
+  assert.equal(fanCenters.length, expectedFans);
+}
+
+async function openDraw(page: Page, options: { audience?: "Employee" | "Leadership"; question?: string; period?: string } = {}) {
+  await page.getByRole("button", { name: options.audience ?? "Employee", exact: true }).click();
+  await page.getByRole("button", { name: /Choose a question/ }).click();
+  if (options.question) await page.getByRole("button").filter({ hasText: options.question }).click();
+  await page.getByRole("button", { name: /Choose a time period/ }).click();
+  if (options.period) await page.getByRole("button", { name: new RegExp(options.period) }).click();
+  await page.getByRole("button", { name: /Shuffle the deck/ }).click();
+  // Wait for the stage's focus handoff before sending the next keyboard action.
+  await page.locator(".draw-instruction:focus").waitFor();
+}
+
 test("both audiences use the shared questions and lock fixed periods", { timeout: 90_000 }, async () => {
   const browser = await chromium.launch({ executablePath: process.env.TEST_BROWSER_PATH || undefined });
   try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
     await page.goto(baseURL);
     for (const audience of ["employee", "leadership"] as const) {
+      await page.goto(baseURL);
       await page.getByRole("button", { name: audience === "employee" ? "Employee" : "Leadership", exact: true }).click();
+      await page.getByRole("button", { name: /Choose a question/ }).click();
       assert.equal(await page.getByRole("group", { name: "Choose a workplace question" }).getByRole("button").count(), 6);
-      for (const question of QUESTIONS.filter((item) => item.audience === audience)) {
+      const questions = QUESTIONS.filter((item) => item.audience === audience);
+      for (const [index, question] of questions.entries()) {
         await page.getByRole("button").filter({ hasText: question.label }).click();
+        await page.getByRole("button", { name: /Choose a time period/ }).click();
         for (const period of PERIODS) {
           const button = page.getByRole("button", { name: new RegExp(period.label) });
           const allowed = question.allowedPeriodIds.some((id) => id === period.id);
           assert.equal(await button.isDisabled(), !allowed);
-          if (question.allowedPeriodIds.length === 1 && allowed) {
-            assert.equal(await button.getAttribute("aria-pressed"), "true");
-          }
+          if (question.allowedPeriodIds.length === 1 && allowed) assert.equal(await button.getAttribute("aria-pressed"), "true");
         }
+        if (index < questions.length - 1) await page.getByRole("button", { name: "Back to question" }).click();
       }
     }
     await page.getByRole("button", { name: /Shuffle the deck/ }).click();
     assert.equal(await page.getByRole("button", { name: /Draw a face-down card/ }).count(), 32);
-    await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).click();
-    await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).click();
-    await page.waitForFunction(() => [...document.querySelectorAll<HTMLImageElement>(".card-art img")]
+    await assertEveryCardIsReachable(page, 4);
+    await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
+    await page.locator(".draw-instruction", { hasText: "Choose a card for what to do" }).waitFor();
+    await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Enter");
+    await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
+    await page.waitForFunction(() => [...document.querySelectorAll<HTMLImageElement>(".pair-card img")]
       .every((img) => img.complete && img.naturalWidth === 1024 && img.src.endsWith(".webp")));
     await assertFits(page);
+  } finally {
+    await browser.close();
+  }
+});
+
+test("tablet fans keep every rotated card inside the draw panel", { timeout: 90_000 }, async () => {
+  const browser = await chromium.launch({ executablePath: process.env.TEST_BROWSER_PATH || undefined });
+  try {
+    for (const width of [601, 760]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
+      await page.goto(baseURL);
+      await openDraw(page);
+      await page.locator(".card").first().waitFor();
+      await page.mouse.move(1, 1);
+      const panel = await page.locator(".draw").boundingBox();
+      assert.ok(panel);
+      const bounds = await page.locator(".card").evaluateAll((elements) => elements.map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+      }));
+      for (const rect of bounds) {
+        assert.ok(rect.left >= panel.x - 0.5);
+        assert.ok(rect.right <= panel.x + panel.width + 0.5);
+        assert.ok(rect.top >= panel.y - 0.5);
+        assert.ok(rect.bottom <= panel.y + panel.height + 0.5);
+      }
+      await assertEveryCardIsReachable(page, 2);
+      await assertFits(page);
+      await page.close();
+    }
   } finally {
     await browser.close();
   }
@@ -50,7 +128,8 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       executablePath: process.env.TEST_BROWSER_PATH || undefined,
     });
     try {
-      const page = await browser.newPage({ viewport });
+      const reducedMotion = viewport.width === 390;
+      const page = await browser.newPage({ viewport, reducedMotion: reducedMotion ? "reduce" : "no-preference" });
       const requests: ReadingRequest[] = [];
       let mode: "mock" | "live" = "mock";
       let releaseFailure!: () => void;
@@ -76,16 +155,67 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       await assertFits(page);
 
       // Use keyboard activation for question, period, shuffle, and both card roles.
-      const question = page.getByRole("button", { name: /02/ }).first();
+      await page.getByRole("button", { name: "Employee", exact: true }).press("Enter");
+      await page.getByRole("button", { name: /Choose a question/ }).press("Enter");
+      const question = page.getByRole("button").filter({ hasText: "Will my hard work be recognized?" });
       await question.focus();
       await page.keyboard.press("Enter");
       assert.equal(await question.getAttribute("aria-pressed"), "true");
+      await page.getByRole("button", { name: /Choose a time period/ }).press("Enter");
       await page.getByRole("button", { name: /Next three months/ }).press("Enter");
       await page.getByRole("button", { name: /Shuffle the deck/ }).press("Enter");
+      await assertEveryCardIsReachable(page, viewport.width === 390 ? 4 : 2);
+      assert.equal(await page.getByRole("heading", { name: "Will my hard work be recognized?" }).count(), 1);
+      assert.equal(await page.locator(".draw-instruction").textContent(), "Choose a card to read the situation");
+      assert.equal(await page.locator(".draw-slots").count(), 0);
+      const secondCard = page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true });
+      const stablePosition = await secondCard.evaluate((element) => { const rect = element.getBoundingClientRect(); return { x: rect.x, y: rect.y + scrollY, width: rect.width, height: rect.height }; });
       await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
-      const answer = await page.getByRole("button", { name: /^What happens:/ }).getAttribute("aria-label");
+      const overlay = page.locator(".draw-overlay");
+      await overlay.waitFor();
+      await secondCard.evaluate((element) => element.dispatchEvent(new MouseEvent("click", { bubbles: true })));
+      assert.equal(await page.locator(".card-chosen").count(), 0);
+      assert.equal(requests.length, 0);
+      await page.waitForTimeout(reducedMotion ? 250 : 1200);
+      assert.equal(await overlay.isVisible(), true);
+      const enlarged = await page.locator(".draw-overlay-card").boundingBox();
+      assert.ok(enlarged);
+      assert.ok(Math.abs(enlarged.x + enlarged.width / 2 - viewport.width / 2) < 2);
+      assert.ok(Math.abs(enlarged.y + enlarged.height / 2 - viewport.height / 2) < 2);
+      const face = page.locator(".draw-overlay-face");
+      assert.deepEqual(await face.evaluate((image: HTMLImageElement) => ({ width: image.naturalWidth, height: image.naturalHeight, fit: getComputedStyle(image).objectFit })), { width: 1024, height: 1536, fit: "contain" });
+      if (!reducedMotion) {
+        await page.waitForTimeout(900);
+        assert.equal(await overlay.isVisible(), true);
+        await page.locator(".draw-overlay-card").evaluate((element) => {
+          const animation = element.getAnimations()[0];
+          if (animation) animation.currentTime = Number(animation.effect!.getTiming().duration) - 10;
+        });
+        await page.waitForTimeout(20);
+        const exiting = await page.locator(".draw-overlay-card").boundingBox();
+        assert.ok(exiting && exiting.y >= viewport.height);
+      }
+      await page.locator(".draw-instruction", { hasText: "Choose a card for what to do" }).waitFor();
+      const positionAfterDraw = await secondCard.evaluate((element) => { const rect = element.getBoundingClientRect(); return { x: rect.x, y: rect.y + scrollY, width: rect.width, height: rect.height }; });
+      for (const key of ["x", "y", "width", "height"] as const) assert.ok(Math.abs(positionAfterDraw[key] - stablePosition[key]) < 0.1);
+      assert.equal(await page.locator(".draw-instruction").textContent(), "Choose a card for what to do");
       await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Space");
-      const recommendation = await page.getByRole("button", { name: /^What to do:/ }).getAttribute("aria-label");
+      await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
+      const answer = await page.locator(".pair-card strong").first().textContent();
+      const recommendation = await page.locator(".pair-card strong").nth(1).textContent();
+      const pair = page.locator(".pair-stage");
+      assert.equal(await pair.getByRole("heading", { level: 2 }).textContent(), "Will my hard work be recognized?");
+      assert.equal(await pair.getByText("Next three months", { exact: true }).count(), 0);
+      const layout = await pair.locator(".pair-card").evaluateAll((items) => items.map((item) => {
+        const face = item.querySelector("img")!.getBoundingClientRect();
+        const label = item.querySelector("h3")!.getBoundingClientRect();
+        return { x: face.x, y: face.y, width: face.width, labelBottom: label.bottom };
+      }));
+      assert.ok(Math.abs(layout[0].y - layout[1].y) < 1);
+      assert.ok(layout[1].x >= layout[0].x + layout[0].width);
+      assert.ok(layout.every((item) => item.labelBottom < item.y));
+      if (viewport.width === 1440) assert.equal(layout[0].width, 240);
+      assert.equal(requests.length, 0);
       await assertFits(page);
       const pending = page.waitForRequest("**/api/readings");
       await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
@@ -99,26 +229,28 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       await page.getByText("Sample reading", { exact: true }).waitFor();
       assert.deepEqual(requests[1], requests[0]);
       assert.notEqual(requests[0].answerCardId, requests[0].recommendationCardId);
-      assert.equal(answer, `What happens: ${cards.find((card) => card.id === requests[0].answerCardId)!.name}`);
-      assert.equal(recommendation, `What to do: ${cards.find((card) => card.id === requests[0].recommendationCardId)!.name}`);
-      assert.equal(await page.getByRole("button", { name: /^What happens:/ }).getAttribute("aria-label"), answer);
-      assert.equal(await page.getByRole("button", { name: /^What to do:/ }).getAttribute("aria-label"), recommendation);
+      assert.equal(answer, cards.find((card) => card.id === requests[0].answerCardId)!.name);
+      assert.equal(recommendation, cards.find((card) => card.id === requests[0].recommendationCardId)!.name);
       const readingContext = page.locator(".reading-context");
-      assert.deepEqual(await readingContext.locator("dt").allTextContents(), ["Question", "Period"]);
-      assert.equal(await readingContext.locator("dd").nth(0).textContent(), "Will my hard work be recognized?");
-      assert.equal(await readingContext.locator("dd").nth(1).locator("strong").textContent(), "Next three months");
-      assert.equal(await readingContext.locator("dd").nth(1).locator("span").textContent(), "Oct 15, 2026 – Nov 14, 2026");
+      assert.equal(await page.locator(".reading").getByRole("heading", { level: 2 }).textContent(), "Your reading");
+      assert.equal(await readingContext.locator(".reading-question").textContent(), "Will my hard work be recognized?");
+      assert.equal(await readingContext.locator(".reading-period").textContent(), "Next three months (October 15, 2026 – November 14, 2026)");
+      assert.equal(await readingContext.getByText(/^(Your question|Question|Period)$/).count(), 0);
+      assert.deepEqual(await page.locator(".reading-panel-copy h3").allTextContents(), [`Read the situation — ${answer}`, `What to do — ${recommendation}`]);
+      assert.deepEqual(await page.locator(".reading-panel-card").allTextContents(), ["", ""]);
+      assert.deepEqual(await page.locator(".reading-panel-card img").evaluateAll((images) => images.map((image) => image.getAttribute("alt"))), [answer, recommendation]);
       await page.getByText("Fixture event timing shapes this action.", { exact: false }).waitFor();
       assert.equal(await page.getByRole("link", { name: /Event source: Fixture calendar/ }).getAttribute("href"), "https://example.com/calendar");
       await assertFits(page);
 
       await page.getByRole("button", { name: "Start a new reading" }).press("Enter");
       assert.equal(await page.getByText("Sample reading", { exact: true }).count(), 0);
-      await page.getByRole("button", { name: /Shuffle the deck/ }).press("Enter");
-      assert.equal(await page.getByRole("button", { name: /^What happens:/ }).count(), 0);
+      await openDraw(page);
       mode = "live";
       await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
+      await page.locator(".draw-instruction", { hasText: "Choose a card for what to do" }).waitFor();
       await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Enter");
+      await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
       await page.getByRole("button", { name: /Reveal your reading/ }).press("Enter");
       await page.getByText("Personal reading", { exact: true }).waitFor();
       assert.equal(await page.getByText("Sample reading", { exact: true }).count(), 0);
@@ -146,15 +278,17 @@ test("reading explains unavailable and empty calendars", { timeout: 90_000 }, as
       await route.fulfill({ json: response });
     });
 
-    await page.goto(baseURL);
+      await page.goto(baseURL);
     for (const [status, expected] of [
       ["unavailable", "The event calendar is unavailable, so this reading is based on your cards alone."],
       ["available", "No calendar events overlap this period, so this reading is based on your cards alone."],
     ] as const) {
       calendarStatus = status;
-      await page.getByRole("button", { name: /Shuffle the deck/ }).click();
-      await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).click();
-      await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).click();
+      await openDraw(page);
+      await page.getByRole("button", { name: "Draw a face-down card, position 1", exact: true }).press("Enter");
+      await page.locator(".draw-instruction", { hasText: "Choose a card for what to do" }).waitFor();
+      await page.getByRole("button", { name: "Draw a face-down card, position 2", exact: true }).press("Enter");
+      await page.getByText("Ready to reveal your reading?", { exact: true }).waitFor();
       await page.getByRole("button", { name: /Reveal your reading/ }).click();
       await page.getByText(expected, { exact: true }).waitFor();
       await page.getByRole("button", { name: "Start a new reading" }).click();

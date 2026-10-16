@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { CelestialSky } from "./CelestialSky";
 import { MagicTrail } from "./MagicTrail";
 import { cards } from "@/content/cards";
@@ -10,8 +10,18 @@ import type { ReadingResponse } from "@/contracts/reading";
 import { shuffleDeck } from "@/domain/deck";
 import { requestReading } from "./client";
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(date));
+type DrawAnimation = {
+  id: CardId;
+  originX: number;
+  originY: number;
+  originScale: number;
+};
+
+const DRAW_DURATION_MS = 2800;
+const REDUCED_DRAW_DURATION_MS = 700;
+
+function formatDate(date: string, dateStyle: "medium" | "long" = "medium") {
+  return new Intl.DateTimeFormat("en", { dateStyle, timeZone: "UTC" }).format(new Date(date));
 }
 
 export function ReadingExperience() {
@@ -26,30 +36,41 @@ export function ReadingExperience() {
   const [shuffling, setShuffling] = useState(false);
   const [error, setError] = useState("");
   const [announcement, setAnnouncement] = useState("");
+  const [animatingCard, setAnimatingCard] = useState<DrawAnimation | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const drawTimer = useRef<number | null>(null);
   const shuffleTimer = useRef<number | null>(null);
+  const drawLocked = useRef(false);
+  const drawSequence = useRef(0);
   const stageHeadingRef = useRef<HTMLHeadingElement>(null);
   const drawHeadingRef = useRef<HTMLHeadingElement>(null);
   const readingHeadingRef = useRef<HTMLHeadingElement>(null);
+  const pairHeadingRef = useRef<HTMLHeadingElement>(null);
   const hasMounted = useRef(false);
 
   useEffect(() => () => {
+    drawSequence.current += 1;
     if (shuffleTimer.current !== null) window.clearTimeout(shuffleTimer.current);
+    if (drawTimer.current !== null) window.clearTimeout(drawTimer.current);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (hasMounted.current && !deck.length && !result) {
-      window.requestAnimationFrame(() => stageHeadingRef.current?.focus());
+      stageHeadingRef.current?.focus();
     }
     hasMounted.current = true;
   }, [setupStage, deck.length, result]);
 
-  useEffect(() => {
-    if (deck.length) window.requestAnimationFrame(() => drawHeadingRef.current?.focus());
-  }, [deck.length]);
+  useLayoutEffect(() => {
+    if (deck.length && chosen.length < 2) drawHeadingRef.current?.focus();
+  }, [deck.length, chosen.length]);
 
-  useEffect(() => {
-    if (result) window.requestAnimationFrame(() => readingHeadingRef.current?.focus());
+  useLayoutEffect(() => {
+    if (result) readingHeadingRef.current?.focus();
   }, [result]);
+  useLayoutEffect(() => {
+    if (chosen.length === 2 && !result) pairHeadingRef.current?.focus();
+  }, [chosen.length, result]);
 
   function selectQuestion(id: QuestionId) {
     setQuestion(id);
@@ -93,19 +114,56 @@ export function ReadingExperience() {
   }
 
   function restart() {
+    drawSequence.current += 1;
+    drawLocked.current = false;
+    if (drawTimer.current !== null) window.clearTimeout(drawTimer.current);
     setDeck([]);
     setChosen([]);
     setResult(null);
     setError("");
     setSetupStage(1);
     setAnnouncement("Reading reset. Choose your audience.");
+    setAnimatingCard(null);
   }
 
-  function chooseCard(id: CardId) {
-    if (chosen.length >= 2 || chosen.includes(id)) return;
+  async function chooseCard(id: CardId, element: HTMLButtonElement) {
+    if (drawLocked.current || chosen.length >= 2 || chosen.includes(id) || animatingCard) return;
+    drawLocked.current = true;
+    const sequence = ++drawSequence.current;
     const nextCount = chosen.length + 1;
-    setChosen((previous) => previous.length < 2 && !previous.includes(id) ? [...previous, id] : previous);
-    setAnnouncement(nextCount === 2 ? "Two cards selected. Reveal your reading when ready." : "First card selected. Choose one more card.");
+    const card = cards.find((item) => item.id === id)!;
+    const preview = new Image();
+    preview.src = card.image;
+    try {
+      await preview.decode();
+    } catch {
+      await new Promise<void>((resolve) => {
+        if (preview.complete) resolve();
+        else {
+          preview.onload = () => resolve();
+          preview.onerror = () => resolve();
+        }
+      });
+    }
+    if (sequence !== drawSequence.current) return;
+    const from = element.querySelector(".card-art")!.getBoundingClientRect();
+    const targetWidth = Math.min(300, window.innerWidth - 32, (window.innerHeight - 32) * 2 / 3);
+    setAnimatingCard({
+      id,
+      originX: from.left + from.width / 2 - window.innerWidth / 2,
+      originY: from.top + from.height / 2 - window.innerHeight / 2,
+      originScale: from.width / targetWidth,
+    });
+    setAnnouncement(nextCount === 1 ? "Reading the situation card." : "Reading the action card.");
+    const finish = () => {
+      if (sequence !== drawSequence.current) return;
+      setChosen((previous) => previous.length < 2 && !previous.includes(id) ? [...previous, id] : previous);
+      setAnimatingCard(null);
+      drawLocked.current = false;
+      setAnnouncement(nextCount === 2 ? "Two cards selected. Reveal your reading when ready." : "First card selected. Choose one more card.");
+      drawTimer.current = null;
+    };
+    drawTimer.current = window.setTimeout(finish, reducedMotion ? REDUCED_DRAW_DURATION_MS : DRAW_DURATION_MS);
   }
 
   const step = result ? 3 : deck.length ? 2 : 1;
@@ -114,6 +172,10 @@ export function ReadingExperience() {
   const resultQuestion = result ? getQuestion(result.request.questionId) : null;
   const resultPeriod = result ? PERIODS.find((period) => period.id === result.request.periodId) : null;
   const fixedPeriod = getQuestion(questionId).allowedPeriodIds.length === 1 ? PERIODS.find((period) => period.id === periodId) : null;
+
+  useEffect(() => {
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   return <main className="page-shell">
     <CelestialSky />
@@ -208,39 +270,73 @@ export function ReadingExperience() {
         </div>}
       </section>}
 
-      {!!deck.length && <section className="draw panel" aria-labelledby="draw-title" aria-busy={busy}>
+      {!!deck.length && chosen.length < 2 && <section className="draw panel" aria-labelledby="draw-title" aria-busy={!!animatingCard}>
         <div className="draw-heading">
-          <div><h2 id="draw-title" tabIndex={-1} ref={drawHeadingRef}>Choose 2 cards</h2><p className="draw-help">Draw two cards from this shared deck. The first answers your question; the second suggests what to do.</p><p className="reflection-note">For reflection, not prediction.</p></div>
-          <span className="draw-count" aria-live="polite">{chosen.length} <span>/ 2</span></span>
+          <h2 id="draw-title">{getQuestion(questionId).label}</h2>
+          <p className="draw-instruction" tabIndex={-1} ref={drawHeadingRef}>{chosen.length === 0 ? "Choose a card to read the situation" : "Choose a card for what to do"}</p>
         </div>
-        {chosen.length > 0 && <div className="selected-draw" aria-label="Drawn cards">
-          <div className="selected-draw-heading"><span>Drawn cards</span><span>{chosen.length} / 2</span></div>
-          <div className="selected-draw-cards">
-            {chosen.map((id, index) => { const card = cards.find((item) => item.id === id)!; return <div className="selected-draw-card" key={id}>
-              <img src={card.image} alt={card.name} width="1024" height="1536" />
-              <span>{index === 0 ? "Read the situation" : "What to do"}</span>
-              <strong>{card.name}</strong>
-            </div>; })}
-          </div>
-        </div>}
-        {chosen.length === 2 && !result && <div className="action-row draw-actions">
-          <button className="primary-button consult-button" type="button" disabled={busy} aria-describedby={busy ? "consult-status" : undefined} onClick={consult}>
-            {busy ? <><span className="spinner" aria-hidden="true" /> Consulting the oracle…</> : error ? "Retry this reading" : "Reveal your reading"}<span aria-hidden="true">↗</span>
-          </button>
-        </div>}
         <div className="deck" aria-label="Shared 32-card deck">
           {visibleDeck.map((id, index) => {
             const card = cards.find((item) => item.id === id)!;
             const position = chosen.indexOf(id);
             const role = position === 0 ? "Read the situation" : "What to do";
-            return <button className={`card ${position >= 0 ? "card-chosen" : ""}`} type="button" key={id} style={{ "--deck-index": index } as CSSProperties} disabled={position >= 0 || chosen.length === 2 || busy}
+            const desktopItem = index % 16;
+            const desktopRow = Math.floor(index / 16);
+            const desktopArc = (desktopItem - 7.5) / 7.5;
+            const mobileItem = index % 8;
+            const mobileRow = Math.floor(index / 8);
+            const mobileArc = (mobileItem - 3.5) / 3.5;
+            const repeatedHeight = (count: number) => Array.from({ length: count }, () => "var(--fan-card-height)").join(" + ");
+            const fanTop = (row: number, curve: number, gap: number) => row === 0 ? `${curve}px` : `calc(${repeatedHeight(row)} + ${row * gap + curve}px)`;
+            const style = {
+              "--deck-index": index,
+              "--desktop-left": `${11 + desktopItem * 78 / 15 + desktopRow * 0.4}%`,
+              "--desktop-top": fanTop(desktopRow, 24 * desktopArc * desktopArc, 26),
+              "--desktop-angle": `${desktopArc * 18}deg`,
+              "--tablet-left": `${16 + desktopItem * 68 / 15 + desktopRow * 0.15}%`,
+              "--tablet-angle": `${desktopArc * 15}deg`,
+              "--mobile-left": `${18 + mobileItem * 64 / 7 + (mobileRow % 2 === 0 ? -0.4 : 0.4)}%`,
+              "--mobile-top": fanTop(mobileRow, 17 * mobileArc * mobileArc, 19),
+              "--mobile-angle": `${mobileArc * 15}deg`,
+            } as CSSProperties;
+            return <button className={`card ${position >= 0 ? "card-chosen" : ""} ${animatingCard?.id === id ? "card-animating" : ""}`} type="button" key={id} style={style} disabled={position >= 0 || !!animatingCard || chosen.length === 2 || busy}
               aria-label={position >= 0 ? `${role}: ${card.name}` : `Draw a face-down card, position ${index + 1}`}
-              onClick={() => chooseCard(id)}>
-              <span className="card-art"><img src={position >= 0 ? card.image : "/cards/back.webp"} alt={position >= 0 ? card.name : ""} width="1024" height="1536" /></span>
-              {position >= 0 && <span className="card-caption"><span className="card-role">{role}</span></span>}
+              onClick={(event) => void chooseCard(id, event.currentTarget)}>
+              <span className="card-art"><img src="/cards/back.webp" alt="" width="1024" height="1536" /></span>
             </button>;
           })}
         </div>
+      </section>}
+
+      {animatingCard && (() => {
+        const card = cards.find((item) => item.id === animatingCard.id)!;
+        const style = {
+          "--origin-x": `${animatingCard.originX}px`,
+          "--origin-y": `${animatingCard.originY}px`,
+          "--origin-scale": animatingCard.originScale,
+          "--draw-duration": `${DRAW_DURATION_MS}ms`,
+        } as CSSProperties;
+        return <div className={`draw-overlay ${reducedMotion ? "reduced-motion" : ""}`} role="img" aria-label={`${card.name}, selected card`}>
+          <span className="draw-overlay-card" style={style}>
+            <img className="draw-overlay-back" src="/cards/back.webp" alt="" width="1024" height="1536" />
+            <img className="draw-overlay-face" src={card.image} alt="" width="1024" height="1536" />
+          </span>
+        </div>;
+      })()}
+
+      {!!deck.length && chosen.length === 2 && !result && <section className="pair-stage panel" aria-labelledby="pair-title">
+        <div className="draw-heading">
+          <h2 id="pair-title" tabIndex={-1} ref={pairHeadingRef}>{getQuestion(questionId).label}</h2>
+          <p className="draw-instruction">Ready to reveal your reading?</p>
+        </div>
+        <div className="pair-cards">{chosen.map((id, index) => {
+          const card = cards.find((item) => item.id === id)!;
+          return <article key={id} className="pair-card">
+            <h3 className="pair-card-label"><span>{index === 0 ? "Read the situation" : "What to do"}</span> — <strong>{card.name}</strong></h3>
+            <img src={card.image} alt={card.name} width="1024" height="1536" />
+          </article>;
+        })}</div>
+        <div className="action-row draw-actions"><button className="primary-button consult-button" type="button" disabled={busy} aria-describedby={busy ? "consult-status" : undefined} onClick={consult}>{busy ? <><span className="spinner" aria-hidden="true" /> Consulting the oracle…</> : error ? "Retry this reading" : "Reveal your reading"}<span aria-hidden="true">↗</span></button></div>
       </section>}
 
       {!!deck.length && <div className="action-row"><button className="text-button" type="button" disabled={busy} onClick={restart}>{result ? "Start a new reading" : "Start over"}</button></div>}
@@ -250,13 +346,27 @@ export function ReadingExperience() {
 
       <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
       <div>{result && <section className="reading panel" aria-labelledby="reading-title">
-        <div className="reading-topline"><span className="section-kicker">Your reading</span><span className={`mode-label ${result.meta.mode}`}>{result.meta.mode === "mock" ? "Sample reading" : "Personal reading"}</span></div>
-        <h2 id="reading-title" tabIndex={-1} ref={readingHeadingRef}>Your tarot reading</h2>
-        <dl className="reading-context">
-          <div><dt>Question</dt><dd>{resultQuestion?.label}</dd></div>
-          <div><dt>Period</dt><dd><strong>{resultPeriod?.label}</strong><span>{formatDate(result.period.start)} – {formatDate(new Date(Date.parse(result.period.end) - 1).toISOString())}</span></dd></div>
-        </dl>
-        <div className="reading-panels">{chosen.map((id, index) => { const card = cards.find((item) => item.id === id)!; const role = index === 0 ? "Read the situation" : "What to do"; const copy = index === 0 ? result.answer : result.recommendation; return <article className="reading-panel" key={id}><div className="reading-panel-card"><img src={card.image} alt="" /><div><span>{role}</span><strong>{card.name}</strong></div></div><div className="reading-panel-copy"><span className="reading-number">{index === 0 ? "I" : "II"}</span><h3>{role}</h3><p>{copy}</p></div></article>; })}</div>
+        <div className="reading-topline">
+          <h2 id="reading-title" tabIndex={-1} ref={readingHeadingRef}>Your reading</h2>
+          <span className={`mode-label ${result.meta.mode}`}>{result.meta.mode === "mock" ? "Sample reading" : "Personal reading"}</span>
+        </div>
+        <div className="reading-context">
+          <p className="reading-question">{resultQuestion?.label}</p>
+          <p className="reading-period">{resultPeriod?.label} ({formatDate(result.period.start, "long")} – {formatDate(new Date(Date.parse(result.period.end) - 1).toISOString(), "long")})</p>
+        </div>
+        <div className="reading-panels">{chosen.map((id, index) => {
+          const card = cards.find((item) => item.id === id)!;
+          const role = index === 0 ? "Read the situation" : "What to do";
+          const copy = index === 0 ? result.answer : result.recommendation;
+          return <article className="reading-panel" key={id}>
+            <div className="reading-panel-card"><img src={card.image} alt={card.name} width="1024" height="1536" /></div>
+            <div className="reading-panel-copy">
+              <span className="reading-number">{index === 0 ? "I" : "II"}</span>
+              <h3>{role} — {card.name}</h3>
+              <p>{copy}</p>
+            </div>
+          </article>;
+        })}</div>
         {result.meta.calendarStatus === "unavailable" && <p className="calendar-status">The event calendar is unavailable, so this reading is based on your cards alone.</p>}
         {result.meta.calendarStatus === "available" && result.events.length === 0 && <p className="calendar-status">No calendar events overlap this period, so this reading is based on your cards alone.</p>}
         {!!result.events.length && <div className="events"><span className="section-kicker">In the cosmic calendar</span><ul>{result.events.map((event) => <li key={event.id}><span><strong>{event.name}</strong><small>{formatDate(event.start)}</small></span><a href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`Event source: ${event.source.name} (opens in a new tab)`}>Source: {event.source.name} ↗</a></li>)}</ul></div>}

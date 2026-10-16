@@ -2,11 +2,19 @@
 
 ## Experience
 
-Choose Employee or Leadership, select one of its six questions and an allowed period, then reveal two distinct cards from one shuffled 32-card deck. The first card shapes **What happens**; the second shapes **What to do**. Restart creates a new selection; retry keeps the same cards and question.
+Choose Employee or Leadership, select one of its six questions and an allowed period, then draw two distinct cards from one shuffled 32-card deck. Cards are drawn sequentially: the first shapes **Read the situation**, the second shapes **What to do**. A selected-pair screen gates the oracle request; only **Reveal your reading** calls the API. Restart creates a new selection; retry keeps the same cards and question.
 
 The result shows the selected question, period label and resolved dates, both cards, both text blocks, and calendar source information. Loading, failure, retry, restart, and explicit sample/live labels are part of the experience. There are no accounts, stored reading histories, birth details, or personal zodiac inputs.
 
 For the motivation, delivered features, and next steps, read the [project write-up](project-overview.md). Implementation details are in [architecture.md](architecture.md).
+
+### Card selection
+
+The question appears above the current draw instruction. The shuffled deck forms two fans of 16 cards on desktop and four fans of eight on phones. Selecting a card leaves a gap without moving the other cards.
+
+Each selected card enlarges at the center of the screen, flips face-up, pauses for approximately 1.5 seconds, and exits below the screen. Selection stays locked during this sequence. Reduced-motion mode shows a static face briefly instead. The first draw answers the question; the second recommends an action.
+
+After both draws, the question and **Ready to reveal your reading?** appear above two card faces displayed side by side. Each card has its role and name above the image. **Reveal your reading** requests the oracle response; selecting cards alone does not call the reading API. The final result includes the period and dates.
 
 ## Question catalog
 
@@ -56,7 +64,7 @@ Names match image filenames (for example, The Spark → `the-spark.webp`). Keep 
 
 The live model writes both complete paragraphs, combining the exact question, the assigned card meaning, and supplied event interpretations:
 
-- **What happens:** two or three sentences describing a plausible scenario that answers the question.
+- **Read the situation:** two or three sentences describing a plausible scenario that answers the question.
 - **What to do:** three or four sentences with specific, useful workplace actions and an explanation of why they fit the situation.
 
 Use warm, witty English and recognizable office situations. Translate event meanings into ordinary workplace advice with broad timing such as "in early November," grounded in the overlap of the event and reading period. Keep exact dates, planet names, retrograde terminology, event IDs, and citations out of these paragraphs. The calendar lists event names, start dates, and source links separately.

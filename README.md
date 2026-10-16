@@ -49,8 +49,8 @@ Use a model available to your account that supports the Responses API and Struct
 ### Try the experience
 
 1. Choose Employee or Leadership, a question, and an allowed period.
-2. Shuffle the deck and reveal two cards: the first answers the question; the second recommends an action.
-3. Consult the oracle. The result shows your question, date range, **What happens**, **What to do**, and calendar sources.
+2. Shuffle the deck and draw two cards in order: **Read the situation**, then **What to do**.
+3. Review the selected pair, then reveal the oracle. The result shows your question, date range, both roles, and calendar sources.
 
 ### Production build
 

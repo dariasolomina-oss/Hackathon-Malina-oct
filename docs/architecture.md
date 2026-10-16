@@ -6,7 +6,7 @@ One Next.js 16 application uses React 19 and TypeScript for the interface and a 
 
 ```mermaid
 flowchart LR
-  UI[Question, period, two card draws] --> API[POST /api/readings]
+  UI[Question, period, sequential card draw, pair review] --> API[POST /api/readings]
   API --> Service[Validate and resolve dates]
   Cards[Audience-specific card meanings] --> Service
   Service --> Calendar[Fetch and select calendar events]
@@ -29,7 +29,7 @@ Browser modules must not import server modules. The production prompt is defined
 
 ## Reading pipeline
 
-The browser uses a Fisher–Yates shuffle with `Math.random()` once per new deck. Click order assigns the answer and recommendation roles. Retrying preserves the selection but makes a new reading request. This entertainment app validates card IDs and uniqueness; it does not prevent a caller from deliberately choosing another valid pair.
+The browser uses a Fisher–Yates shuffle with `Math.random()` once per new deck. Click order assigns **Read the situation** and **What to do** roles. Desktop uses two curved fans of 16 cards; phones use four fans of eight. A draw keeps every card in its shuffled position, leaves a gap, and shows the selected face in a viewport-fixed overlay before moving it below the viewport. Input stays locked through that sequence. Reduced-motion mode shows the face without spatial movement for a short pause. After the second card exits, a selected-pair stage replaces the deck; only its reveal button requests a reading. Retrying preserves the ordered selection but makes a new reading request. Restarting or leaving the component cancels pending draw work. This entertainment app validates card IDs and uniqueness; it does not prevent a caller from deliberately choosing another valid pair.
 
 The server derives the audience from the validated question ID. It selects the answer meaning of the first card and recommendation meaning of the second card for that audience. Other audience meanings are not sent to the model.
 
@@ -89,7 +89,7 @@ curl http://localhost:3000/api/readings \
 
 | Response field | Meaning |
 | --- | --- |
-| `answer`, `recommendation` | Text shown as What happens and What to do |
+| `answer`, `recommendation` | Text shown as Read the situation and What to do |
 | `cosmicNote` | Compatibility field; null in live mode, may contain text in mock mode |
 | `request` | Validated question, period, and ordered card IDs |
 | `period` | Resolved UTC `start` and exclusive `end` |
