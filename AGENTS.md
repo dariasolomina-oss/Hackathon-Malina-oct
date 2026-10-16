@@ -3,6 +3,7 @@
 - Read `README.md` and `docs/product.md` before implementation. Read `docs/team.md` when coordinating work.
 - Read `docs/architecture.md` before changing application code. Ownership is documented in `docs/team.md`; preserve the shared request/response contract and card IDs.
 - Write all project files, documentation, comments, prompts, UI copy, filenames, and commit messages in English. Conversation may follow the user's language.
+- The application is named Corporate Oracle. Malina is the team name.
 - Keep explanations short and precise. Explain behavior and algorithms for an analyst; avoid unnecessary implementation details.
 - Optimize for a working two-day hackathon demo. Prefer small changes and reuse the existing stack once it is established.
 - Keep work within the assigned area. Preserve other contributors' changes and coordinate changes to shared formats and project configuration.

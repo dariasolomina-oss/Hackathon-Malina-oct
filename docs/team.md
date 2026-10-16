@@ -1,5 +1,7 @@
 # Team responsibilities
 
+Team **Malina** builds **Corporate Oracle**.
+
 | Contributor | Owns | Main files |
 | --- | --- | --- |
 | Developer 1 — Frontend and integration | Interface, interactions, accessibility, styling, shared tooling, and deployment | `src/features/reading/`, `src/app/` except the API route, root configuration |

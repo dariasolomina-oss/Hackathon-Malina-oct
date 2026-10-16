@@ -107,4 +107,4 @@ Errors have shape `{ "error": { "code": "...", "message": "..." } }`. The browse
 
 Use a Node-capable Next.js host; static-only hosting cannot execute the reading route. Configure the server environment from `.env.example`, allow outbound HTTPS to the calendar and AI provider, and set the hosting request timeout above 25 seconds to cover both provider budgets. Configure request and spending limits at the hosting/provider level before a public live demo; the application does not implement authentication or rate limiting.
 
-Build and verification commands are in the [README](../README.md). A shared deployment URL has not been documented. Current verified behavior and remaining demo work are summarized in the [project write-up](project-overview.md).
+Build and verification commands are in the [README](../README.md). A shared deployment URL has not been documented. Current verified behavior and planned product development are summarized in the [project write-up](project-overview.md).

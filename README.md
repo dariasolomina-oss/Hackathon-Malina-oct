@@ -1,6 +1,6 @@
-# Malina: Corporate Oracle
+# Corporate Oracle
 
-A playful workplace oracle for T1A. Choose a question, draw two cards, and receive a reading that combines their meanings with real astrological calendar data. Built with Next.js, React, and TypeScript for a two-day hackathon.
+A playful workplace oracle for T1A, built by team **Malina**. Choose a question, draw two cards, and receive a reading that combines their meanings with real astrological calendar data. Built with Next.js, React, and TypeScript for a two-day hackathon.
 
 Read the [short project write-up](docs/project-overview.md) for the problem, what we built, how it works, what is working, and what comes next.
 
