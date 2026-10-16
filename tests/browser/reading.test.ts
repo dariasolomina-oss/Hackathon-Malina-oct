@@ -273,7 +273,11 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 1000
       await assertFits(page);
 
       await page.getByRole("heading", { name: "Look up — sky highlights" }).waitFor();
-      assert.equal(await page.locator(".nasa-events .event-sources a").count(), 1);
+      assert.equal(await page.locator(".nasa-events .event-sources").count(), 0);
+      assert.equal(await page.locator(".nasa-events .event-title").count(), 2);
+      const nasaTitle = page.getByRole("link", { name: "Fixture meteor shower — NASA (opens in a new tab)" });
+      assert.equal(await nasaTitle.getAttribute("href"), "https://science.nasa.gov/");
+      assert.equal(await nasaTitle.getAttribute("target"), "_blank");
       assert.equal(await page.locator(".nasa-events .event-date").first().textContent(), "Peak: October 21, 2026 – October 22, 2026");
       assert.deepEqual(nasaRequests[0], { start: "2026-10-15T00:00:00.000Z", end: "2026-11-15T00:00:00.000Z" });
       assert.deepEqual(Object.keys(requests[1]).sort(), ["answerCardId", "periodId", "questionId", "recommendationCardId"]);

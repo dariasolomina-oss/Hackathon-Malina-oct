@@ -411,10 +411,9 @@ export function ReadingExperience() {
         {!!nasaEvents.length && <section className="events nasa-events" aria-labelledby="nasa-calendar-title">
           <h3 className="section-kicker" id="nasa-calendar-title">Look up — sky highlights</h3>
           <ul>{nasaEvents.map((event) => <li key={event.id}>
-            <span><strong>{event.name}</strong><small>{event.visibility}</small></span>
+            <span><strong><a className="event-title" href={event.source.url} target="_blank" rel="noopener noreferrer" aria-label={`${event.name} — NASA (opens in a new tab)`}>{event.name} <span aria-hidden="true">↗</span></a></strong><small>{event.visibility}</small></span>
             <span className="event-date">{event.kind === "meteor-shower" ? "Peak: " : ""}{formatDate(event.date, "long")}{event.endDate && event.endDate !== event.date ? ` – ${formatDate(event.endDate, "long")}` : ""}</span>
           </li>)}</ul>
-          <CalendarSources sources={nasaEvents.map((event) => event.source)} />
         </section>}
         <p className="disclaimer">For entertainment and reflection. The universe is not your project manager.</p>
       </section>}</div>
