@@ -11,7 +11,7 @@ Starting token: `ODYSSEY-2026-UNLEASH-THE-GODS`
 ### Requirements
 
 - Node.js 22 or later and npm. With nvm installed, run `nvm use` in the repository.
-- Internet access for dependency installation and the event calendar. Live readings also require a model API key.
+- Internet access for dependency installation, Zodiacs.org calendar data, NASA sky highlights, and Google Fonts. Live readings also require a model API key; neither calendar integration needs a key.
 
 ### Start locally
 
@@ -44,13 +44,14 @@ OPENAI_MODEL=your-provider-model-id
 # OPENAI_BASE_URL=https://gateway.example/api/v1
 ```
 
-Use a model available to your account that supports the Responses API and Structured Outputs. The application's default model is `gpt-6-luna`; set the exact model ID offered by your provider. Keep credentials server-side in `.env.local`, which is ignored by Git. Each live reading, including a retry, makes a paid API request. A live AI failure shows an error and keeps your selected cards for retry.
+Use a model available to your account that supports the Responses API, Structured Outputs, and the configured `reasoning.effort: "none"` option. The application's default model is `gpt-6-luna`; set the exact model ID offered by your provider. Keep credentials server-side in `.env.local`, which is ignored by Git. Everyone using the same running server uses its configured key and provider budget. A separate local checkout needs its own environment configuration for live mode. Each live reading, including a retry, makes a paid API request. A live AI failure shows an error and keeps your selected cards for retry.
 
 ### Try the experience
 
 1. Choose Employee or Leadership, a question, and an allowed period.
 2. Shuffle the deck and draw two cards in order: **Read the situation**, then **What to do**.
-3. Review the selected pair, then reveal the oracle. The result shows your question, date range, both roles, and calendar sources.
+3. Review the selected pair, then reveal the oracle. The result shows your question, period and dates, both cards, and the two reading paragraphs.
+4. Explore **In the cosmic calendar** and, when published events are available, **Look up — sky highlights** from NASA. Each list starts with up to three events; **View all events** expands it without another AI call.
 
 ### Production build
 
@@ -76,7 +77,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Set `TEST_BASE_URL` for another port, or `TEST_BROWSER_PATH` to use an installed Chrome executable. Browser tests intercept reading responses and do not call the AI.
+Set `TEST_BASE_URL` for another port, or `TEST_BROWSER_PATH` to use an installed Chrome executable. Browser tests intercept both reading and NASA responses and do not call the AI or live calendar providers.
 
 ## Documentation
 
@@ -86,4 +87,4 @@ Set `TEST_BASE_URL` for another port, or `TEST_BROWSER_PATH` to use an installed
 - [Team responsibilities](docs/team.md): ownership and contribution workflow.
 - [Codex instructions](AGENTS.md): repository conventions.
 
-For entertainment and reflection. Calendar data: [Zodiacs.org](https://zodiacs.org), licensed under CC BY 4.0.
+For entertainment and reflection. Astrological calendar data: [Zodiacs.org](https://zodiacs.org), licensed under CC BY 4.0. Sky highlights link to their NASA sources and are displayed separately from the oracle interpretation.

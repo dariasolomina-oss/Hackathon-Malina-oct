@@ -10,27 +10,32 @@ The experience is entertainment, not an assessment of employees or a prediction 
 
 Corporate Oracle is a web app built by team Malina, with two perspectives, Employee and Leadership, six ready-made questions for each, and three time horizons. Users draw two distinct cards from a shuffled deck of 32 original illustrated cards. Every card has separate answer and recommendation meanings for each perspective.
 
-The final reading shows the question and resolved dates, followed by **What happens** and **What to do**. In live mode, AI writes both paragraphs, combining the question, the two card meanings, and the symbolic interpretation of relevant calendar events. The tone is warm, practical, and specific to work at T1A.
+The final reading shows the question and resolved dates, followed by **Read the situation** and **What to do**. In live mode, AI writes both paragraphs, combining the question, the two card meanings, and the symbolic interpretation of relevant calendar events. The tone is warm, practical, and specific to work at T1A.
 
 ## How it works
 
-1. The user selects a question and period, then draws two cards in order.
-2. The server validates the selection, derives the audience from the question, and calculates the date range.
-3. It fetches retrograde and moon-phase data from Zodiacs.org for the years covered by that range, then selects up to three overlapping events.
-4. It sends the exact question, audience, dates, role-specific card meanings, and selected events to the configured AI provider.
-5. AI writes the complete reading. The server checks its structure and event references and returns the text without appending extra prose.
+In live mode:
 
-The prompt translates astrology into ordinary workplace language, such as “in early November, check that your contributions are clearly documented.” The calendar below the reading lists event names, start dates, and sources separately. When calendar data is missing, the reading uses the cards alone.
+1. The user selects an audience, question, and period, draws two cards in order, and confirms the selected pair with **Reveal your reading**.
+2. The server validates the selection, derives the audience from the question, and calculates the date range.
+3. It fetches retrograde and moon-phase data from Zodiacs.org for the years covered by that range, then selects up to three overlapping events, preferring different planets or moon phases and spreading yearly selections across the period.
+4. It sends the exact question, audience, dates, role-specific card meanings, and selected events to the configured AI provider.
+5. AI writes the complete reading. The server checks its structure and event references and returns the text, the selected events, and the full verified calendar for the period without appending extra prose.
+6. The browser separately requests dated eclipse and meteor-shower highlights from NASA pages. These facts appear below the cosmic calendar and never go to the AI.
+
+The prompt translates astrology into ordinary workplace language, such as “in early November, check that your contributions are clearly documented.” The calendars below the reading show event names, dates or date ranges, and sources separately. Each starts with up to three events and can be expanded independently without generating another reading. When calendar data is missing, the reading uses the cards alone.
 
 ## What is working
 
 - The full question → shuffled deck → two cards → reading journey, including mobile layouts, keyboard controls, loading, retry with the same cards, and restart.
-- All twelve questions, three rolling periods, and automatic period locking for the three questions that specify a year or quarter.
-- All 32 card illustrations and audience-specific meanings, with one shared card back.
+- All twelve questions, three rolling periods, and automatic period locking for the three fixed-period questions.
+- All 32 card illustrations and audience-specific meanings, with one shared card back, overlapping card fans, and a face-up preview before pair review.
 - Request-time calendar retrieval and a live oracle through an OpenAI-compatible gateway, plus an explicitly labeled mock mode for development.
+- Expandable cosmic and NASA calendars with source links. NASA highlights use only explicitly published dates, so future coverage can be incomplete.
+- A shared Bodoni Moda / Inter Tight type system, Witch lettering for the Malina wordmark, and a transparent crystal-ball browser icon.
 - T1A-focused prompt instructions and separate handling of unavailable calendar data and AI errors.
 
-Verification recorded on October 15, 2026: 57 automated tests and a production build passed; four browser scenarios covered the main journeys at mobile and desktop widths. The final prompt was also checked with three successful live scenarios: an Employee performance review, a Leadership strategy question, and an Employee reading with an empty calendar. The examples connected the card meanings to the question and used plain-language timing. These checks do not establish consistent editorial quality for every possible reading.
+Automated checks cover request validation, period rules, event selection, provider failures, AI output validation, and NASA parsing using offline fixtures. Browser scenarios cover the main journeys, keyboard interaction, responsive card fans, calendar expansion, retry, and restart. Build and test commands are in the [README](../README.md#checks). Automated checks do not establish consistent editorial quality for every generated reading.
 
 ## What comes next
 

@@ -2,9 +2,9 @@
 
 ## Experience
 
-Choose Employee or Leadership, select one of its six questions and an allowed period, then draw two distinct cards from one shuffled 32-card deck. Cards are drawn sequentially: the first shapes **Read the situation**, the second shapes **What to do**. A selected-pair screen gates the oracle request; only **Reveal your reading** calls the API. Restart creates a new selection; retry keeps the same cards and question.
+Choose Employee or Leadership, select one of its six questions and an allowed period, then draw two distinct cards from one shuffled 32-card deck. Cards are drawn sequentially: the first shapes **Read the situation**, the second shapes **What to do**. A selected-pair screen gates the oracle request; the oracle is requested through **Reveal your reading** or its retry action. Restart creates a new selection; retry keeps the same cards and question.
 
-The result shows the selected question, period label and resolved dates, both cards, both text blocks, and calendar source information. Loading, failure, retry, restart, and explicit sample/live labels are part of the experience. There are no accounts, stored reading histories, birth details, or personal zodiac inputs.
+The result shows the selected question, period label and resolved dates, both cards, both text blocks, and calendar source information. Loading, failure, retry, restart, and an explicit “Sample reading” label in mock mode are part of the experience. There are no accounts, stored reading histories, birth details, or personal zodiac inputs.
 
 For the motivation, delivered features, and next steps, read the [project write-up](project-overview.md). Implementation details are in [architecture.md](architecture.md).
 
@@ -14,7 +14,15 @@ The question appears above the current draw instruction. The shuffled deck forms
 
 Each selected card enlarges at the center of the screen, flips face-up, pauses for approximately 1 second, and exits below the screen. Selection stays locked during this sequence. Reduced-motion mode shows a static face briefly instead. The first draw answers the question; the second recommends an action.
 
-After both draws, the question and **Ready to reveal your reading?** appear above two card faces displayed side by side. Each card has its role and name above the image. **Reveal your reading** requests the oracle response; selecting cards alone does not call the reading API. The final result includes the period and dates.
+After both draws, the question and **Ready to reveal your reading?** appear above two card faces displayed side by side. Each card has its role and name above the image. **Reveal your reading** requests the oracle response; selecting cards alone does not call the reading API. The final screen is headed **Your reading**, with the question above a period label and dates in parentheses. Each reading block uses **Read the situation — Card name** or **What to do — Card name**. Live readings have no extra mode badge.
+
+## Calendars on the final screen
+
+**In the cosmic calendar** starts with up to three selected Zodiacs.org events used as the oracle's timing context. Selection prefers different planets or moon-phase types and distributes yearly readings across the period. **View all events** shows every verified event returned for that period in chronological order; **Show fewer events** restores the selected subset. Date ranges can begin before the reading if an event is already in progress.
+
+**Look up — sky highlights** appears below it when NASA publishes matching eclipse or meteor-shower peak dates. It starts with the nearest three events and offers the same expansion control. Each event title links to its NASA source. Visibility depends on location; this is not a personalized observing calendar.
+
+The two lists expand independently without changing the prediction or calling the AI again. NASA data is for display only and never enters the oracle prompt. Only events overlapping the chosen period are included; unpublished future meteor dates are not inferred from previous years.
 
 ## Question catalog
 
@@ -50,7 +58,7 @@ The labels are the agreed product wording. IDs and allowed periods are implement
 | `three-months` | Next three months | Three calendar months from the request date |
 | `one-year` | Next year | Twelve calendar months from the request date |
 
-Questions explicitly referring to next year or a quarter use a fixed year or quarter. Selecting one of the three fixed-period questions automatically sets and locks its allowed period. The backend rejects an incompatible question-period pair with `INVALID_REQUEST` rather than substituting another range.
+Company outlook and the Jira-hours question use a fixed year; the changing-priorities question uses a fixed quarter. The Jira-hours question retains its fixed year even though its current label does not say “next year.” Selecting one of the three fixed-period questions automatically sets and locks its allowed period. The backend rejects an incompatible question-period pair with `INVALID_REQUEST` rather than substituting another range.
 
 Use rolling periods from the request date, not the next calendar year or quarter. Keep the existing UTC start-inclusive/end-exclusive convention and clamp month ends, including February 29. Display the resolved date range. The mention of a meeting-free week describes a desired outcome within the selected period; it does not introduce a fourth, weekly period.
 
@@ -67,7 +75,7 @@ The live model writes both complete paragraphs, combining the exact question, th
 - **Read the situation:** two or three sentences describing a plausible scenario that answers the question.
 - **What to do:** three or four sentences with specific, useful workplace actions and an explanation of why they fit the situation.
 
-Use warm, witty English and recognizable office situations. Translate event meanings into ordinary workplace advice with broad timing such as "in early November," grounded in the overlap of the event and reading period. Keep exact dates, planet names, retrograde terminology, event IDs, and citations out of these paragraphs. The calendar lists event names, start dates, and source links separately.
+Use warm, witty English and recognizable office situations. Translate event meanings into ordinary workplace advice with broad timing such as "in early November," grounded in the overlap of the event and reading period. Keep exact dates, planet names, retrograde terminology, event IDs, and citations out of these paragraphs. The calendar lists event names, dates or date ranges, and source links separately.
 
 Avoid opening with a card definition, repeating the question, or adding a detached horoscope. The server does not append text to live readings. `src/server/oracle-prompt.ts` contains the actual system instructions and style example; mock mode is a deterministic development sample, not a demonstration of live prose quality.
 
@@ -78,3 +86,5 @@ Astronomical dates come from the supplied calendar; their workplace interpretati
 ## Failure behavior
 
 An unavailable calendar produces a card-only reading with an explicit message. An available calendar with no selected events also produces a card-only reading, without invented timing. A live AI failure shows a retryable error and preserves the selected cards; it never silently switches to sample text.
+
+If no matching NASA events remain after retrieval and parsing, the sky-highlights section is omitted. A failed individual source does not remove events from successful sources. This does not delay or invalidate the oracle reading.

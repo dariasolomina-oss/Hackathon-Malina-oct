@@ -4,8 +4,8 @@ Team **Malina** builds **Corporate Oracle**.
 
 | Contributor | Owns | Main files |
 | --- | --- | --- |
-| Developer 1 — Frontend and integration | Interface, interactions, accessibility, styling, shared tooling, and deployment | `src/features/reading/`, `src/app/` except the API route, root configuration |
-| Developer 2 — Backend | HTTP contract, date/event logic, calendar API, AI prompt/provider, and backend verification | `src/app/api/readings/`, `src/server/`, `src/domain/`, `src/contracts/` |
+| Developer 1 — Frontend and integration | Interface, interactions, accessibility, styling, shared tooling, and deployment | `src/features/reading/`, `src/app/` except API routes, root configuration |
+| Developer 2 — Backend | HTTP contract, date/event logic, Zodiacs.org and NASA integrations, AI prompt/provider, and backend verification | `src/app/api/`, `src/server/`, `src/domain/`, `src/contracts/` |
 | Developer 3 — Content | Card composition, names, audience-specific meanings, artwork, and editorial feedback | `src/content/cards.ts`, `public/cards/` |
 
 Question wording and period rules follow [product.md](product.md) and the shared catalog. Coordinate shared contract and configuration changes with the relevant owner. Content decisions belong to Developer 3; other contributors coordinate identifiers and integration without redefining approved meanings or artwork.
