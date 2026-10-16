@@ -1,50 +1,22 @@
-# Team workflow
+# Team responsibilities
 
-## Parallel workstreams
-
-The runnable foundation and fixed boundaries are documented in [architecture.md](architecture.md). Start from the same integrated base commit, then use separate branches such as `track/frontend`, `track/backend`, and `track/content`. Task briefs are in [tracks/frontend.md](tracks/frontend.md), [tracks/backend.md](tracks/backend.md), and [tracks/content.md](tracks/content.md).
-
-| Owner | Responsibility | Independent starting point |
+| Contributor | Owns | Main files |
 | --- | --- | --- |
-| Technical contributor 1 | Interface, card reveal interaction, result display, integration, and deployment | Placeholder cards and a sample response |
-| Technical contributor 2 | Card selection, event calendar, AI integration, response format, and error handling | Fixed sample inputs without the interface |
-| Content contributor | Card artwork, deck back, card meanings, oracle voice examples, copy review, and demo story | One reference card and a short reading example |
+| Developer 1 — Frontend and integration | Interface, interactions, accessibility, styling, shared tooling, and deployment | `src/features/reading/`, `src/app/` except the API route, root configuration |
+| Developer 2 — Backend | HTTP contract, date/event logic, calendar API, AI prompt/provider, and backend verification | `src/app/api/readings/`, `src/server/`, `src/domain/`, `src/contracts/` |
+| Developer 3 — Content | Card composition, names, audience-specific meanings, artwork, and editorial feedback | `src/content/cards.ts`, `public/cards/` |
 
-Technical contributor 1 owns the final integrated build. Technical contributor 2 owns the data exchange format and production oracle prompt. The content contributor supplies examples and editorial feedback for that prompt.
+Question wording and period rules follow [product.md](product.md) and the shared catalog. Coordinate shared contract and configuration changes with the relevant owner. Content decisions belong to Developer 3; other contributors coordinate identifiers and integration without redefining approved meanings or artwork.
 
-## Updated shared scope
+Each card has separate answer/recommendation meanings for Employee and Leadership. Keep the 32 names, IDs, and image paths consistent. Artwork consists of 32 faces and one shared back, all 1024 × 1536 WebP files; preserve the printed titles.
 
-Both audiences use one 32-card deck and two draws. Employee and Leadership each have six exact questions. Periods are one month, three months, and one year, with three fixed-period exceptions defined in [product.md](product.md).
+## Working together
 
-Backend owns shared validation, audience derivation, annual calculation, and calendar coverage. Frontend owns audience/question selection and period locking. Developer 3 (Content) determines the 32-card composition, meanings, and artwork, and preserves the supplied question labels. Other owners coordinate technical IDs, paths, and fixtures, not approval of creative decisions. The supplied 32-card manifest and artwork are integrated.
+- Start from current `main` and use a personal branch. Use separate worktrees when concurrent Codex chats share one computer.
+- Read [architecture.md](architecture.md) and [AGENTS.md](../AGENTS.md) before changing implementation.
+- Keep changes focused, preserve other contributors' work, and coordinate edits to shared files.
+- Run the checks appropriate to the change; see [README](../README.md#checks). Check interface changes on mobile and desktop.
+- Keep API keys in local or hosting environment configuration, never in commits.
+- Integrate verified changes into `main` and keep behavior documentation aligned with the code.
 
-## Agree before splitting work
-
-- Use the twelve exact questions and allowed periods from the product scope; integrate the 32-card manifest supplied by Developer 3.
-- Input and output fields between the interface and reading logic, with one sample request and response.
-- Illustration dimensions, file naming, and a shared visual reference.
-- Repository areas owned by each contributor and the owner of shared configuration.
-
-The shared contract implements all twelve question identifiers, audience metadata, three periods, and fixed-period rules. The integrated frontend consumes these values. The content owner's 32-card manifest is authoritative; its names and filenames match, and the approved artwork contains printed titles.
-
-## Current handoff status
-
-`main` combines `track/backend`, `Mashenka_Solnyshko`, and `ds-1`. The backend, interface, and card assets are integrated. Deployment must allow the five-second calendar budget plus the 20-second oracle budget. Remaining work is editorial review, full live quality review with the new deck and prompt, deployment, and demo rehearsal. See [integration status](integration-status.md).
-
-## Working with Codex
-
-Give each contributor's Codex chat the same product scope, its assigned area, and a concrete completion criterion. Use separate branches and local checkouts; use separate worktrees when multiple chats share one computer.
-
-Integrate small completed changes several times a day. Coordinate changes to shared files before editing them. Do not wait for finished artwork or live calendar integration to connect the interface to the reading service.
-
-## Two-day checkpoints
-
-| Checkpoint | Expected result |
-| --- | --- |
-| First 45 minutes | Agree scope, data format, card IDs, ownership, and one visual reference |
-| Day 1, first half | Clickable interface with samples; first real AI response; first artwork and voice examples |
-| End of day 1 | Integrated question-to-cards-to-AI flow on a shared URL |
-| Day 2, first half | Final assets, improved readings, mobile layout, and error handling |
-| Final 3-4 hours | Fixes, stability checks, and demo rehearsal; no new features |
-
-At each checkpoint, check both audiences, exact question lists, fixed-period restrictions, all three date ranges, the 32-card catalog, two-card uniqueness and role consistency, annual calendar coverage, and service failures. Prioritize a complete working journey over additional effects or event types.
+Remaining product work is tracked in the [project write-up](project-overview.md#what-comes-next), rather than separate track plans.

@@ -1,77 +1,89 @@
-# Hackathon Malina: Corporate Oracle
+# Malina: Corporate Oracle
 
-A playful corporate oracle that combines two tarot cards with dated astrological events to answer workplace questions with humor.
+A playful workplace oracle for T1A. Choose a question, draw two cards, and receive a reading that combines their meanings with real astrological calendar data. Built with Next.js, React, and TypeScript for a two-day hackathon.
+
+Read the [short project write-up](docs/project-overview.md) for the problem, what we built, how it works, what is working, and what comes next.
 
 Starting token: `ODYSSEY-2026-UNLEASH-THE-GODS`
 
-## User journey
+## How to Run
 
-1. Choose Employee or Leadership, then one of its six questions and an allowed time period (one month, three months, or one year).
-2. Draw two different cards from one shared 32-card deck: one answers the question, the other suggests what to do.
-3. Read a short AI-generated interpretation with relevant calendar events woven into the story.
+### Requirements
 
-The cards establish the story; astrological events add timing and atmosphere. This is an entertainment experience, not a factual prediction.
+- Node.js 22 or later and npm. With nvm installed, run `nvm use` in the repository.
+- Internet access for dependency installation and the event calendar. Live readings also require a model API key.
 
-## Project status
-
-The integrated `main` combines the backend, the twilight interface from `ds-1`, and the content owner's 32-card deck from `Mashenka_Solnyshko`. Both audiences use the authoritative twelve questions, three rolling periods, and fixed-period controls. Card names, IDs, meanings, and WebP artwork come from the content manifest without renaming.
-
-The complete journey supports two ordered draws, retry with the same cards, restart, date ranges, calendar attribution, and explicit mock/live results. Every reading requests calendar data; the configured live oracle supports an OpenAI-compatible gateway. Earlier live checks used the provisional deck, so the final deck and T1A-only prompt still need a full live editorial review.
-
-See [integration status and remaining work](docs/integration-status.md) and the [backend handoff](docs/backend-handoff.md).
-
-## Run locally
-
-Use Node.js 22 or later. If you use nvm, run `nvm use` first.
+### Start locally
 
 ```bash
+git clone https://github.com/dariasolomina-oss/Hackathon-Malina-oct.git
+cd Hackathon-Malina-oct
 npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. No API key or environment file is needed for the default mock oracle.
+Open [http://localhost:3000](http://localhost:3000).
+
+Without environment configuration, the app uses **mock mode**: deterministic text labeled “Sample reading,” with no paid AI calls. It still fetches real calendar data; if the calendar is unavailable, the reading works from the cards alone. Existing `.env.local` settings can select live mode instead.
+
+### Enable AI readings
+
+For a fresh setup, copy `.env.example` to `.env.local` (preserve the file if you already have one):
 
 ```bash
-npm run check
+cp .env.example .env.local
+```
+
+Edit these settings locally, then restart the server:
+
+```dotenv
+ORACLE_MODE=live
+OPENAI_API_KEY=your-project-api-key
+OPENAI_MODEL=your-provider-model-id
+# Optional: use an OpenAI-compatible gateway instead of the direct OpenAI API.
+# OPENAI_BASE_URL=https://gateway.example/api/v1
+```
+
+Use a model available to your account that supports the Responses API and Structured Outputs. The application's default model is `gpt-6-luna`; set the exact model ID offered by your provider. Keep credentials server-side in `.env.local`, which is ignored by Git. Each live reading, including a retry, makes a paid API request. A live AI failure shows an error and keeps your selected cards for retry.
+
+### Try the experience
+
+1. Choose Employee or Leadership, a question, and an allowed period.
+2. Shuffle the deck and reveal two cards: the first answers the question; the second recommends an action.
+3. Consult the oracle. The result shows your question, date range, **What happens**, **What to do**, and calendar sources.
+
+### Production build
+
+```bash
 npm run build
 npm start
 ```
 
-`check` runs TypeScript validation and foundation tests. Tests inject offline calendar fixtures and do not call Zodiacs.org. `start` serves the production build after `build` succeeds.
+This starts the production app at [http://localhost:3000](http://localhost:3000). Deployment needs a Node-capable host; see [deployment requirements](docs/architecture.md#deployment).
 
-## Live oracle
-
-Copy `.env.example` to `.env.local`, set `ORACLE_MODE=live`, and add a server-side `OPENAI_API_KEY`. `OPENAI_MODEL` defaults to `gpt-6-luna`. The direct OpenAI API is the default; set the optional server-only `OPENAI_BASE_URL` for an OpenAI-compatible gateway. Use an exact model ID returned by that gateway's `/models` endpoint. Live mode makes one Responses API call with Structured Outputs, no tools, no SDK retries, and a 20-second timeout. A missing key or failed live request returns `READING_FAILED`; it never falls back to mock text. Gateway usage and billing are governed by the gateway, independently of OpenAI's public model pricing.
-
-## Try the API independently
-
-With the development server running:
+## Checks
 
 ```bash
-curl http://localhost:3000/api/readings \
-  -H 'Content-Type: application/json' \
-  -d '{"questionId":"employee-project-deadline","periodId":"one-month","answerCardId":"the-challenge","recommendationCardId":"the-spark"}'
+npm run check
 ```
 
-The response reports `meta.mode: "mock"`. The server still requests calendar data for the resolved period. A source failure, invalid response, incomplete coverage, or five-second calendar deadline returns a card-only reading with `meta.calendarStatus: "unavailable"`.
+Runs TypeScript validation and automated tests with offline fixtures and fake AI responses. No API credentials or paid calls are needed.
 
-## Calendar data
+For browser tests, first run the production app using the commands above. In another terminal:
 
-Each reading fetches retrograde and moon-phase files for every UTC year touched by its start-inclusive/end-exclusive range. Requests run concurrently with `cache: "no-store"` under one five-second deadline. The importer validates schemas, requested years, full-year coverage, station boundaries, duplicates, and source attribution before events become available. There is no runtime cache or snapshot fallback.
+```bash
+npx playwright install chromium
+npm run test:browser
+```
 
-The checked 2026–2028 JSON remains an offline fixture for tests and source review. Refresh that fixture with `npm run calendar:refresh -- 2026 2027 2028`, then review generated changes before committing them.
+Set `TEST_BASE_URL` for another port, or `TEST_BROWSER_PATH` to use an installed Chrome executable. Browser tests intercept reading responses and do not call the AI.
 
-Calendar data is licensed under CC BY 4.0. Attribution: [Data: Zodiacs.org](https://zodiacs.org).
+## Documentation
 
-## Project documents
+- [Project write-up](docs/project-overview.md): problem, solution, working features, and next steps.
+- [Product rules](docs/product.md): questions, periods, deck, and reading style.
+- [Architecture](docs/architecture.md): data flow, API, integrations, and deployment.
+- [Team responsibilities](docs/team.md): ownership and contribution workflow.
+- [Codex instructions](AGENTS.md): repository conventions.
 
-- [Product scope](docs/product.md)
-- [Team workflow](docs/team.md)
-- [Architecture and API contract](docs/architecture.md)
-- [Frontend assignment](docs/tracks/frontend.md)
-- [Backend assignment](docs/tracks/backend.md)
-- [Backend integration handoff](docs/backend-handoff.md)
-- [Content and artwork assignment](docs/tracks/content.md)
-- [Codex repository instructions](AGENTS.md)
-
-All repository content and product copy are written in English.
+For entertainment and reflection. Calendar data: [Zodiacs.org](https://zodiacs.org), licensed under CC BY 4.0.

@@ -1,7 +1,7 @@
 # Repository instructions
 
 - Read `README.md` and `docs/product.md` before implementation. Read `docs/team.md` when coordinating work.
-- Read `docs/architecture.md` and the relevant assignment under `docs/tracks/` before changing application code. Preserve the shared request/response contract and card IDs across tracks.
+- Read `docs/architecture.md` before changing application code. Ownership is documented in `docs/team.md`; preserve the shared request/response contract and card IDs.
 - Write all project files, documentation, comments, prompts, UI copy, filenames, and commit messages in English. Conversation may follow the user's language.
 - Keep explanations short and precise. Explain behavior and algorithms for an analyst; avoid unnecessary implementation details.
 - Optimize for a working two-day hackathon demo. Prefer small changes and reuse the existing stack once it is established.
@@ -14,6 +14,7 @@
 - Run `npm run check` for logic or contract changes and `npm run build` for application changes. Check UI changes in a browser. Report what was actually verified.
 - Keep mock readings visibly labeled. A live AI failure must not silently switch to sample text. Browser code must not import `src/server` modules.
 - Update relevant documentation when behavior or setup changes. Label proposed features and unverified integrations honestly.
+- Keep setup instructions in `README.md`, the hackathon write-up and next steps in `docs/project-overview.md`, product rules in `docs/product.md`, and implementation details in `docs/architecture.md`. Do not duplicate completed development plans or integration logs.
 
 Instruction-file reference: [OpenAI Codex documentation](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide#using-agentsmd).
 
